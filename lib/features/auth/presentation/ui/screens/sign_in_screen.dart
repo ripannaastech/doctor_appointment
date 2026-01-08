@@ -1,3 +1,4 @@
+import 'package:doctor_appointment/app/app_colors.dart';
 import 'package:doctor_appointment/features/auth/presentation/ui/screens/verify_otp.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -79,12 +80,12 @@ class LoginScreen extends StatelessWidget {
                     child: Text.rich(
                       TextSpan(
                         text: "Don't have an account? ",
-                        style: TextStyle(fontSize: 14.sp),
+                        style: TextStyle(fontSize: 14.sp,color: Colors.grey),
                         children: [
                           TextSpan(
                             text: 'Register',
                             style: TextStyle(
-                              color: Colors.blue,
+                              color: AppColors.themeColor,
                               fontWeight: FontWeight.w600,
                               fontSize: 14.sp,
                             ),

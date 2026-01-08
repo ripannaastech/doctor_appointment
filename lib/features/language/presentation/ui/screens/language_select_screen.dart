@@ -31,13 +31,10 @@ class _LanguageSelectScreenState extends State<LanguageSelectScreen> {
                 Container(
                   height: 64.h,
                   width: 64.w,
-                  decoration: const BoxDecoration(
-                    color: Color(0xFFE8F0FF),
-                    shape: BoxShape.circle,
-                  ),
+
                   child: Icon(
                     Icons.language,
-                    size: 36,
+                    size: 64,
                     color: Color(0xFF3F6EEB),
                   ),
                 ),

@@ -10,7 +10,7 @@ class OrDivider extends StatelessWidget {
   const OrDivider({
     super.key,
     this.text = 'OR',
-    this.thickness = 1,
+    this.thickness = .5,
     this.spacing = 12,
     this.color,
     this.textStyle,
@@ -19,7 +19,7 @@ class OrDivider extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final dividerColor =
-        color ?? Theme.of(context).dividerColor;
+        color ?? Colors.grey.withOpacity(.5);
 
     return Row(
       children: [
