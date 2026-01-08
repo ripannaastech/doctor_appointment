@@ -8,6 +8,7 @@ import '../../data/models/notification_item_model.dart';
 
 class NotificationsScreen extends StatefulWidget {
   const NotificationsScreen({super.key});
+  static const String name = '/notification';
 
   @override
   State<NotificationsScreen> createState() => _NotificationsScreenState();
@@ -65,7 +66,7 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
         children: [
           /// ✅ Appointment-style AppBar (rounded)
           Container(
-            height: statusBarHeight + 70.h,
+            height: statusBarHeight + 90.h,
             decoration: BoxDecoration(
               color: const Color(0xFF3F6DE0),
               borderRadius: BorderRadius.vertical(
@@ -111,7 +112,7 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
               children: [
                 /// List content pushed down
                 Padding(
-                  padding: EdgeInsets.only(top: 68.h),
+                  padding: EdgeInsets.only(top: MediaQuery.of(context).padding.top-20.h),
                   child: ListView.separated(
                     padding: EdgeInsets.fromLTRB(20.w, 12.h, 20.w, 20.h),
                     itemBuilder: (_, i) => NotificationCard(item: filtered[i]),
@@ -185,7 +186,7 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
           child: Text(
             title,
             style: TextStyle(
-              fontSize: 15.sp,
+              fontSize: 14.sp,
               fontWeight: FontWeight.w600,
               color: active ? Colors.white : const Color(0xFF6B7280),
               letterSpacing: 0.2,

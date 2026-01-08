@@ -23,7 +23,7 @@ class DetailsCard extends StatelessWidget {
             'Appointment Details',
             style: TextStyle(
               fontSize: 13.5.sp,
-              fontWeight: FontWeight.w800,
+              fontWeight: FontWeight.w400,
               color: const Color(0xFF141A2A),
             ),
           ),
@@ -62,29 +62,30 @@ class DetailsCard extends StatelessWidget {
           if (details.reason != null) ...[
             SizedBox(height: 10.h),
             Container(
+              width: double.infinity,
               padding: EdgeInsets.all(12.w),
               decoration: BoxDecoration(
                 color: Colors.white.withOpacity(0.85),
                 borderRadius: BorderRadius.circular(12.r),
               ),
-              child: Row(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    'Reason:  ',
+                    'Reason',
                     style: TextStyle(
                       fontSize: 12.5.sp,
                       fontWeight: FontWeight.w600,
                       color: const Color(0xFF7B8194),
                     ),
                   ),
-                  Expanded(
-                    child: Text(
-                      details.reason!,
-                      style: TextStyle(
-                        fontSize: 12.8.sp,
-                        fontWeight: FontWeight.w800,
-                        color: const Color(0xFF141A2A),
-                      ),
+                  SizedBox(height: 4.h),
+                  Text(
+                    details.reason!,
+                    style: TextStyle(
+                      fontSize: 12.8.sp,
+                      fontWeight: FontWeight.w800,
+                      color: const Color(0xFF141A2A),
                     ),
                   ),
                 ],

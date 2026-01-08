@@ -1,9 +1,9 @@
+import 'package:doctor_appointment/app/app_colors.dart';
+import 'package:doctor_appointment/features/appointment/presentation/ui/screens/my_appoinment.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-
 import '../../../../appointment/presentation/ui/screens/book_appoinment.dart';
-import '../../../../home/presentation/ui/screens/home.dart';
-import '../../../../notification/presentation/ui/notification_screen.dart';
+import '../../../../home/presentation/ui/screens/home_screen.dart';
 import '../../../../profile/presentation/ui/screens/profile_screen.dart';
 
 class MainScreen extends StatefulWidget {
@@ -20,7 +20,7 @@ class _MainScreenState extends State<MainScreen> {
 
   final List<Widget> _screens = const [
     HomeScreen(),
-    SelectDoctorScreen(),
+    MyAppointmentScreen(),
     HomeScreen(),
     ProfileScreen(),
   ];
@@ -82,13 +82,16 @@ class _MainScreenState extends State<MainScreen> {
         mainAxisSize: MainAxisSize.min,
         children: [
           Container(
-            height: 3.h,
+            height: 4.h,
             width: 32.w,
             decoration: BoxDecoration(
               color: isSelected
-                  ? const Color(0xFF3F6DE0)
+                  ?  AppColors.themeColor
                   : Colors.transparent,
-              borderRadius: BorderRadius.circular(2.r),
+              borderRadius: BorderRadius.only(
+                bottomLeft: Radius.circular(2.r),
+                bottomRight: Radius.circular(2.r),
+              ),
             ),
           ),
           SizedBox(height: 8.h),
@@ -99,4 +102,5 @@ class _MainScreenState extends State<MainScreen> {
       label: label,
     );
   }
+
 }

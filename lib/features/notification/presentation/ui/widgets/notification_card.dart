@@ -57,7 +57,7 @@ class _NotificationCardState extends State<NotificationCard> {
                                 it.title,
                                 style: TextStyle(
                                   fontSize: 14.5.sp,
-                                  fontWeight: FontWeight.w800,
+                                  fontWeight: FontWeight.w500,
                                   color: const Color(0xFF141A2A),
                                 ),
                               ),
@@ -77,7 +77,7 @@ class _NotificationCardState extends State<NotificationCard> {
                           it.message,
                           style: TextStyle(
                             fontSize: 12.5.sp,
-                            fontWeight: FontWeight.w500,
+                            fontWeight: FontWeight.w400,
                             color: const Color(0xFF7B8194),
                             height: 1.25,
                           ),

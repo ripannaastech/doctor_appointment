@@ -1,4 +1,5 @@
 import 'package:doctor_appointment/app/routes.dart';
+import 'package:doctor_appointment/features/auth/presentation/ui/screens/splash_screen.dart';
 import 'package:doctor_appointment/features/dashboard/presentation/ui/screens/dashboard.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
@@ -50,8 +51,8 @@ class _AlIshanSpecialistHospitalState extends State<AlIshanSpecialistHospital> {
               theme: AppTheme.lightThemeData,
               darkTheme: AppTheme.darkThemeData,
               themeMode: ThemeMode.light,
-              home: MainScreen(),
-              initialRoute: MainScreen.name,
+              home: SplashScreen(),
+              initialRoute: SplashScreen.name,
               onGenerateRoute: onGenerateRoute,
               // initialBinding: ControllerBinding(),
             );

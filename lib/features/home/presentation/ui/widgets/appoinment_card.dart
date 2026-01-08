@@ -1,3 +1,4 @@
+import 'package:doctor_appointment/app/app_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
@@ -9,7 +10,7 @@ class AppointmentCard extends StatelessWidget {
     return Container(
       padding: EdgeInsets.all(16.r),
       decoration: BoxDecoration(
-        color: const Color(0xFFAEC7FA),
+        color: AppColors.themeColor.withOpacity(.2),
         borderRadius: BorderRadius.circular(20.r),
       ),
       child: Row(
@@ -41,8 +42,8 @@ class AppointmentCard extends StatelessWidget {
                       child: Text(
                         'Dr. Dianne Russell',
                         style: TextStyle(
-                          fontSize: 18.sp,
-                          fontWeight: FontWeight.w700,
+                          fontSize: 14.sp,
+                          fontWeight: FontWeight.w600,
                           color: const Color(0xFF2D3A5F),
                         ),
                       ),
@@ -50,7 +51,7 @@ class AppointmentCard extends StatelessWidget {
                     Icon(
                       Icons.more_vert,
                       color: const Color(0xFF2D3A5F),
-                      size: 20.sp,
+                      size: 24.sp,
                     ),
                   ],
                 ),
@@ -60,8 +61,8 @@ class AppointmentCard extends StatelessWidget {
                 Text(
                   'Psychiatrist',
                   style: TextStyle(
-                    fontSize: 14.sp,
-                    fontWeight: FontWeight.w500,
+                    fontSize: 12.sp,
+                    fontWeight: FontWeight.w400,
                     color: const Color(0xFF2D3A5F),
                   ),
                 ),
@@ -91,7 +92,7 @@ class AppointmentCard extends StatelessWidget {
                         'Tue, 29 Jun, 2025',
                         style: TextStyle(
                           color: Colors.white,
-                          fontSize: 10.sp,
+                          fontSize: 8.sp,
                           fontWeight: FontWeight.w600,
                         ),
                       ),
@@ -106,7 +107,7 @@ class AppointmentCard extends StatelessWidget {
                         'Morning 08:00 AM',
                         style: TextStyle(
                           color: Colors.white,
-                          fontSize: 10.sp,
+                          fontSize: 8.sp,
                           fontWeight: FontWeight.w600,
                         ),
                       ),

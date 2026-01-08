@@ -1,8 +1,11 @@
 import 'package:doctor_appointment/app/app_colors.dart';
+import 'package:doctor_appointment/features/home/presentation/ui/screens/home_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import 'package:pin_code_fields/pin_code_fields.dart';
+
+import '../../../../dashboard/presentation/ui/screens/dashboard.dart';
 
 class OtpScreen extends StatelessWidget {
   const OtpScreen({super.key});
@@ -79,7 +82,9 @@ class OtpScreen extends StatelessWidget {
               width: double.infinity,
               height: 56.h,
               child: ElevatedButton(
-                onPressed: () {},
+                onPressed: () {
+                  Navigator.pushNamed(context, MainScreen.name);
+                },
                 child: Text(
                   'Confirm',
                   style: TextStyle(fontSize: 16.sp),

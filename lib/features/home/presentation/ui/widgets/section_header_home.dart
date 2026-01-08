@@ -11,8 +11,8 @@ class SectionHeader extends StatelessWidget {
         Text(
           'Appointment',
           style: TextStyle(
-            fontSize: 15.sp,
-            fontWeight: FontWeight.w700,
+            fontSize: 14.sp,
+            fontWeight: FontWeight.w500,
             color: const Color(0xFF141A2A),
           ),
         ),
@@ -21,7 +21,7 @@ class SectionHeader extends StatelessWidget {
           'See all',
           style: TextStyle(
             fontSize: 12.5.sp,
-            fontWeight: FontWeight.w600,
+            fontWeight: FontWeight.w400,
             color: const Color(0xFF2F63F3),
           ),
         ),

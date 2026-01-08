@@ -22,7 +22,10 @@ class AppointmentConfirmedScreen extends StatelessWidget {
           'Book Appointment',
           style: TextStyle(fontSize: 18.sp, fontWeight: FontWeight.w600,color: Colors.white),
         ),
-        leading: const Icon(Icons.arrow_back_ios, color: Colors.white),
+        leading:  IconButton( onPressed: () {
+          Navigator.pop(context);
+
+        }, icon: Icon(Icons.arrow_back_ios, color: Colors.white,),),
         shape: RoundedRectangleBorder(
           borderRadius:
           BorderRadius.vertical(bottom: Radius.circular(20.r)),

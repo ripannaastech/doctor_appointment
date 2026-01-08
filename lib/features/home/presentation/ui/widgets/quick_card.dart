@@ -57,7 +57,7 @@ class QuickCard extends StatelessWidget {
             textAlign: TextAlign.center,
             style: TextStyle(
               fontSize: 12.5.sp,
-              fontWeight: FontWeight.w600,
+              fontWeight: FontWeight.w400,
               height: 1.15,
               color: const Color(0xFF141A2A),
             ),

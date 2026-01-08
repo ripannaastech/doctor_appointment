@@ -1,3 +1,4 @@
+import 'package:doctor_appointment/features/notification/presentation/ui/notification_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
@@ -78,11 +79,14 @@ class HomeTopBar extends StatelessWidget {
                 ),
               ],
             ),
-            child: Icon(
+            child: IconButton(onPressed: (
+            ){
+              Navigator.pushNamed(context, NotificationsScreen.name);
+            }, icon: Icon(
               Icons.notifications_none_rounded,
               size: 22.sp,
               color: const Color(0xFF141A2A),
-            ),
+            ),)
           ),
         ],
       ),

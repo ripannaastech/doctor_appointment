@@ -28,7 +28,9 @@ class _SelectDoctorScreenState extends State<SelectDoctorScreen> {
           elevation: 0,
           leading: IconButton(
             icon: const Icon(Icons.arrow_back_ios, color: Colors.white,size: 24,),
-            onPressed: () {},
+            onPressed: () {
+              Navigator.pop(context);
+            },
           ),
           title: Text(
             'Book Appointment',

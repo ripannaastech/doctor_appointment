@@ -25,7 +25,7 @@ class _MyAppointmentScreenState extends State<MyAppointmentScreen> {
         children: [
           /// Custom AppBar
           Container(
-            height: statusBarHeight + 70.h,
+            height: statusBarHeight + 90.h,
             decoration: BoxDecoration(
               color: const Color(0xFF3F6DE0),
               borderRadius: BorderRadius.vertical(
@@ -74,9 +74,9 @@ class _MyAppointmentScreenState extends State<MyAppointmentScreen> {
               children: [
                 /// Main Content
                 Padding(
-                  padding: EdgeInsets.only(top: 68.h),
+                  padding: EdgeInsets.only(top: MediaQuery.of(context).padding.top-20.h),
                   child: ListView(
-                    padding: EdgeInsets.fromLTRB(20.w, 12.h, 20.w, 20.h),
+                    padding: EdgeInsets.fromLTRB(20.w, 12.h, 20.w, 0.h),
                     children: isUpcoming
                         ? _upcomingAppointments()
                         : _pastAppointments(),
