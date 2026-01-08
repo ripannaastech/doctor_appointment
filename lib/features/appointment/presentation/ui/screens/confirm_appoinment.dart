@@ -3,6 +3,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 
 import '../../../../../app/asset_paths.dart';
+import '../widgets/info_row_widget.dart';
 
 class AppointmentConfirmedScreen extends StatelessWidget {
   static const String name = '/confirmAppointmentDoctor';
@@ -74,10 +75,25 @@ class AppointmentConfirmedScreen extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.center,
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    _infoRow('Department:', 'Cardiology'),
-                    _infoRow('Doctor:', 'Dr. Mohamed Ali'),
-                    _infoRow('Date:', 'Fri, Jan 2, 2025'),
-                    _infoRow('Time:', '02:30 PM'),
+                    InfoRow(
+                      title: 'Department:',
+                      text: 'Cardiology',
+                    ),
+                    InfoRow(
+                      title: 'Doctor',
+                      text: 'Dr. Ahmed Hossain',
+                    ),
+
+                    InfoRow(
+                      title: 'Date:',
+                      text: 'Fri, Jan 2, 2025',
+                    ),
+                    InfoRow(
+                      title: 'Time:',
+                      text: '02:30 PM',
+                    ),
+
+
                   ],
                 ),
               ),
@@ -115,34 +131,4 @@ class AppointmentConfirmedScreen extends StatelessWidget {
     );
   }
 
-  Widget _infoRow(String title, String value) {
-    return Padding(
-      padding: EdgeInsets.only(bottom: 12.h),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          SizedBox(
-            width: 90.w, // fixed label width for alignment
-            child: Text(
-              title,
-              style: TextStyle(
-                fontSize: 14.sp,
-                color: Colors.grey,
-              ),
-            ),
-          ),
-          Expanded(
-            child: Text(
-              value,
-              style: TextStyle(
-                fontSize: 14.sp,
-                fontWeight: FontWeight.w500,
-                color: Colors.black,
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
 }

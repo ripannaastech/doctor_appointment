@@ -1,19 +1,11 @@
 import 'package:doctor_appointment/app/routes.dart';
-import 'package:doctor_appointment/features/appointment/presentation/ui/screens/book_appoinment.dart';
-import 'package:doctor_appointment/features/appointment/presentation/ui/screens/my_appoinment.dart';
 import 'package:doctor_appointment/features/dashboard/presentation/ui/screens/dashboard.dart';
-import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
-
-import '../features/auth/presentation/ui/screens/splash_screen.dart';
-import '../features/home/presentation/ui/screens/home.dart';
-import '../features/profile/presentation/ui/screens/profile_screen.dart';
 import '../l10n/app_localizations.dart';
 import 'app_theme.dart';
-import 'controller_binder.dart';
 import 'controllers/language_controller.dart';
 
 class AlIshanSpecialistHospital extends StatefulWidget {

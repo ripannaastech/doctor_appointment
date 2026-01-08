@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
+import '../widgets/info_row_widget.dart';
+
 class MyAppointmentScreen extends StatefulWidget {
   static const String name = '/myAppointment';
 
@@ -32,13 +34,17 @@ class _MyAppointmentScreenState extends State<MyAppointmentScreen> {
             ),
             child: Column(
               children: [
-                 SizedBox(height: statusBarHeight),
+                SizedBox(height: statusBarHeight),
                 SizedBox(
                   height: 56.h,
                   child: Row(
                     children: [
                       IconButton(
-                        icon: const Icon(Icons.arrow_back_ios, color: Colors.white, size: 20),
+                        icon: const Icon(
+                          Icons.arrow_back_ios,
+                          color: Colors.white,
+                          size: 20,
+                        ),
                         onPressed: () => Navigator.of(context).pop(),
                       ),
                       Expanded(
@@ -89,7 +95,6 @@ class _MyAppointmentScreenState extends State<MyAppointmentScreen> {
           ),
         ],
       ),
-      bottomNavigationBar: _bottomNav(),
     );
   }
 
@@ -223,11 +228,11 @@ class _MyAppointmentScreenState extends State<MyAppointmentScreen> {
             ],
           ),
           SizedBox(height: 16.h),
-          _infoRow(Icons.calendar_today_outlined, date),
+          InfoRow(icon: Icons.calendar_today_outlined, text: date),
           SizedBox(height: 8.h),
-          _infoRow(Icons.access_time, time),
+          InfoRow(icon: Icons.access_time, text: time),
           SizedBox(height: 8.h),
-          _infoRow(Icons.location_on_outlined, location),
+          InfoRow(icon: Icons.location_on_outlined, text: location),
           if (showActions) ...[
             SizedBox(height: 16.h),
             Row(
@@ -249,7 +254,7 @@ class _MyAppointmentScreenState extends State<MyAppointmentScreen> {
                 ),
               ],
             ),
-          ]
+          ],
         ],
       ),
     );
@@ -310,127 +315,6 @@ class _MyAppointmentScreenState extends State<MyAppointmentScreen> {
         showActions: false,
       ),
     ];
-  }
-
-  Widget _bottomNav() {
-    return Container(
-      decoration: BoxDecoration(
-        color: Colors.white,
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.05),
-            blurRadius: 10,
-            offset: const Offset(0, -2),
-          ),
-        ],
-      ),
-      child: SafeArea(
-        child: Container(
-          height: 70.h,
-          padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 8.h),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              _navItem(
-                icon: Icons.home_outlined,
-                label: 'Home',
-                isSelected: false,
-                index: 0,
-              ),
-              _navItem(
-                icon: Icons.calendar_month,
-                label: 'Appointment',
-                isSelected: true,
-                index: 1,
-              ),
-              _navItem(
-                icon: Icons.medication_outlined,
-                label: 'Pharmacy',
-                isSelected: false,
-                index: 2,
-              ),
-              _navItem(
-                icon: Icons.person_outline,
-                label: 'Profile',
-                isSelected: false,
-                index: 3,
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-  Widget _navItem({
-    required IconData icon,
-    required String label,
-    required bool isSelected,
-    required int index,
-  }) {
-    return Expanded(
-      child: GestureDetector(
-        onTap: () {
-          // Handle navigation
-        },
-        behavior: HitTestBehavior.opaque,
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            // Active indicator line
-            Container(
-              height: 3.h,
-              width: 32.w,
-              decoration: BoxDecoration(
-                color: isSelected ? const Color(0xFF3F6DE0) : Colors.transparent,
-                borderRadius: BorderRadius.circular(2.r),
-              ),
-            ),
-            SizedBox(height: 8.h),
-            // Icon
-            Icon(
-              icon,
-              size: 26.sp,
-              color: isSelected ? const Color(0xFF3F6DE0) : const Color(0xFFB8BCC8),
-            ),
-            SizedBox(height: 4.h),
-            // Label
-            Text(
-              label,
-              style: TextStyle(
-                fontSize: 12.sp,
-                fontWeight: isSelected ? FontWeight.w600 : FontWeight.w500,
-                color: isSelected ? const Color(0xFF3F6DE0) : const Color(0xFFB8BCC8),
-                letterSpacing: 0.1,
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-  Widget _infoRow(IconData icon, String text) {
-    return Row(
-      children: [
-        Icon(
-          icon,
-          size: 16.sp,
-          color: const Color(0xFF9CA3AF),
-        ),
-        SizedBox(width: 10.w),
-        Expanded(
-          child: Text(
-            text,
-            style: TextStyle(
-              fontSize: 14.sp,
-              color: const Color(0xFF6B7280),
-              fontWeight: FontWeight.w500,
-              height: 1.4,
-            ),
-          ),
-        ),
-      ],
-    );
   }
 
   Widget _actionButton(String text, Color bg, Color fg) {
