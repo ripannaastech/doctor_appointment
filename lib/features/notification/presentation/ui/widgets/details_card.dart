@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
+import '../../../../../../l10n/app_localizations.dart';
 import '../../../data/models/appoinment_model.dart';
 import 'details_row.dart';
 
@@ -10,6 +11,7 @@ class DetailsCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return Container(
       padding: EdgeInsets.all(14.w),
       decoration: BoxDecoration(
@@ -20,7 +22,7 @@ class DetailsCard extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            'Appointment Details',
+            l10n.appointmentDetails,
             style: TextStyle(
               fontSize: 13.5.sp,
               fontWeight: FontWeight.w400,
@@ -72,7 +74,7 @@ class DetailsCard extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    'Reason',
+                    l10n.reason,
                     style: TextStyle(
                       fontSize: 12.5.sp,
                       fontWeight: FontWeight.w600,

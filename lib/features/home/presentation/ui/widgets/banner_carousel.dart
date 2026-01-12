@@ -2,11 +2,14 @@ import 'package:doctor_appointment/app/app_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
+import '../../../../../../l10n/app_localizations.dart';
+
 class BannerCarousel extends StatelessWidget {
   const BannerCarousel({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return Column(
       children: [
         ClipRRect(
@@ -25,7 +28,7 @@ class BannerCarousel extends StatelessWidget {
                 left: 16.w,
                 bottom: 16.h,
                 child: Text(
-                  'Expert Medical Care',
+                  l10n.expertMedicalCare,
                   style: TextStyle(
                     fontSize: 16.sp,
                     fontWeight: FontWeight.w700,

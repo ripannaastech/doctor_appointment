@@ -2,6 +2,8 @@ import 'package:doctor_appointment/features/appointment/presentation/ui/screens/
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
+import '../../../../../l10n/app_localizations.dart';
+
 class SelectDateTimeScreen extends StatefulWidget {
   static const String name = '/SelectDateTimeScreen';
 
@@ -15,14 +17,6 @@ class _SelectDateTimeScreenState extends State<SelectDateTimeScreen> {
   int selectedDate = 2;
   int selectedTime = -1;
 
-  final dates = [
-    {'day': '8', 'label': 'Sun'},
-    {'day': '9', 'label': 'Mon'},
-    {'day': '10', 'label': 'Tue'},
-    {'day': '11', 'label': 'Wed'},
-    {'day': '12', 'label': 'Thu'},
-  ];
-
   final times = [
     '09:00 AM to 10:00 AM',
     '02:00 PM to 03:00 PM',
@@ -32,9 +26,18 @@ class _SelectDateTimeScreenState extends State<SelectDateTimeScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+    final dates = [
+      {'day': '8', 'label': l10n.sun},
+      {'day': '9', 'label': l10n.mon},
+      {'day': '10', 'label': l10n.tue},
+      {'day': '11', 'label': l10n.wed},
+      {'day': '12', 'label': l10n.thu},
+    ];
+
     return Scaffold(
       backgroundColor: Colors.white,
-      appBar: _appBar(),
+      appBar: _appBar(l10n),
       body: Padding(
         padding: EdgeInsets.symmetric(horizontal: 20.w),
         child: Column(
@@ -43,7 +46,7 @@ class _SelectDateTimeScreenState extends State<SelectDateTimeScreen> {
             20.verticalSpace,
 
             /// Select Date
-            _sectionTitle('Select Date'),
+            _sectionTitle(l10n.selectDate),
             12.verticalSpace,
 
             Row(
@@ -100,7 +103,7 @@ class _SelectDateTimeScreenState extends State<SelectDateTimeScreen> {
             24.verticalSpace,
 
             /// Time Slots
-            _sectionTitle('Select Time Slot'),
+            _sectionTitle(l10n.selectTimeSlot),
             12.verticalSpace,
 
             ...List.generate(times.length, (index) {
@@ -153,7 +156,7 @@ class _SelectDateTimeScreenState extends State<SelectDateTimeScreen> {
                   ),
                 ),
                 child: Text(
-                  'Confirm Booking',
+                  l10n.confirmBooking,
                   style: TextStyle(
                     fontSize: 16.sp,
                     fontWeight: FontWeight.w600,
@@ -169,13 +172,13 @@ class _SelectDateTimeScreenState extends State<SelectDateTimeScreen> {
     );
   }
 
-  AppBar _appBar() {
+  AppBar _appBar(AppLocalizations l10n) {
     return AppBar(
       backgroundColor: const Color(0xFF3F6DE0),
       elevation: 0,
       centerTitle: true,
       title: Text(
-        'Book Appointment',
+        l10n.bookAppointment,
         style: TextStyle(fontSize: 18.sp, fontWeight: FontWeight.w600,color: Colors.white),
       ),
       leading:  IconButton( onPressed: () {

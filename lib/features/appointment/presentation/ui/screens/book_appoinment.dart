@@ -5,6 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 
+import '../../../../../l10n/app_localizations.dart';
+
 class SelectDoctorScreen extends StatefulWidget {
   const SelectDoctorScreen({super.key});
 
@@ -19,6 +21,8 @@ class _SelectDoctorScreenState extends State<SelectDoctorScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: PreferredSize(
@@ -27,13 +31,17 @@ class _SelectDoctorScreenState extends State<SelectDoctorScreen> {
           backgroundColor: const Color(0xFF3F6DE0),
           elevation: 0,
           leading: IconButton(
-            icon: const Icon(Icons.arrow_back_ios, color: Colors.white,size: 24,),
+            icon: const Icon(
+              Icons.arrow_back_ios,
+              color: Colors.white,
+              size: 24,
+            ),
             onPressed: () {
               Navigator.pop(context);
             },
           ),
           title: Text(
-            'Book Appointment',
+            l10n.bookAppointment,
             style: TextStyle(
               fontSize: 18.sp,
               color: Colors.white,
@@ -42,9 +50,7 @@ class _SelectDoctorScreenState extends State<SelectDoctorScreen> {
           ),
           centerTitle: true,
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.vertical(
-              bottom: Radius.circular(16.r),
-            ),
+            borderRadius: BorderRadius.vertical(bottom: Radius.circular(16.r)),
           ),
         ),
       ),
@@ -55,7 +61,7 @@ class _SelectDoctorScreenState extends State<SelectDoctorScreen> {
           children: [
             20.verticalSpace,
             Text(
-              'Select Doctor',
+              l10n.selectDoctor,
               style: TextStyle(
                 fontSize: 16.sp,
                 fontWeight: FontWeight.w600,
@@ -74,14 +80,15 @@ class _SelectDoctorScreenState extends State<SelectDoctorScreen> {
               ),
               child: Row(
                 children: [
-                  SvgPicture.asset(AssetPaths.search, height: 20.sp, color: Colors.grey),
+                  SvgPicture.asset(
+                    AssetPaths.search,
+                    height: 20.sp,
+                    color: Colors.grey,
+                  ),
                   10.horizontalSpace,
                   Text(
-                    'Search doctor',
-                    style: TextStyle(
-                      fontSize: 14.sp,
-                      color: Colors.grey,
-                    ),
+                    l10n.searchDoctor,
+                    style: TextStyle(fontSize: 14.sp, color: Colors.grey),
                   ),
                 ],
               ),
@@ -112,7 +119,7 @@ class _SelectDoctorScreenState extends State<SelectDoctorScreen> {
                         borderRadius: BorderRadius.circular(12.r),
                         border: Border.all(
                           color: isSelected
-                              ?  AppColors.themeColor
+                              ? AppColors.themeColor
                               : const Color(0xFFE6E8EC),
                         ),
                       ),
@@ -120,9 +127,8 @@ class _SelectDoctorScreenState extends State<SelectDoctorScreen> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            index == 0
-                                ? 'Dr. Mohamed Ali'
-                                : 'Dr. Fatima Ahmed',
+                            index == 0 ? l10n.doctor1Name : l10n.doctor2Name,
+
                             style: TextStyle(
                               fontSize: 15.sp,
                               fontWeight: FontWeight.w600,
@@ -132,8 +138,9 @@ class _SelectDoctorScreenState extends State<SelectDoctorScreen> {
                           6.verticalSpace,
                           Text(
                             index == 0
-                                ? 'Senior Cardiologist'
-                                : 'Cardiologist',
+                                ? l10n.doctor1Specialty
+                                : l10n.doctor2Specialty,
+
                             style: TextStyle(
                               fontSize: 13.sp,
                               color: Colors.grey.withOpacity(.5),
@@ -154,10 +161,14 @@ class _SelectDoctorScreenState extends State<SelectDoctorScreen> {
                 width: double.infinity,
                 height: 52.h,
                 child: ElevatedButton(
-                  onPressed: selectedIndex == -1 ? null : () {
-                    Navigator.pushNamed(context, SelectDateTimeScreen.name);
-
-                  },
+                  onPressed: selectedIndex == -1
+                      ? null
+                      : () {
+                          Navigator.pushNamed(
+                            context,
+                            SelectDateTimeScreen.name,
+                          );
+                        },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: const Color(0xFF3F6DE0),
                     disabledBackgroundColor: const Color(0xFFDADDE2),
@@ -166,7 +177,7 @@ class _SelectDoctorScreenState extends State<SelectDoctorScreen> {
                     ),
                   ),
                   child: Text(
-                    'Next',
+                    l10n.next,
                     style: TextStyle(
                       fontSize: 16.sp,
                       fontWeight: FontWeight.w600,

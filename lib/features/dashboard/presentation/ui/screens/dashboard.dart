@@ -2,6 +2,7 @@ import 'package:doctor_appointment/app/app_colors.dart';
 import 'package:doctor_appointment/features/appointment/presentation/ui/screens/my_appoinment.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import '../../../../../l10n/app_localizations.dart';
 import '../../../../appointment/presentation/ui/screens/book_appoinment.dart';
 import '../../../../home/presentation/ui/screens/home_screen.dart';
 import '../../../../profile/presentation/ui/screens/profile_screen.dart';
@@ -34,6 +35,7 @@ class _MainScreenState extends State<MainScreen> {
   }
 
   Widget _bottomNavBar() {
+    final l10n = AppLocalizations.of(context)!;
     return BottomNavigationBar(
       currentIndex: _currentIndex,
       type: BottomNavigationBarType.fixed,
@@ -48,22 +50,22 @@ class _MainScreenState extends State<MainScreen> {
       items: [
         _bottomNavItem(
           icon: Icons.home_outlined,
-          label: 'Home',
+          label: l10n.home,
           index: 0,
         ),
         _bottomNavItem(
           icon: Icons.calendar_month,
-          label: 'Appointment',
+          label: l10n.appointment,
           index: 1,
         ),
         _bottomNavItem(
           icon: Icons.medication_outlined,
-          label: 'Pharmacy',
+          label: l10n.pharmacy,
           index: 2,
         ),
         _bottomNavItem(
           icon: Icons.person_outline,
-          label: 'Profile',
+          label: l10n.profile,
           index: 3,
         ),
       ],

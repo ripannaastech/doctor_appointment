@@ -53,8 +53,20 @@ class _HomeScreenState extends State<HomeScreen> {
                   SizedBox(height: 18.h),
                   const SectionHeader(),
                   SizedBox(height: 10.h),
-                  const AppointmentCard(),
-                  SizedBox(height: 100.h),
+                  ListView.builder(
+                    padding: EdgeInsets.symmetric(vertical: 12.h),
+                    itemCount: 10,
+                    shrinkWrap: true,
+                    physics: const NeverScrollableScrollPhysics(),
+                    itemBuilder: (context, index) {
+                      return const Padding(
+                        padding: EdgeInsets.only(bottom: 12),
+                        child: AppointmentCard(),
+                      );
+                    },
+                  ),
+                  SizedBox(height: 25.h),
+
                 ],
               ),
             ),
@@ -65,9 +77,11 @@ class _HomeScreenState extends State<HomeScreen> {
       /// Floating Help Button
       floatingActionButton: GestureDetector(
         onTap: _openHelpSheet,
+
         child: Container(
           height: 56.w, // use w for circular widgets
           width: 56.w,
+
           decoration: BoxDecoration(
             shape: BoxShape.circle,
             color: const Color(0xFF2F63F3),

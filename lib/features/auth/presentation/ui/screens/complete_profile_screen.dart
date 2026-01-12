@@ -3,6 +3,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 
 import '../../../../../app/asset_paths.dart';
+import '../../../../../l10n/app_localizations.dart';
 import '../widgets/or_divider.dart';
 
 class RegisterScreen extends StatelessWidget {
@@ -13,6 +14,7 @@ class RegisterScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final l10n = AppLocalizations.of(context)!;
 
     return Scaffold(
       body: Center(
@@ -30,7 +32,7 @@ class RegisterScreen extends StatelessWidget {
 
                   /// HEADER
                   Text(
-                    'Welcome!',
+                    l10n.welcome,
                     textAlign: TextAlign.center,
                     style: TextStyle(
                       fontSize: 24.sp,
@@ -39,7 +41,7 @@ class RegisterScreen extends StatelessWidget {
                   ),
                   SizedBox(height: 6.h),
                   Text(
-                    'Please complete your profile',
+                    l10n.pleaseCompleteYourProfile,
                     textAlign: TextAlign.center,
                     style: TextStyle(
                       fontSize: 16.sp,
@@ -53,7 +55,7 @@ class RegisterScreen extends StatelessWidget {
                   Align(
                     alignment: Alignment.centerLeft,
                     child: Text(
-                      'Full Name',
+                      l10n.fullName,
                       style: TextStyle(fontSize: 16.sp),
                     ),
                   ),
@@ -62,7 +64,7 @@ class RegisterScreen extends StatelessWidget {
                   TextFormField(
                     textAlignVertical: TextAlignVertical.center,
                     decoration: InputDecoration(
-                      hintText: 'Enter your full name',
+                      hintText: l10n.enterYourFullName,
                       prefixIcon: Padding(
                         padding: EdgeInsets.all(12.w),
                         child: SizedBox(
@@ -83,7 +85,7 @@ class RegisterScreen extends StatelessWidget {
                   Align(
                     alignment: Alignment.centerLeft,
                     child: Text(
-                      'Date of Birth',
+                      l10n.dateOfBirth,
                       style: TextStyle(fontSize: 14.sp),
                     ),
                   ),
@@ -109,7 +111,7 @@ class RegisterScreen extends StatelessWidget {
                   Align(
                     alignment: Alignment.centerLeft,
                     child: Text(
-                      'Preferred Language',
+                      l10n.preferredLanguage,
                       style: TextStyle(fontSize: 14.sp),
                     ),
                   ),
@@ -120,7 +122,7 @@ class RegisterScreen extends StatelessWidget {
                     children: [
                       Expanded(
                         child: _LanguageCard(
-                          text: 'English',
+                          text: l10n.english,
                           isSelected: true,
                           theme: theme,
                         ),
@@ -128,7 +130,7 @@ class RegisterScreen extends StatelessWidget {
                       SizedBox(width: 12.w),
                       Expanded(
                         child: _LanguageCard(
-                          text: 'Somali',
+                          text: l10n.somali,
                           isSelected: false,
                           theme: theme,
                         ),
@@ -150,7 +152,7 @@ class RegisterScreen extends StatelessWidget {
                         ),
                       ),
                       child: Text(
-                        'Complete Registration',
+                        l10n.completeRegistration,
                         style: TextStyle(fontSize: 16.sp),
                       ),
                     ),
@@ -167,11 +169,11 @@ class RegisterScreen extends StatelessWidget {
                     onTap: () => Navigator.pop(context),
                     child: Text.rich(
                       TextSpan(
-                        text: 'Already have an account? ',
+                        text: "${l10n.alreadyHaveAnAccount} ",
                         style: TextStyle(fontSize: 14.sp),
-                        children: const [
+                        children: [
                           TextSpan(
-                            text: 'Log In',
+                            text: l10n.logIn,
                             style: TextStyle(
                               color: Colors.blue,
                               fontWeight: FontWeight.w600,

@@ -2,11 +2,14 @@ import 'package:doctor_appointment/features/notification/presentation/ui/notific
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
+import '../../../../../../l10n/app_localizations.dart';
+
 class HomeTopBar extends StatelessWidget {
   const HomeTopBar({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: 18.w),
       child: Row(
@@ -42,7 +45,7 @@ class HomeTopBar extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    'Good Morning!',
+                    l10n.goodMorning,
                     style: TextStyle(
                       fontSize: 12.5.sp,
                       fontWeight: FontWeight.w500,

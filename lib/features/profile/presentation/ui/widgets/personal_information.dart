@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
+import '../../../../../../l10n/app_localizations.dart';
 import '../screens/profile_screen.dart';
 
 class PersonalInfoCard extends StatefulWidget {
@@ -36,6 +37,7 @@ class _PersonalInfoCardState extends State<PersonalInfoCard> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return Container(
       decoration: BoxDecoration(
         color: Colors.white,
@@ -57,7 +59,7 @@ class _PersonalInfoCardState extends State<PersonalInfoCard> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
-                  "Personal Information",
+                  l10n.personalInformation,
                   style: TextStyle(
                     fontSize: 18.sp,
                     fontWeight: FontWeight.w600,
@@ -77,7 +79,7 @@ class _PersonalInfoCardState extends State<PersonalInfoCard> {
                         ),
                         SizedBox(width: 6.w),
                         Text(
-                          widget.isEditing ? "Cancel" : "Edit",
+                          widget.isEditing ? l10n.cancel : l10n.edit,
                           style: TextStyle(
                             color: kPrimaryBlue,
                             fontSize: 14.sp,
@@ -96,7 +98,7 @@ class _PersonalInfoCardState extends State<PersonalInfoCard> {
                         Icon(Icons.close, color: kPrimaryBlue, size: 18.sp),
                         SizedBox(width: 6.w),
                         Text(
-                          "Cancel",
+                          l10n.cancel,
                           style: TextStyle(
                             color: kPrimaryBlue,
                             fontSize: 14.sp,
@@ -112,37 +114,43 @@ class _PersonalInfoCardState extends State<PersonalInfoCard> {
             SizedBox(height: 20.h),
 
             _buildField(
+              l10n,
               Icons.person_outline,
-              "Full Name",
+              l10n.fullName,
               _fullNameController,
               widget.isEditing,
             ),
             _buildField(
+              l10n,
               Icons.email_outlined,
-              "Email Address",
+              l10n.emailAddress,
               _emailController,
               widget.isEditing,
             ),
             _buildField(
+              l10n,
               Icons.phone_outlined,
-              "Phone Number",
+              l10n.phoneNumber,
               _phoneController,
               widget.isEditing,
             ),
             _buildDateField(
+              l10n,
               Icons.cake_outlined,
-              "Date of Birth",
+              l10n.dateOfBirth,
               _dobController,
               widget.isEditing,
             ),
             _buildGenderField(
+              l10n,
               Icons.person_outline,
-              "Gender",
+              l10n.gender,
               widget.isEditing,
             ),
             _buildField(
+              l10n,
               Icons.location_on_outlined,
-              "Address",
+              l10n.address,
               _addressController,
               widget.isEditing,
               isLast: true,
@@ -165,7 +173,7 @@ class _PersonalInfoCardState extends State<PersonalInfoCard> {
                     widget.onToggleEdit();
                   },
                   child: Text(
-                    "Save",
+                    l10n.save,
                     style: TextStyle(
                       fontSize: 16.sp,
                       fontWeight: FontWeight.w600,
@@ -182,6 +190,7 @@ class _PersonalInfoCardState extends State<PersonalInfoCard> {
   }
 
   Widget _buildField(
+      AppLocalizations l10n,
       IconData icon,
       String label,
       TextEditingController controller,
@@ -234,6 +243,7 @@ class _PersonalInfoCardState extends State<PersonalInfoCard> {
   }
 
   Widget _buildDateField(
+      AppLocalizations l10n,
       IconData icon,
       String label,
       TextEditingController controller,
@@ -290,6 +300,7 @@ class _PersonalInfoCardState extends State<PersonalInfoCard> {
   }
 
   Widget _buildGenderField(
+      AppLocalizations l10n,
       IconData icon,
       String label,
       bool editable, {
@@ -348,7 +359,7 @@ class _PersonalInfoCardState extends State<PersonalInfoCard> {
                 ),
               ),
             ),
-            items: const ['Male', 'Female', 'Other']
+            items: [l10n.male, l10n.female, l10n.other]
                 .map(
                   (gender) => DropdownMenuItem<String>(
                 value: gender,

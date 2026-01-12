@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
+import '../../../../../../l10n/app_localizations.dart';
 import '../../../../../app/app_colors.dart';
 import '../screens/profile_screen.dart';
 
@@ -16,6 +17,7 @@ class ProfileHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return Container(
       width: double.infinity,
       padding: EdgeInsets.only(bottom: 32.h),
@@ -42,7 +44,7 @@ class ProfileHeader extends StatelessWidget {
               ),
               Expanded(
                 child: Text(
-                  "Profile",
+                  l10n.profile,
                   textAlign: TextAlign.center,
                   style: TextStyle(
                     color: Colors.white,

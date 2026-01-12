@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
+import '../../../../../../l10n/app_localizations.dart';
 import '../screens/profile_screen.dart';
 
 class LanguageCard extends StatelessWidget {
@@ -8,6 +9,7 @@ class LanguageCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return Container(
       decoration: BoxDecoration(
         color: Colors.white,
@@ -30,7 +32,7 @@ class LanguageCard extends StatelessWidget {
                 Icon(Icons.language, color: kTextDark, size: 20.sp),
                 SizedBox(width: 8.w),
                 Text(
-                  "Language",
+                  l10n.language,
                   style: TextStyle(
                     fontSize: 18.sp,
                     fontWeight: FontWeight.w600,
@@ -42,11 +44,11 @@ class LanguageCard extends StatelessWidget {
 
             SizedBox(height: 16.h),
 
-            const _LanguageOption("English", selected: true),
+            _LanguageOption(l10n.english, selected: true),
 
             SizedBox(height: 12.h),
 
-            const _LanguageOption("Soomaali"),
+            _LanguageOption(l10n.somali),
           ],
         ),
       ),

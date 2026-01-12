@@ -2,11 +2,14 @@ import 'package:doctor_appointment/app/app_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
+import '../../../../../../l10n/app_localizations.dart';
+
 class AppointmentCard extends StatelessWidget {
   const AppointmentCard({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return Container(
       padding: EdgeInsets.all(16.r),
       decoration: BoxDecoration(
@@ -59,7 +62,7 @@ class AppointmentCard extends StatelessWidget {
                 SizedBox(height: 4.h),
 
                 Text(
-                  'Psychiatrist',
+                  l10n.psychiatrist,
                   style: TextStyle(
                     fontSize: 12.sp,
                     fontWeight: FontWeight.w400,
@@ -72,49 +75,51 @@ class AppointmentCard extends StatelessWidget {
                 /// Date & Time pill
                 Container(
                   padding: EdgeInsets.symmetric(
-                    horizontal: 12.w,
-                    vertical: 8.h,
+                    horizontal: 10.w,
+                    vertical: 6.h,
                   ),
                   decoration: BoxDecoration(
                     color: const Color(0xFF6E92F2),
-                    borderRadius: BorderRadius.circular(12.r),
+                    borderRadius: BorderRadius.circular(10.r),
                   ),
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
+                  child: Wrap(
+                    spacing: 12.w,
+                    runSpacing: 4.h,
+                    alignment: WrapAlignment.start,
                     children: [
-                      Icon(
-                        Icons.calendar_today,
-                        size: 12.sp,
-                        color: Colors.white,
+                      Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Icon(Icons.calendar_today, size: 10.sp, color: Colors.white),
+                          SizedBox(width: 4.w),
+                          Text(
+                            l10n.appointmentDate,
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 7.5.sp,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                        ],
                       ),
-                      SizedBox(width: 2.w),
-                      Text(
-                        'Tue, 29 Jun, 2025',
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 8.sp,
-                          fontWeight: FontWeight.w600,
-                        ),
-                      ),
-                      SizedBox(width: 6.w),
-                      Icon(
-                        Icons.access_time,
-                        size: 12.sp,
-                        color: Colors.white,
-                      ),
-                      SizedBox(width: 2.w),
-                      Text(
-                        'Morning 08:00 AM',
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 8.sp,
-                          fontWeight: FontWeight.w600,
-                        ),
+                      Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Icon(Icons.access_time, size: 10.sp, color: Colors.white),
+                          SizedBox(width: 4.w),
+                          Text(
+                            l10n.morningTime,
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 7.5.sp,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                        ],
                       ),
                     ],
                   ),
-                ),
-              ],
+                )              ],
             ),
           ),
         ],

@@ -3,6 +3,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 
 import '../../../../../app/asset_paths.dart';
+import '../../../../../l10n/app_localizations.dart';
 import '../widgets/info_row_widget.dart';
 
 class AppointmentConfirmedScreen extends StatelessWidget {
@@ -12,6 +13,7 @@ class AppointmentConfirmedScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
@@ -19,7 +21,7 @@ class AppointmentConfirmedScreen extends StatelessWidget {
         elevation: 0,
         centerTitle: true,
         title: Text(
-          'Book Appointment',
+          l10n.bookAppointment,
           style: TextStyle(fontSize: 18.sp, fontWeight: FontWeight.w600,color: Colors.white),
         ),
         leading:  IconButton( onPressed: () {
@@ -48,7 +50,7 @@ class AppointmentConfirmedScreen extends StatelessWidget {
             28.verticalSpace,
 
             Text(
-              'Appointment Confirmed!',
+              l10n.appointmentConfirmed,
               textAlign: TextAlign.center,
               style: TextStyle(
                 fontSize: 20.sp,
@@ -59,7 +61,7 @@ class AppointmentConfirmedScreen extends StatelessWidget {
             10.verticalSpace,
 
             Text(
-              'Your appointment has been\nsuccessfully booked',
+              l10n.appointmentSuccessfullyBooked,
               textAlign: TextAlign.center,
               style: TextStyle(
                 fontSize: 14.sp,
@@ -79,20 +81,20 @@ class AppointmentConfirmedScreen extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     InfoRow(
-                      title: 'Department:',
-                      text: 'Cardiology',
+                      title: l10n.department,
+                      text: l10n.cardiology,
                     ),
                     InfoRow(
-                      title: 'Doctor',
+                      title: l10n.doctor,
                       text: 'Dr. Ahmed Hossain',
                     ),
 
                     InfoRow(
-                      title: 'Date:',
+                      title: l10n.date,
                       text: 'Fri, Jan 2, 2025',
                     ),
                     InfoRow(
-                      title: 'Time:',
+                      title: l10n.time,
                       text: '02:30 PM',
                     ),
 
@@ -117,7 +119,7 @@ class AppointmentConfirmedScreen extends StatelessWidget {
                   ),
                 ),
                 child: Text(
-                  'Back To Home',
+                  l10n.backToHome,
                   style: TextStyle(
                     fontSize: 16.sp,
                     fontWeight: FontWeight.w600,

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
+import '../../../../../../l10n/app_localizations.dart';
 import 'help_row.dart';
 
 class HelpSheet extends StatelessWidget {
@@ -8,6 +9,7 @@ class HelpSheet extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return Container(
       margin: EdgeInsets.fromLTRB(16.w, 0, 16.w, 16.h),
       padding: EdgeInsets.all(18.r),
@@ -51,20 +53,20 @@ class HelpSheet extends StatelessWidget {
               SizedBox(width: 14.w),
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
-                children: const [
+                children: [
                   Text(
-                    'Need Help?',
+                    l10n.needHelp,
                     style: TextStyle(
-                      fontSize: 18,
+                      fontSize: 13.sp,
                       fontWeight: FontWeight.w700,
                       color: Colors.white,
                     ),
                   ),
                   SizedBox(height: 4),
                   Text(
-                    "We're here for you 24/7",
+                    l10n.wereHereForYou247,
                     style: TextStyle(
-                      fontSize: 13.5,
+                      fontSize: 13.5.sp,
                       color: Colors.white70,
                     ),
                   ),
@@ -74,11 +76,11 @@ class HelpSheet extends StatelessWidget {
           ),
 
           SizedBox(height: 18.h),
-          const HelpRow(Icons.call_rounded, 'Call Us', '6677'),
+          HelpRow(Icons.call_rounded, l10n.callUs, '6677'),
           SizedBox(height: 10.h),
-          const HelpRow(Icons.chat_bubble_rounded, 'WhatsApp', '+465857474774'),
+          HelpRow(Icons.chat_bubble_rounded, l10n.whatsApp, '+465857474774'),
           SizedBox(height: 10.h),
-          const HelpRow(Icons.email_rounded, 'Email', 'info@alihsanhospital.so'),
+          HelpRow(Icons.email_rounded, l10n.email, 'info@alihsanhospital.so'),
         ],
       ),
     );

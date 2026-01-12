@@ -22,4 +22,286 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get loginHeadline => 'Please enter your email and password';
+
+  @override
+  String get bookAppointment => 'Book Appointment';
+
+  @override
+  String get selectDoctor => 'Select Doctor';
+
+  @override
+  String get searchDoctor => 'Search doctor';
+
+  @override
+  String get next => 'Next';
+
+  @override
+  String get doctor1Name => 'Dr. Mohamed Ali';
+
+  @override
+  String get doctor1Specialty => 'Senior Cardiologist';
+
+  @override
+  String get doctor2Name => 'Dr. Fatima Ahmed';
+
+  @override
+  String get doctor2Specialty => 'Cardiologist';
+
+  @override
+  String get appointmentConfirmed => 'Appointment Confirmed!';
+
+  @override
+  String get appointmentSuccessfullyBooked =>
+      'Your appointment has been\nsuccessfully booked';
+
+  @override
+  String get backToHome => 'Back To Home';
+
+  @override
+  String get department => 'Department:';
+
+  @override
+  String get cardiology => 'Cardiology';
+
+  @override
+  String get doctor => 'Doctor';
+
+  @override
+  String get date => 'Date:';
+
+  @override
+  String get time => 'Time:';
+
+  @override
+  String get myAppointment => 'My Appointment';
+
+  @override
+  String get upcoming => 'Upcoming';
+
+  @override
+  String get past => 'Past';
+
+  @override
+  String get viewDetails => 'View Details';
+
+  @override
+  String get cancel => 'Cancel';
+
+  @override
+  String get confirmed => 'Confirmed';
+
+  @override
+  String get dermatologist => 'Dermatologist';
+
+  @override
+  String get drHassanOmar => 'Dr. Hassan Omar';
+
+  @override
+  String get pediatrician => 'Pediatrician';
+
+  @override
+  String get pending => 'Pending';
+
+  @override
+  String get drAhmedHassan => 'Dr. Ahmed Hassan';
+
+  @override
+  String get generalPhysician => 'General Physician';
+
+  @override
+  String get completed => 'Completed';
+
+  @override
+  String get drKhadijaYusuf => 'Dr. Khadija Yusuf';
+
+  @override
+  String get selectDate => 'Select Date';
+
+  @override
+  String get sun => 'Sun';
+
+  @override
+  String get mon => 'Mon';
+
+  @override
+  String get tue => 'Tue';
+
+  @override
+  String get wed => 'Wed';
+
+  @override
+  String get thu => 'Thu';
+
+  @override
+  String get selectTimeSlot => 'Select Time Slot';
+
+  @override
+  String get confirmBooking => 'Confirm Booking';
+
+  @override
+  String get logInToYourAccount => 'Log in to your account';
+
+  @override
+  String get welcomeBackPleaseEnterYourDetails =>
+      'Welcome Back! Please enter your details.';
+
+  @override
+  String get enterPhoneNumber => 'Enter phone number';
+
+  @override
+  String get continueButton => 'Continue';
+
+  @override
+  String get dontHaveAnAccount => 'Don\'t have an account?';
+
+  @override
+  String get register => 'Register';
+
+  @override
+  String get welcome => 'Welcome!';
+
+  @override
+  String get pleaseCompleteYourProfile => 'Please complete your profile';
+
+  @override
+  String get fullName => 'Full Name';
+
+  @override
+  String get enterYourFullName => 'Enter your full name';
+
+  @override
+  String get dateOfBirth => 'Date of Birth';
+
+  @override
+  String get preferredLanguage => 'Preferred Language';
+
+  @override
+  String get english => 'English';
+
+  @override
+  String get somali => 'Somali';
+
+  @override
+  String get completeRegistration => 'Complete Registration';
+
+  @override
+  String get alreadyHaveAnAccount => 'Already have an account?';
+
+  @override
+  String get logIn => 'Log In';
+
+  @override
+  String get otpVerification => 'OTP Verification';
+
+  @override
+  String get authenticationCodeSent =>
+      'An authentication code has been sent to\n+01846786763';
+
+  @override
+  String get didNotReceiveCode => 'Didn’t receive code? 1:30';
+
+  @override
+  String get confirm => 'Confirm';
+
+  @override
+  String get home => 'Home';
+
+  @override
+  String get appointment => 'Appointment';
+
+  @override
+  String get pharmacy => 'Pharmacy';
+
+  @override
+  String get profile => 'Profile';
+
+  @override
+  String get goodMorning => 'Good Morning!';
+
+  @override
+  String get myAppointments => 'My Appointments';
+
+  @override
+  String get myResults => 'My Results';
+
+  @override
+  String get seeAll => 'See all';
+
+  @override
+  String get needHelp => 'Need Help?';
+
+  @override
+  String get wereHereForYou247 => 'We\'re here for you 24/7';
+
+  @override
+  String get callUs => 'Call Us';
+
+  @override
+  String get whatsApp => 'WhatsApp';
+
+  @override
+  String get email => 'Email';
+
+  @override
+  String get personalInformation => 'Personal Information';
+
+  @override
+  String get edit => 'Edit';
+
+  @override
+  String get emailAddress => 'Email Address';
+
+  @override
+  String get phoneNumber => 'Phone Number';
+
+  @override
+  String get gender => 'Gender';
+
+  @override
+  String get address => 'Address';
+
+  @override
+  String get save => 'Save';
+
+  @override
+  String get male => 'Male';
+
+  @override
+  String get female => 'Female';
+
+  @override
+  String get other => 'Other';
+
+  @override
+  String get language => 'Language';
+
+  @override
+  String get logout => 'Logout';
+
+  @override
+  String get notifications => 'Notifications';
+
+  @override
+  String get all => 'All';
+
+  @override
+  String get unread => 'Unread';
+
+  @override
+  String get appointmentDetails => 'Appointment Details';
+
+  @override
+  String get reason => 'Reason';
+
+  @override
+  String get expertMedicalCare => 'Expert Medical Care';
+
+  @override
+  String get psychiatrist => 'Psychiatrist';
+
+  @override
+  String get morningTime => '09:00 AM - 11:30 AM';
+
+  @override
+  String get appointmentDate => 'Tue, 29 Jun, 2025';
 }

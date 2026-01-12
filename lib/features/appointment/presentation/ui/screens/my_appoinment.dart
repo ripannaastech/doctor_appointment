@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
+import '../../../../../l10n/app_localizations.dart';
 import '../widgets/info_row_widget.dart';
 
 class MyAppointmentScreen extends StatefulWidget {
@@ -18,6 +19,7 @@ class _MyAppointmentScreenState extends State<MyAppointmentScreen> {
   @override
   Widget build(BuildContext context) {
     final double statusBarHeight = MediaQuery.of(context).padding.top;
+    final l10n = AppLocalizations.of(context)!;
 
     return Scaffold(
       backgroundColor: const Color(0xFFF8F9FA),
@@ -49,7 +51,7 @@ class _MyAppointmentScreenState extends State<MyAppointmentScreen> {
                       ),
                       Expanded(
                         child: Text(
-                          'My Appointment',
+                          l10n.myAppointment,
                           textAlign: TextAlign.center,
                           style: TextStyle(
                             fontSize: 18.sp,
@@ -74,12 +76,12 @@ class _MyAppointmentScreenState extends State<MyAppointmentScreen> {
               children: [
                 /// Main Content
                 Padding(
-                  padding: EdgeInsets.only(top: MediaQuery.of(context).padding.top-20.h),
+                  padding: EdgeInsets.only(top: MediaQuery.of(context).padding.top+20.h),
                   child: ListView(
                     padding: EdgeInsets.fromLTRB(20.w, 12.h, 20.w, 0.h),
                     children: isUpcoming
-                        ? _upcomingAppointments()
-                        : _pastAppointments(),
+                        ? _upcomingAppointments(l10n)
+                        : _pastAppointments(l10n),
                   ),
                 ),
 
@@ -88,7 +90,7 @@ class _MyAppointmentScreenState extends State<MyAppointmentScreen> {
                   top: -28.h,
                   left: 20.w,
                   right: 20.w,
-                  child: _tabSwitcher(),
+                  child: _tabSwitcher(l10n),
                 ),
               ],
             ),
@@ -98,7 +100,7 @@ class _MyAppointmentScreenState extends State<MyAppointmentScreen> {
     );
   }
 
-  Widget _tabSwitcher() {
+  Widget _tabSwitcher(AppLocalizations l10n) {
     return Container(
       margin: EdgeInsets.only(top: 12.h),
       padding: EdgeInsets.all(4.w),
@@ -115,10 +117,10 @@ class _MyAppointmentScreenState extends State<MyAppointmentScreen> {
       ),
       child: Row(
         children: [
-          _tabButton('Upcoming', isUpcoming, () {
+          _tabButton(l10n.upcoming, isUpcoming, () {
             setState(() => isUpcoming = true);
           }),
-          _tabButton('Past', !isUpcoming, () {
+          _tabButton(l10n.past, !isUpcoming, () {
             setState(() => isUpcoming = false);
           }),
         ],
@@ -160,6 +162,7 @@ class _MyAppointmentScreenState extends State<MyAppointmentScreen> {
     required String location,
     required String status,
     required Color statusColor,
+    required AppLocalizations l10n,
     bool showActions = true,
   }) {
     return Container(
@@ -239,7 +242,7 @@ class _MyAppointmentScreenState extends State<MyAppointmentScreen> {
               children: [
                 Expanded(
                   child: _actionButton(
-                    'View Details',
+                    l10n.viewDetails,
                     const Color(0xFFEFF4FF),
                     const Color(0xFF3F6DE0),
                   ),
@@ -247,7 +250,7 @@ class _MyAppointmentScreenState extends State<MyAppointmentScreen> {
                 SizedBox(width: 12.w),
                 Expanded(
                   child: _actionButton(
-                    'Cancel',
+                    l10n.cancel,
                     const Color(0xFFFEF2F2),
                     const Color(0xFFEF4444),
                   ),
@@ -260,57 +263,62 @@ class _MyAppointmentScreenState extends State<MyAppointmentScreen> {
     );
   }
 
-  List<Widget> _upcomingAppointments() {
+  List<Widget> _upcomingAppointments(AppLocalizations l10n) {
     return [
       _appointmentCard(
-        name: 'Dr. Mohamed Ali',
-        role: 'Cardiologist',
+        l10n: l10n,
+        name: l10n.doctor1Name,
+        role: l10n.doctor1Specialty,
         date: 'Jan 2, 2026',
         time: '10:00 AM To 11:00 AM',
         location: 'Building A, Room 301',
-        status: 'Confirmed',
+        status: l10n.confirmed,
         statusColor: const Color(0xFF10B981),
       ),
       _appointmentCard(
-        name: 'Dr. Fatima Ahmed',
-        role: 'Dermatologist',
+        l10n: l10n,
+        name: l10n.doctor2Name,
+        role: l10n.dermatologist,
         date: 'Jan 5, 2026',
         time: '10:00 AM To 11:00 AM',
         location: 'Building B, Room 205',
-        status: 'Confirmed',
+        status: l10n.confirmed,
         statusColor: const Color(0xFF10B981),
       ),
       _appointmentCard(
-        name: 'Dr. Hassan Omar',
-        role: 'Pediatrician',
+        l10n: l10n,
+        name: l10n.drHassanOmar,
+        role: l10n.pediatrician,
         date: 'Jan 8, 2026',
         time: '10:00 AM To 11:00 AM',
         location: 'Building C, Room 102',
-        status: 'Pending',
+        status: l10n.pending,
         statusColor: const Color(0xFFF59E0B),
       ),
     ];
   }
 
-  List<Widget> _pastAppointments() {
+  List<Widget> _pastAppointments(AppLocalizations l10n) {
     return [
       _appointmentCard(
-        name: 'Dr. Ahmed Hassan',
-        role: 'General Physician',
+        l10n: l10n,
+        name: l10n.drAhmedHassan,
+        role: l10n.generalPhysician,
         date: 'Dec 28, 2025',
         time: '10:00 AM To 11:00 AM',
         location: 'Building A, Room 101',
-        status: 'Completed',
+        status: l10n.completed,
         statusColor: const Color(0xFF6B7280),
         showActions: false,
       ),
       _appointmentCard(
-        name: 'Dr. Khadija Yusuf',
-        role: 'Dermatologist',
+        l10n: l10n,
+        name: l10n.drKhadijaYusuf,
+        role: l10n.dermatologist,
         date: 'Dec 20, 2025',
         time: '10:00 AM To 11:00 AM',
         location: 'Building B, Room 202',
-        status: 'Completed',
+        status: l10n.completed,
         statusColor: const Color(0xFF6B7280),
         showActions: false,
       ),

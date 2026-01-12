@@ -3,6 +3,7 @@ import 'package:doctor_appointment/features/notification/presentation/ui/widgets
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
+import '../../../../../l10n/app_localizations.dart';
 import '../../data/models/appoinment_model.dart';
 import '../../data/models/notification_item_model.dart';
 
@@ -56,6 +57,7 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
   @override
   Widget build(BuildContext context) {
     final statusBarHeight = MediaQuery.of(context).padding.top;
+    final l10n = AppLocalizations.of(context)!;
 
     final filtered =
     tabIndex == 0 ? items : items.where((e) => e.isUnread).toList();
@@ -87,7 +89,7 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
                       ),
                       Expanded(
                         child: Text(
-                          'Notifications',
+                          l10n.notifications,
                           textAlign: TextAlign.center,
                           style: TextStyle(
                             fontSize: 18.sp,
@@ -112,7 +114,7 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
               children: [
                 /// List content pushed down
                 Padding(
-                  padding: EdgeInsets.only(top: MediaQuery.of(context).padding.top-20.h),
+                  padding: EdgeInsets.only(top: MediaQuery.of(context).padding.top+20.h),
                   child: ListView.separated(
                     padding: EdgeInsets.fromLTRB(20.w, 12.h, 20.w, 20.h),
                     itemBuilder: (_, i) => NotificationCard(item: filtered[i]),
@@ -127,9 +129,9 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
                   left: 20.w,
                   right: 20.w,
                   child: _notificationTabSwitcher(
-                    allText: 'All(${items.length})',
+                    allText: '${l10n.all}(${items.length})',
                     unreadText:
-                    'Unread(${items.where((e) => e.isUnread).length})',
+                    '${l10n.unread}(${items.where((e) => e.isUnread).length})',
                   ),
                 ),
               ],
@@ -144,6 +146,7 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
     required String allText,
     required String unreadText,
   }) {
+
     return Container(
       margin: EdgeInsets.only(top: 12.h),
       padding: EdgeInsets.all(4.w),

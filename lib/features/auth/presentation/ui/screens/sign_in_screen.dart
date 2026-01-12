@@ -3,6 +3,7 @@ import 'package:doctor_appointment/features/auth/presentation/ui/screens/verify_
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
+import '../../../../../l10n/app_localizations.dart';
 import '../widgets/or_divider.dart';
 import 'complete_profile_screen.dart';
 
@@ -13,6 +14,8 @@ class LoginScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+
     return Scaffold(
       body: Padding(
         padding: EdgeInsets.all(16.w),
@@ -23,11 +26,10 @@ class LoginScreen extends StatelessWidget {
             SizedBox(
               width: double.infinity,
               child: Text(
-                'Log in to your account',
+                l10n.logInToYourAccount,
                 style: TextStyle(
                   fontSize: 24.sp,
                   fontWeight: FontWeight.bold,
-
                 ),
                 textAlign: TextAlign.center,
               ),
@@ -35,22 +37,20 @@ class LoginScreen extends StatelessWidget {
             SizedBox(height: 8.h),
             SizedBox(
               width: double.infinity,
-
               child: Text(
-                'Welcome Back! Please enter your details.',
+                l10n.welcomeBackPleaseEnterYourDetails,
                 style: TextStyle(
                   color: Colors.grey,
                   fontSize: 16.sp,
                 ),
                 textAlign: TextAlign.center,
-
               ),
             ),
             SizedBox(height: 24.h),
             TextFormField(
               keyboardType: TextInputType.phone,
               decoration: InputDecoration(
-                hintText: 'Enter phone number',
+                hintText: l10n.enterPhoneNumber,
               ),
             ),
             SizedBox(height: 24.h),
@@ -62,7 +62,7 @@ class LoginScreen extends StatelessWidget {
                   Navigator.pushNamed(context, OtpScreen.name);
                 },
                 child: Text(
-                  'Continue',
+                  l10n.continueButton,
                   style: TextStyle(fontSize: 16.sp),
                 ),
               ),
@@ -79,11 +79,11 @@ class LoginScreen extends StatelessWidget {
                     },
                     child: Text.rich(
                       TextSpan(
-                        text: "Don't have an account? ",
-                        style: TextStyle(fontSize: 14.sp,color: Colors.grey),
+                        text: "${l10n.dontHaveAnAccount} ",
+                        style: TextStyle(fontSize: 14.sp, color: Colors.grey),
                         children: [
                           TextSpan(
-                            text: 'Register',
+                            text: l10n.register,
                             style: TextStyle(
                               color: AppColors.themeColor,
                               fontWeight: FontWeight.w600,

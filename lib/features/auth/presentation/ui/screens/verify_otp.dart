@@ -5,6 +5,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import 'package:pin_code_fields/pin_code_fields.dart';
 
+import '../../../../../l10n/app_localizations.dart';
 import '../../../../dashboard/presentation/ui/screens/dashboard.dart';
 
 class OtpScreen extends StatelessWidget {
@@ -15,6 +16,7 @@ class OtpScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final l10n = AppLocalizations.of(context)!;
 
     return Scaffold(
       body: Padding(
@@ -23,7 +25,7 @@ class OtpScreen extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Text(
-              'OTP Verification',
+              l10n.otpVerification,
               style: TextStyle(
                 fontSize: 24.sp,
                 fontWeight: FontWeight.w500
@@ -31,7 +33,7 @@ class OtpScreen extends StatelessWidget {
             ),
             SizedBox(height: 8.h),
             Text(
-              'An authentication code has been sent to\n+01846786763',
+              l10n.authenticationCodeSent,
               textAlign: TextAlign.center,
               style: TextStyle(
                 color: Colors.grey,
@@ -73,7 +75,7 @@ class OtpScreen extends StatelessWidget {
 
             SizedBox(height: 24.h),
             Text(
-              'Didn’t receive code? 1:30',
+              l10n.didNotReceiveCode,
               style: TextStyle(fontSize: 14.sp),
             ),
             SizedBox(height: 24.h),
@@ -86,7 +88,7 @@ class OtpScreen extends StatelessWidget {
                   Navigator.pushNamed(context, MainScreen.name);
                 },
                 child: Text(
-                  'Confirm',
+                  l10n.confirm,
                   style: TextStyle(fontSize: 16.sp),
                 ),
               ),

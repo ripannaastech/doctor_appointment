@@ -8,58 +8,51 @@ import 'package:get/get.dart';
 import '../l10n/app_localizations.dart';
 import 'app_theme.dart';
 import 'controllers/language_controller.dart';
+import 'extensions/somalian_extension.dart';
 
-class AlIshanSpecialistHospital extends StatefulWidget {
-  const AlIshanSpecialistHospital({super.key});
+class AlIshanSpecialistHospital extends StatelessWidget {
+  AlIshanSpecialistHospital({super.key});
 
-  static final GlobalKey<NavigatorState> navigatorKey =
-  GlobalKey<NavigatorState>();
-  static final LanguageController languageController = LanguageController();
-
-  @override
-  State<AlIshanSpecialistHospital> createState() => _AlIshanSpecialistHospitalState();
-}
-
-class _AlIshanSpecialistHospitalState extends State<AlIshanSpecialistHospital> {
-  // static FirebaseAnalytics analytics = FirebaseAnalytics.instance;
-  // static FirebaseAnalyticsObserver observer = FirebaseAnalyticsObserver(
-  //   analytics: analytics,
-  // );
+  final LanguageController languageController = Get.put(LanguageController());
 
   @override
   Widget build(BuildContext context) {
-    return ScreenUtilInit(
-      designSize: const Size(375, 844),
-      minTextAdapt: true,
-      splitScreenMode: true,
-      ensureScreenSize: true,
-      builder: (context, child) {
-        return GetBuilder(
-          init: AlIshanSpecialistHospital.languageController,
-          builder: (languageController) {
-            return GetMaterialApp(
-              navigatorKey: AlIshanSpecialistHospital.navigatorKey,
-              localizationsDelegates: const [
-                AppLocalizations.delegate,
-                GlobalMaterialLocalizations.delegate,
-                GlobalWidgetsLocalizations.delegate,
-                GlobalCupertinoLocalizations.delegate,
-              ],
-              // navigatorObservers: [observer],
-              locale: languageController.currentLocale,
-              supportedLocales: languageController.supportedLocales,
-              theme: AppTheme.lightThemeData,
-              darkTheme: AppTheme.darkThemeData,
-              themeMode: ThemeMode.light,
-              home: SplashScreen(),
-              initialRoute: SplashScreen.name,
-              onGenerateRoute: onGenerateRoute,
-              // initialBinding: ControllerBinding(),
+    return GetBuilder<LanguageController>(
+      builder: (controller) {
+        return GetMaterialApp(
+          debugShowCheckedModeBanner: false,
+          locale: controller.currentLocale,
+          supportedLocales: AppLocalizations.supportedLocales,
+
+          localizationsDelegates: [
+            ...AppLocalizations.localizationsDelegates,
+            SomaliMaterialLocalizations.delegate,
+            SomaliCupertinoLocalizations.delegate,
+            GlobalMaterialLocalizations.delegate,
+            GlobalWidgetsLocalizations.delegate,
+            GlobalCupertinoLocalizations.delegate,
+          ],
+
+          theme: AppTheme.lightThemeData,
+          darkTheme: AppTheme.darkThemeData,
+          themeMode: ThemeMode.light,
+
+          home: const SplashScreen(),
+          initialRoute: SplashScreen.name,
+          onGenerateRoute: onGenerateRoute,
+
+          // 👇 ScreenUtil MUST go here
+          builder: (context, child) {
+            return ScreenUtilInit(
+              designSize: const Size(375, 844),
+              minTextAdapt: true,
+              splitScreenMode: true,
+              ensureScreenSize: true,
+              builder: (context, _) => child!,
             );
           },
         );
       },
     );
   }
-
 }
