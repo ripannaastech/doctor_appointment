@@ -1,21 +1,19 @@
-
 {
-"hello": "hello",
-"selectLanguage": "Select Language",
-"version": "Version",
-"welcomeBack": "Welcome Back",
-"loginHeadline": "Please enter your email and password",
- "bookAppointment": "Book Appointment",
+  "@@locale": "en",
+
+  "hello": "hello",
+  "selectLanguage": "Select Language",
+  "version": "Version",
+  "welcomeBack": "Welcome Back",
+  "loginHeadline": "Please enter your email and password",
+  "bookAppointment": "Book Appointment",
   "selectDoctor": "Select Doctor",
   "searchDoctor": "Search doctor",
   "next": "Next",
-
   "doctor1Name": "Dr. Mohamed Ali",
   "doctor1Specialty": "Senior Cardiologist",
-
   "doctor2Name": "Dr. Fatima Ahmed",
   "doctor2Specialty": "Cardiologist",
-
   "appointmentConfirmed": "Appointment Confirmed!",
   "appointmentSuccessfullyBooked": "Your appointment has been\nsuccessfully booked",
   "backToHome": "Back To Home",
@@ -24,7 +22,6 @@
   "doctor": "Doctor",
   "date": "Date:",
   "time": "Time:",
-
   "myAppointment": "My Appointment",
   "upcoming": "Upcoming",
   "past": "Past",
@@ -39,7 +36,6 @@
   "generalPhysician": "General Physician",
   "completed": "Completed",
   "drKhadijaYusuf": "Dr. Khadija Yusuf",
-
   "selectDate": "Select Date",
   "sun": "Sun",
   "mon": "Mon",
@@ -48,7 +44,6 @@
   "thu": "Thu",
   "selectTimeSlot": "Select Time Slot",
   "confirmBooking": "Confirm Booking",
-
   "logInToYourAccount": "Log in to your account",
   "welcomeBackPleaseEnterYourDetails": "Welcome Back! Please enter your details.",
   "enterPhoneNumber": "Enter phone number",
@@ -70,12 +65,10 @@
   "authenticationCodeSent": "An authentication code has been sent to\n+01846786763",
   "didNotReceiveCode": "Didn’t receive code? 1:30",
   "confirm": "Confirm",
-
   "home": "Home",
   "appointment": "Appointment",
   "pharmacy": "Pharmacy",
   "profile": "Profile",
-
   "goodMorning": "Good Morning!",
   "myAppointments": "My Appointments",
   "myResults": "My Results",
@@ -85,7 +78,6 @@
   "callUs": "Call Us",
   "whatsApp": "WhatsApp",
   "email": "Email",
-
   "personalInformation": "Personal Information",
   "edit": "Edit",
   "emailAddress": "Email Address",
@@ -98,7 +90,6 @@
   "other": "Other",
   "language": "Language",
   "logout": "Logout",
-
   "notifications": "Notifications",
   "all": "All",
   "unread": "Unread",

@@ -1,3 +1,4 @@
+import 'package:doctor_appointment/app/controller_binder.dart';
 import 'package:doctor_appointment/app/routes.dart';
 import 'package:doctor_appointment/features/auth/presentation/ui/screens/splash_screen.dart';
 import 'package:doctor_appointment/features/dashboard/presentation/ui/screens/dashboard.dart';
@@ -9,50 +10,90 @@ import '../l10n/app_localizations.dart';
 import 'app_theme.dart';
 import 'controllers/language_controller.dart';
 import 'extensions/somalian_extension.dart';
-
 class AlIshanSpecialistHospital extends StatelessWidget {
-  AlIshanSpecialistHospital({super.key});
-
-  final LanguageController languageController = Get.put(LanguageController());
+  const AlIshanSpecialistHospital({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return GetBuilder<LanguageController>(
-      builder: (controller) {
-        return GetMaterialApp(
-          debugShowCheckedModeBanner: false,
-          locale: controller.currentLocale,
-          supportedLocales: AppLocalizations.supportedLocales,
+    return GetMaterialApp(
+      initialBinding: ControllerBinding(),
+      debugShowCheckedModeBanner: false,
 
-          localizationsDelegates: [
-            ...AppLocalizations.localizationsDelegates,
-            SomaliMaterialLocalizations.delegate,
-            SomaliCupertinoLocalizations.delegate,
-            GlobalMaterialLocalizations.delegate,
-            GlobalWidgetsLocalizations.delegate,
-            GlobalCupertinoLocalizations.delegate,
-          ],
+      locale: Get.locale,   // 👈 GetX manages this
+      fallbackLocale: const Locale('en'),
 
-          theme: AppTheme.lightThemeData,
-          darkTheme: AppTheme.darkThemeData,
-          themeMode: ThemeMode.light,
+      supportedLocales: AppLocalizations.supportedLocales,
+      localizationsDelegates: [
+        ...AppLocalizations.localizationsDelegates,
+        SomaliMaterialLocalizations.delegate,
+        SomaliCupertinoLocalizations.delegate,
+        GlobalMaterialLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate,
+      ],
 
-          home: const SplashScreen(),
-          initialRoute: SplashScreen.name,
-          onGenerateRoute: onGenerateRoute,
+      theme: AppTheme.lightThemeData,
+      darkTheme: AppTheme.darkThemeData,
 
-          // 👇 ScreenUtil MUST go here
-          builder: (context, child) {
-            return ScreenUtilInit(
-              designSize: const Size(375, 844),
-              minTextAdapt: true,
-              splitScreenMode: true,
-              ensureScreenSize: true,
-              builder: (context, _) => child!,
-            );
-          },
+      home: const SplashScreen(),
+      onGenerateRoute: onGenerateRoute,
+
+      builder: (context, child) {
+        return ScreenUtilInit(
+          designSize: const Size(375, 844),
+          minTextAdapt: true,
+          splitScreenMode: true,
+          ensureScreenSize: true,
+          builder: (context, _) => child!,
         );
       },
     );
   }
 }
+
+// class AlIshanSpecialistHospital extends StatelessWidget {
+//   AlIshanSpecialistHospital({super.key});
+//
+//   final LanguageController languageController = Get.put(LanguageController());
+//
+//   @override
+//   Widget build(BuildContext context) {
+//     return GetBuilder<LanguageController>(
+//       builder: (controller) {
+//         return GetMaterialApp(
+//           debugShowCheckedModeBanner: false,
+//           locale: controller.currentLocale,
+//           supportedLocales: AppLocalizations.supportedLocales,
+//
+//           localizationsDelegates: [
+//             ...AppLocalizations.localizationsDelegates,
+//             SomaliMaterialLocalizations.delegate,
+//             SomaliCupertinoLocalizations.delegate,
+//             GlobalMaterialLocalizations.delegate,
+//             GlobalWidgetsLocalizations.delegate,
+//             GlobalCupertinoLocalizations.delegate,
+//           ],
+//
+//           theme: AppTheme.lightThemeData,
+//           darkTheme: AppTheme.darkThemeData,
+//           themeMode: ThemeMode.light,
+//
+//           home: const SplashScreen(),
+//           initialRoute: SplashScreen.name,
+//           onGenerateRoute: onGenerateRoute,
+//
+//           // 👇 ScreenUtil MUST go here
+//           builder: (context, child) {
+//             return ScreenUtilInit(
+//               designSize: const Size(375, 844),
+//               minTextAdapt: true,
+//               splitScreenMode: true,
+//               ensureScreenSize: true,
+//               builder: (context, _) => child!,
+//             );
+//           },
+//         );
+//       },
+//     );
+//   }
+// }

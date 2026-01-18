@@ -1,16 +1,13 @@
 {
-
+  "@@locale": "so",
   "bookAppointment": "Ballan Qabsasho",
   "selectDoctor": "Dooro Dhakhtar",
   "searchDoctor": "Raadi dhakhtar",
   "next": "Xiga",
-
   "doctor1Name": "Dr. Maxamed Cali",
   "doctor1Specialty": "Dhakhtar Wadnaha Sare",
-
   "doctor2Name": "Dr. Fadumo Axmed",
   "doctor2Specialty": "Dhakhtar Wadnaha",
-
   "appointmentConfirmed": "Ballan la Xaqiijiyay!",
   "appointmentSuccessfullyBooked": "Ballantaada si guul leh\nayaa loo qabtay",
   "backToHome": "Ku noqo Guriga",
@@ -19,7 +16,6 @@
   "doctor": "Dhakhtar",
   "date": "Taariikhda:",
   "time": "Waqtiga:",
-
   "myAppointment": "Ballantayda",
   "upcoming": "Soo Socda",
   "past": "Hore",
@@ -34,7 +30,6 @@
   "generalPhysician": "Dhakhtar Guud",
   "completed": "Dhammaystiran",
   "drKhadijaYusuf": "Dr. Khadiija Yuusuf",
-
   "selectDate": "Dooro Taariikhda",
   "sun": "Axd",
   "mon": "Isn",
@@ -43,7 +38,6 @@
   "thu": "Kha",
   "selectTimeSlot": "Dooro Waqtiga",
   "confirmBooking": "Xaqiiji Ballanta",
-
   "logInToYourAccount": "Akoonkaaga gal",
   "welcomeBackPleaseEnterYourDetails": "Soo dhawoow! Fadlan gali faahfaahintaada.",
   "enterPhoneNumber": "Geli nambarka taleefanka",
@@ -65,12 +59,10 @@
   "authenticationCodeSent": "Koodhka xaqiijinta ayaa loo diray\n+01846786763",
   "didNotReceiveCode": "Koodh ma helin? 1:30",
   "confirm": "Xaqiiji",
-
   "home": "Guri",
   "appointment": "Ballan",
   "pharmacy": "Farmashi",
   "profile": "Profile",
-
   "goodMorning": "Subax wanaagsan!",
   "myAppointments": "Ballamadayda",
   "myResults": "Natiijooyinkayda",
