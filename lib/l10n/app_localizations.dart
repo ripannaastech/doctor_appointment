@@ -467,7 +467,7 @@ abstract class AppLocalizations {
   /// No description provided for @authenticationCodeSent.
   ///
   /// In en, this message translates to:
-  /// **'An authentication code has been sent to\n+01846786763'**
+  /// **'An authentication code has been sent to'**
   String get authenticationCodeSent;
 
   /// No description provided for @didNotReceiveCode.
@@ -685,6 +685,72 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Tue, 29 Jun, 2025'**
   String get appointmentDate;
+
+  /// No description provided for @profileUpdated.
+  ///
+  /// In en, this message translates to:
+  /// **'Profile Updated'**
+  String get profileUpdated;
+
+  /// No description provided for @logoutConfirmMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Are you sure you want to logout?'**
+  String get logoutConfirmMessage;
+
+  /// No description provided for @codeExpiresIn.
+  ///
+  /// In en, this message translates to:
+  /// **'Code expires in'**
+  String get codeExpiresIn;
+
+  /// No description provided for @otpExpiredPleaseResend.
+  ///
+  /// In en, this message translates to:
+  /// **'OTP expired. Please resend.'**
+  String get otpExpiredPleaseResend;
+
+  /// No description provided for @resendIn.
+  ///
+  /// In en, this message translates to:
+  /// **'Resend in'**
+  String get resendIn;
+
+  /// No description provided for @resendOtp.
+  ///
+  /// In en, this message translates to:
+  /// **'Resend OTP'**
+  String get resendOtp;
+
+  /// No description provided for @noEmail.
+  ///
+  /// In en, this message translates to:
+  /// **'No Email'**
+  String get noEmail;
+
+  /// No description provided for @sex.
+  ///
+  /// In en, this message translates to:
+  /// **'Sex'**
+  String get sex;
+
+  /// No description provided for @emailOptional.
+  ///
+  /// In en, this message translates to:
+  /// **'Email (optional)'**
+  String get emailOptional;
+
+  /// No description provided for @bloodGroupOptional.
+  ///
+  /// In en, this message translates to:
+  /// **'Blood Group (optional)'**
+  String get bloodGroupOptional;
+
+  /// No description provided for @invalidEmail.
+  ///
+  /// In en, this message translates to:
+  /// **'Please enter a valid email address'**
+  String get invalidEmail;
 }
 
 class _AppLocalizationsDelegate

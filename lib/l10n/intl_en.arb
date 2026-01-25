@@ -62,7 +62,7 @@
   "alreadyHaveAnAccount": "Already have an account?",
   "logIn": "Log In",
   "otpVerification": "OTP Verification",
-  "authenticationCodeSent": "An authentication code has been sent to\n+01846786763",
+  "authenticationCodeSent": "An authentication code has been sent to",
   "didNotReceiveCode": "Didn’t receive code? 1:30",
   "confirm": "Confirm",
   "home": "Home",
@@ -98,5 +98,24 @@
   "expertMedicalCare": "Expert Medical Care",
   "psychiatrist": "Psychiatrist",
   "morningTime": "09:00 AM - 11:30 AM",
-  "appointmentDate": "Tue, 29 Jun, 2025"
+  "appointmentDate": "Tue, 29 Jun, 2025",
+  "profileUpdated": "Profile Updated",
+
+  "logoutConfirmMessage": "Are you sure you want to logout?",
+
+  "codeExpiresIn": "Code expires in",
+  "otpExpiredPleaseResend": "OTP expired. Please resend.",
+  "resendIn": "Resend in",
+  "resendOtp": "Resend OTP",
+  "noEmail": "No Email",
+
+
+
+  "sex": "Sex",
+
+
+  "emailOptional": "Email (optional)",
+  "bloodGroupOptional": "Blood Group (optional)",
+
+  "invalidEmail": "Please enter a valid email address"
 }

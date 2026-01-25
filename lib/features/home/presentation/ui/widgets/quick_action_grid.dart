@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../../../../../../l10n/app_localizations.dart';
+import '../../../../appointment/presentation/ui/screens/book_appoinment.dart';
 
 class QuickActionsGrid extends StatelessWidget {
   const QuickActionsGrid({super.key});
@@ -20,6 +21,9 @@ class QuickActionsGrid extends StatelessWidget {
                 title: l10n.bookAppointment,
                 iconColor: const Color(0xFF2F63F3),
                 bg: const Color(0xFFEAF1FF),
+                onTap: (){
+                  Navigator.pushNamed(context, SelectDoctorScreen.name);
+                },
               ),
             ),
             SizedBox(width: 14.w),

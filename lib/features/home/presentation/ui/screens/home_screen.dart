@@ -3,7 +3,9 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
+import '../../../../profile/presentation/ui/controller/profle_controller.dart';
 import '../widgets/appoinment_card.dart';
 import '../widgets/banner_carousel.dart';
 import '../widgets/help_sheet.dart';
@@ -21,6 +23,14 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   int bottomIndex = 0;
+  final pc = Get.put(ProfileControllerGetx());
+
+  @override
+  void initState() {
+    super.initState();
+    pc.loadCachedProfile(); // instant
+    pc.fetchProfile();      // refresh from server
+  }
 
   void _openHelpSheet() {
     showModalBottomSheet(

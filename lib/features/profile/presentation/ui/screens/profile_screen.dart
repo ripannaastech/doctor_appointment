@@ -1,7 +1,9 @@
 import 'package:doctor_appointment/app/app_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:get/get.dart';
 
+import '../controller/profle_controller.dart';
 import '../widgets/language_card_profile.dart';
 import '../widgets/logout_button.dart';
 import '../widgets/personal_information.dart';
@@ -14,6 +16,7 @@ const kTextGray = Color(0xFF718096);
 const kCardRadius = 16.0;
 const kPadding = 20.0;
 
+
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
   static const String name = '/profileScreen';
@@ -25,6 +28,19 @@ class ProfileScreen extends StatefulWidget {
 class _ProfileScreenState extends State<ProfileScreen> {
   bool isEditing = false;
 
+  late final ProfileControllerGetx pc;
+
+  @override
+  void initState() {
+    super.initState();
+
+    pc = Get.put(ProfileControllerGetx(), permanent: true);
+
+    // ✅ instant load then refresh
+    pc.loadCachedProfile();
+    pc.fetchProfile();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -32,22 +48,32 @@ class _ProfileScreenState extends State<ProfileScreen> {
       body: Column(
         children: [
           ProfileHeader(isEditing: isEditing, onToggle: _toggleEdit),
+
           Expanded(
-            child: SingleChildScrollView(
-              padding: EdgeInsets.all(kPadding.w),
-              child: Column(
-                children: [
-                  PersonalInfoCard(
-                    isEditing: isEditing,
-                    onToggleEdit: _toggleEdit,
-                  ),
-                  SizedBox(height: 20.h),
-                  LanguageCard(),
-                  SizedBox(height: 20.h),
-                  LogoutButton(),
-                ],
-              ),
-            ),
+            child: Obx(() {
+              // optional loading indicator
+              if (pc.loading.value && pc.profile.value == null) {
+                return const Center(child: CircularProgressIndicator());
+              }
+
+              return SingleChildScrollView(
+                padding: EdgeInsets.all(kPadding.w),
+                child: Column(
+                  children: [
+                    PersonalInfoCard(
+                      isEditing: isEditing,
+                      onToggleEdit: _toggleEdit,
+                      // ✅ pass profile if your card supports it
+                      // profile: pc.profile.value,
+                    ),
+                    SizedBox(height: 20.h),
+                    LanguageCard(),
+                    SizedBox(height: 20.h),
+                    LogoutButton(),
+                  ],
+                ),
+              );
+            }),
           ),
         ],
       ),

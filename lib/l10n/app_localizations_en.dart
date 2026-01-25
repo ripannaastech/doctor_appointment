@@ -195,7 +195,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get authenticationCodeSent =>
-      'An authentication code has been sent to\n+01846786763';
+      'An authentication code has been sent to';
 
   @override
   String get didNotReceiveCode => 'Didn’t receive code? 1:30';
@@ -304,4 +304,37 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get appointmentDate => 'Tue, 29 Jun, 2025';
+
+  @override
+  String get profileUpdated => 'Profile Updated';
+
+  @override
+  String get logoutConfirmMessage => 'Are you sure you want to logout?';
+
+  @override
+  String get codeExpiresIn => 'Code expires in';
+
+  @override
+  String get otpExpiredPleaseResend => 'OTP expired. Please resend.';
+
+  @override
+  String get resendIn => 'Resend in';
+
+  @override
+  String get resendOtp => 'Resend OTP';
+
+  @override
+  String get noEmail => 'No Email';
+
+  @override
+  String get sex => 'Sex';
+
+  @override
+  String get emailOptional => 'Email (optional)';
+
+  @override
+  String get bloodGroupOptional => 'Blood Group (optional)';
+
+  @override
+  String get invalidEmail => 'Please enter a valid email address';
 }

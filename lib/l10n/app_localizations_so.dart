@@ -9,22 +9,22 @@ class AppLocalizationsSo extends AppLocalizations {
   AppLocalizationsSo([String locale = 'so']) : super(locale);
 
   @override
-  String get hello => 'hello';
+  String get hello => 'Salaan';
 
   @override
-  String get selectLanguage => 'Select Language';
+  String get selectLanguage => 'Dooro Luuqad';
 
   @override
-  String get version => 'Version';
+  String get version => 'Nooca';
 
   @override
-  String get welcomeBack => 'Welcome Back';
+  String get welcomeBack => 'Ku Soo Dhawoow Mar Kale';
 
   @override
-  String get loginHeadline => 'Please enter your email and password';
+  String get loginHeadline => 'Fadlan geli iimaylkaaga iyo erayga sirta ah';
 
   @override
-  String get bookAppointment => 'Ballan Qabsasho';
+  String get bookAppointment => 'Ballan Qabso';
 
   @override
   String get selectDoctor => 'Dooro Dhakhtar';
@@ -36,29 +36,29 @@ class AppLocalizationsSo extends AppLocalizations {
   String get next => 'Xiga';
 
   @override
-  String get doctor1Name => 'Dr. Maxamed Cali';
+  String get doctor1Name => 'Dr. Mohamed Ali';
 
   @override
   String get doctor1Specialty => 'Dhakhtar Wadnaha Sare';
 
   @override
-  String get doctor2Name => 'Dr. Fadumo Axmed';
+  String get doctor2Name => 'Dr. Fatima Ahmed';
 
   @override
   String get doctor2Specialty => 'Dhakhtar Wadnaha';
 
   @override
-  String get appointmentConfirmed => 'Ballan la Xaqiijiyay!';
+  String get appointmentConfirmed => 'Ballanta Waa La Xaqiijiyay!';
 
   @override
   String get appointmentSuccessfullyBooked =>
-      'Ballantaada si guul leh\nayaa loo qabtay';
+      'Ballantaada si guul leh\nayaa loo diiwaangeliyay';
 
   @override
-  String get backToHome => 'Ku noqo Guriga';
+  String get backToHome => 'Ku Noqo Bogga Hore';
 
   @override
-  String get department => 'Waaxda:';
+  String get department => 'Qaybta:';
 
   @override
   String get cardiology => 'Wadnaha';
@@ -67,10 +67,10 @@ class AppLocalizationsSo extends AppLocalizations {
   String get doctor => 'Dhakhtar';
 
   @override
-  String get date => 'Taariikhda:';
+  String get date => 'Taariikh:';
 
   @override
-  String get time => 'Waqtiga:';
+  String get time => 'Waqti:';
 
   @override
   String get myAppointment => 'Ballantayda';
@@ -82,159 +82,158 @@ class AppLocalizationsSo extends AppLocalizations {
   String get past => 'Hore';
 
   @override
-  String get viewDetails => 'Faahfaahinta Eeg';
+  String get viewDetails => 'Fiiri Faahfaahin';
 
   @override
   String get cancel => 'Jooji';
 
   @override
-  String get confirmed => 'La xaqiijiyay';
+  String get confirmed => 'La Xaqiijiyay';
 
   @override
-  String get dermatologist => 'Dhakhtarka Maqaarka';
+  String get dermatologist => 'Dhakhtar Maqaarka';
 
   @override
-  String get drHassanOmar => 'Dr. Xasan Cumar';
+  String get drHassanOmar => 'Dr. Hassan Omar';
 
   @override
-  String get pediatrician => 'Dhakhtarka Carruurta';
+  String get pediatrician => 'Dhakhtar Carruurta';
 
   @override
   String get pending => 'Sugaya';
 
   @override
-  String get drAhmedHassan => 'Dr. Axmed Xasan';
+  String get drAhmedHassan => 'Dr. Ahmed Hassan';
 
   @override
   String get generalPhysician => 'Dhakhtar Guud';
 
   @override
-  String get completed => 'Dhammaystiran';
+  String get completed => 'La Dhameeyay';
 
   @override
-  String get drKhadijaYusuf => 'Dr. Khadiija Yuusuf';
+  String get drKhadijaYusuf => 'Dr. Khadija Yusuf';
 
   @override
-  String get selectDate => 'Dooro Taariikhda';
+  String get selectDate => 'Dooro Taariikh';
 
   @override
-  String get sun => 'Axd';
+  String get sun => 'Axad';
 
   @override
-  String get mon => 'Isn';
+  String get mon => 'Isniin';
 
   @override
-  String get tue => 'Tal';
+  String get tue => 'Talaado';
 
   @override
-  String get wed => 'Arb';
+  String get wed => 'Arbaco';
 
   @override
-  String get thu => 'Kha';
+  String get thu => 'Khamiis';
 
   @override
-  String get selectTimeSlot => 'Dooro Waqtiga';
+  String get selectTimeSlot => 'Dooro Waqti';
 
   @override
   String get confirmBooking => 'Xaqiiji Ballanta';
 
   @override
-  String get logInToYourAccount => 'Akoonkaaga gal';
+  String get logInToYourAccount => 'Gal Koontadaada';
 
   @override
   String get welcomeBackPleaseEnterYourDetails =>
-      'Soo dhawoow! Fadlan gali faahfaahintaada.';
+      'Ku soo dhawoow mar kale! Fadlan geli faahfaahintaada.';
 
   @override
-  String get enterPhoneNumber => 'Geli nambarka taleefanka';
+  String get enterPhoneNumber => 'Geli lambarka taleefanka';
 
   @override
-  String get continueButton => 'Sii wad';
+  String get continueButton => 'Sii Wad';
 
   @override
-  String get dontHaveAnAccount => 'Akoon ma lihid?';
+  String get dontHaveAnAccount => 'Ma lihid koonto?';
 
   @override
-  String get register => 'Is diiwaan geli';
+  String get register => 'Is Diiwaangeli';
 
   @override
-  String get welcome => 'Soo dhawoow!';
+  String get welcome => 'Ku Soo Dhawoow!';
 
   @override
-  String get pleaseCompleteYourProfile => 'Fadlan buuxi profile kaaga';
+  String get pleaseCompleteYourProfile => 'Fadlan dhammaystir xogtaada';
 
   @override
-  String get fullName => 'Magaca oo dhan';
+  String get fullName => 'Magaca Buuxa';
 
   @override
-  String get enterYourFullName => 'Geli magacaaga oo buuxa';
+  String get enterYourFullName => 'Geli magacaaga buuxa';
 
   @override
   String get dateOfBirth => 'Taariikhda Dhalashada';
 
   @override
-  String get preferredLanguage => 'Luuqadda la doorbidayo';
+  String get preferredLanguage => 'Luuqadda Aad Doorbidayso';
 
   @override
-  String get english => 'Ingiriis';
+  String get english => 'Ingiriisi';
 
   @override
   String get somali => 'Soomaali';
 
   @override
-  String get completeRegistration => 'Dhamaystir Diiwaangelinta';
+  String get completeRegistration => 'Dhammaystir Diiwaangelinta';
 
   @override
-  String get alreadyHaveAnAccount => 'Akoon ma leedahay?';
+  String get alreadyHaveAnAccount => 'Hore ayaad u lahayd koonto?';
 
   @override
-  String get logIn => 'Soo gal';
+  String get logIn => 'Gal';
 
   @override
   String get otpVerification => 'Xaqiijinta OTP';
 
   @override
-  String get authenticationCodeSent =>
-      'Koodhka xaqiijinta ayaa loo diray\n+01846786763';
+  String get authenticationCodeSent => 'Koodhka xaqiijinta ayaa loo diray';
 
   @override
-  String get didNotReceiveCode => 'Koodh ma helin? 1:30';
+  String get didNotReceiveCode => 'Ma helin koodhka? 1:30';
 
   @override
   String get confirm => 'Xaqiiji';
 
   @override
-  String get home => 'Guri';
+  String get home => 'Bogga Hore';
 
   @override
   String get appointment => 'Ballan';
 
   @override
-  String get pharmacy => 'Farmashi';
+  String get pharmacy => 'Farmashiye';
 
   @override
-  String get profile => 'Profile';
+  String get profile => 'Xogta Shaqsiga';
 
   @override
-  String get goodMorning => 'Subax wanaagsan!';
+  String get goodMorning => 'Subax Wacan!';
 
   @override
-  String get myAppointments => 'Ballamadayda';
+  String get myAppointments => 'Ballamahayga';
 
   @override
-  String get myResults => 'Natiijooyinkayda';
+  String get myResults => 'Natiijooyinkayga';
 
   @override
-  String get seeAll => 'Arag dhammaan';
+  String get seeAll => 'Eeg Dhammaan';
 
   @override
-  String get needHelp => 'Caawinaad ma u baahan tahay?';
+  String get needHelp => 'Ma U Baahan Tahay Caawin?';
 
   @override
-  String get wereHereForYou247 => '24/7 ayaan kuu joognaa';
+  String get wereHereForYou247 => 'Waxaan kuu joognaa 24/7';
 
   @override
-  String get callUs => 'Nala soo hadal';
+  String get callUs => 'Na Soo Wac';
 
   @override
   String get whatsApp => 'WhatsApp';
@@ -243,49 +242,49 @@ class AppLocalizationsSo extends AppLocalizations {
   String get email => 'Iimayl';
 
   @override
-  String get personalInformation => 'Personal Information';
+  String get personalInformation => 'Macluumaadka Shaqsiga';
 
   @override
-  String get edit => 'Edit';
+  String get edit => 'Beddel';
 
   @override
-  String get emailAddress => 'Email Address';
+  String get emailAddress => 'Cinwaanka Iimaylka';
 
   @override
-  String get phoneNumber => 'Phone Number';
+  String get phoneNumber => 'Lambarka Taleefanka';
 
   @override
-  String get gender => 'Gender';
+  String get gender => 'Jinsiga';
 
   @override
-  String get address => 'Address';
+  String get address => 'Cinwaan';
 
   @override
-  String get save => 'Save';
+  String get save => 'Kaydi';
 
   @override
-  String get male => 'Male';
+  String get male => 'Lab';
 
   @override
-  String get female => 'Female';
+  String get female => 'Dheddig';
 
   @override
-  String get other => 'Other';
+  String get other => 'Kale';
 
   @override
-  String get language => 'Language';
+  String get language => 'Luuqad';
 
   @override
-  String get logout => 'Logout';
+  String get logout => 'Ka Bax';
 
   @override
-  String get notifications => 'Ogeysiisyada';
+  String get notifications => 'Ogeysiisyo';
 
   @override
   String get all => 'Dhammaan';
 
   @override
-  String get unread => 'Aan la akhrin';
+  String get unread => 'Aan La Akhrin';
 
   @override
   String get appointmentDetails => 'Faahfaahinta Ballanta';
@@ -294,14 +293,47 @@ class AppLocalizationsSo extends AppLocalizations {
   String get reason => 'Sababta';
 
   @override
-  String get expertMedicalCare => 'Daryeel Caafimaad oo Khibrad leh';
+  String get expertMedicalCare => 'Daryeel Caafimaad Khabiir Ah';
 
   @override
-  String get psychiatrist => 'Dhakhtarka Dhimirka';
+  String get psychiatrist => 'Dhakhtar Maskaxda';
 
   @override
   String get morningTime => '09:00 AM - 11:30 AM';
 
   @override
   String get appointmentDate => 'Talaado, 29 Juun, 2025';
+
+  @override
+  String get profileUpdated => 'Xogta Waa La Cusboonaysiiyay';
+
+  @override
+  String get logoutConfirmMessage => 'Ma hubtaa inaad rabto inaad ka baxdo?';
+
+  @override
+  String get codeExpiresIn => 'Koodhku wuu dhacayaa';
+
+  @override
+  String get otpExpiredPleaseResend => 'OTP wuu dhacay. Fadlan dib u dir.';
+
+  @override
+  String get resendIn => 'Dib u dir';
+
+  @override
+  String get resendOtp => 'Dib u dir OTP';
+
+  @override
+  String get noEmail => 'Email ma jiro';
+
+  @override
+  String get sex => 'Jinsi';
+
+  @override
+  String get emailOptional => 'Iimayl (ikhtiyaar ah)';
+
+  @override
+  String get bloodGroupOptional => 'Kooxda Dhiigga (ikhtiyaar ah)';
+
+  @override
+  String get invalidEmail => 'Fadlan geli iimayl sax ah';
 }

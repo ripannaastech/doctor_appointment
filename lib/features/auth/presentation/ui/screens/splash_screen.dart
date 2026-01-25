@@ -1,8 +1,11 @@
+import 'package:doctor_appointment/features/auth/presentation/ui/screens/sign_in_screen.dart';
 import 'package:doctor_appointment/features/language/presentation/ui/screens/language_select_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:get/get.dart';
 
 import '../../../../../app/asset_paths.dart';
+import '../../../../../app/controllers/language_controller.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -23,13 +26,18 @@ class _SplashScreenState extends State<SplashScreen> {
   }
 
   Future<void> _moveToNextScreen() async {
-    await Future.delayed(Duration(seconds: 1));
-    // bool isUserLoggedIn = await Get.find<AuthController>().isUserAlreadyLoggedIn();
-    // if (isUserLoggedIn) {
-    //   await Get.find<AuthController>().loadUserData();
-    // }
-    Navigator.pushReplacementNamed(context, LanguageSelectScreen.name);
+    await Future.delayed(const Duration(seconds: 1));
+
+    final langController = Get.find<LanguageController>();
+
+    // if language already chosen → go login
+    if (langController.lang.value.isNotEmpty) {
+      Get.offNamed(LoginScreen.name);
+    } else {
+      Get.offNamed(LanguageSelectScreen.name);
+    }
   }
+
 
 
   @override

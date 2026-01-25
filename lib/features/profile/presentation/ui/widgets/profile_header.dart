@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:get/get.dart';
 
 import '../../../../../../l10n/app_localizations.dart';
 import '../../../../../app/app_colors.dart';
+import '../controller/profle_controller.dart';
 import '../screens/profile_screen.dart';
 
 class ProfileHeader extends StatelessWidget {
@@ -18,30 +20,26 @@ class ProfileHeader extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
+    final pc = Get.find<ProfileControllerGetx>();
+
     return Container(
       width: double.infinity,
       padding: EdgeInsets.only(bottom: 32.h),
       decoration: BoxDecoration(
         color: AppColors.themeColor,
-        borderRadius: BorderRadius.vertical(
-          bottom: Radius.circular(32.r),
-        ),
+        borderRadius: BorderRadius.vertical(bottom: Radius.circular(32.r)),
       ),
       child: Column(
         children: [
-          // Status bar safe spacing (keep native)
           SizedBox(height: MediaQuery.of(context).padding.top),
 
           Row(
             children: [
               IconButton(
-                icon: Icon(
-                  Icons.arrow_back_ios,
-                  color: Colors.white,
-                  size: 20.sp,
-                ),
-                onPressed: () {},
+                icon: Icon(Icons.arrow_back_ios, color: Colors.white, size: 20.sp),
+                onPressed: () => Get.back(), // ✅ back
               ),
+
               Expanded(
                 child: Text(
                   l10n.profile,
@@ -53,7 +51,16 @@ class ProfileHeader extends StatelessWidget {
                   ),
                 ),
               ),
-              SizedBox(width: 48.w),
+
+              // ✅ edit toggle button (uses your onToggle)
+              IconButton(
+                onPressed: onToggle,
+                icon: Icon(
+                  isEditing ? Icons.close : Icons.edit,
+                  color: Colors.white,
+                  size: 20.sp,
+                ),
+              ),
             ],
           ),
 
@@ -73,35 +80,46 @@ class ProfileHeader extends StatelessWidget {
                 ),
               ],
             ),
-            child: Icon(
-              Icons.person_outline,
-              color: kPrimaryBlue,
-              size: 40.sp,
-            ),
+            child: Icon(Icons.person_outline, color: kPrimaryBlue, size: 40.sp),
           ),
 
           SizedBox(height: 16.h),
 
-          Text(
-            "Ahmed Hassan Mohamed",
-            style: TextStyle(
-              color: Colors.white,
-              fontSize: 20.sp,
-              fontWeight: FontWeight.w600,
-              letterSpacing: 0.2,
-            ),
-          ),
+          // ✅ dynamic name/email
+          Obx(() {
+            final p = pc.profile.value;
 
-          SizedBox(height: 6.h),
+            final name = (p?.patientName?.trim().isNotEmpty ?? false)
+                ? p!.patientName!.trim()
+                : ((p?.firstName ?? '') + ' ' + (p?.lastName ?? '')).trim();
 
-          Text(
-            "ahmed.hassan@example.com",
-            style: TextStyle(
-              color: Colors.white.withOpacity(0.9),
-              fontSize: 14.sp,
-              letterSpacing: 0.1,
-            ),
-          ),
+            final email = (p?.email?.trim().isNotEmpty ?? false)
+                ? p!.email!.trim()
+                : (l10n.noEmail ?? 'No email');
+
+            return Column(
+              children: [
+                Text(
+                   name,
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 20.sp,
+                    fontWeight: FontWeight.w600,
+                    letterSpacing: 0.2,
+                  ),
+                ),
+                SizedBox(height: 6.h),
+                Text(
+                  email,
+                  style: TextStyle(
+                    color: Colors.white.withOpacity(0.9),
+                    fontSize: 14.sp,
+                    letterSpacing: 0.1,
+                  ),
+                ),
+              ],
+            );
+          }),
         ],
       ),
     );

@@ -1,14 +1,55 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:get/get.dart';
 
 import '../../../../../../l10n/app_localizations.dart';
+import '../../../../../core/services/shared_preferance/shared_preferance.dart';
+import '../../../../auth/presentation/ui/controller/auth_controller.dart';
+import '../../../../auth/presentation/ui/screens/sign_in_screen.dart';
+import '../controller/profle_controller.dart';
 
 class LogoutButton extends StatelessWidget {
   const LogoutButton({super.key});
 
+  Future<void> _logout(BuildContext context) async {
+    final l10n = AppLocalizations.of(context)!;
+
+    final ok = await showDialog<bool>(
+      context: context,
+      builder: (_) => AlertDialog(
+        title: Text(l10n.logout),
+        content: Text(l10n.logoutConfirmMessage ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context, false),
+            child: Text(l10n.cancel),
+          ),
+          TextButton(
+            onPressed: () => Navigator.pop(context, true),
+            child: Text(l10n.logout),
+          ),
+        ],
+      ),
+    );
+
+    if (ok != true) return;
+
+    await SharedPrefs().clear();
+
+    if (Get.isRegistered<ProfileControllerGetx>()) {
+      Get.delete<ProfileControllerGetx>(force: true);
+    }
+    if (Get.isRegistered<AuthControllerGetx>()) {
+      Get.delete<AuthControllerGetx>(force: true);
+    }
+
+    Navigator.pushReplacementNamed(context,LoginScreen.name); // or AuthScreen.name
+  }
+
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
+
     return Container(
       width: double.infinity,
       height: 48.h,
@@ -23,11 +64,8 @@ class LogoutButton extends StatelessWidget {
             borderRadius: BorderRadius.circular(12.r),
           ),
         ),
-        onPressed: () {},
-        icon: Icon(
-          Icons.logout,
-          size: 20.sp,
-        ),
+        onPressed: () => _logout(context), // ✅ connected
+        icon: Icon(Icons.logout, size: 20.sp),
         label: Text(
           l10n.logout,
           style: TextStyle(

@@ -19,6 +19,15 @@ class AppTheme {
             fontWeight: FontWeight.bold
         ),
       ),
+
+      dropdownMenuTheme: const DropdownMenuThemeData(
+        textStyle: TextStyle(
+          fontSize: 14,
+          fontWeight: FontWeight.w400,
+          color: Colors.black,
+        ),
+      ),
+
       appBarTheme: AppBarTheme(
           titleTextStyle: TextStyle(
               fontSize: 18,
