@@ -4,57 +4,139 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../../../../../../l10n/app_localizations.dart';
 
-class BannerCarousel extends StatelessWidget {
+import 'dart:async';
+import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+
+import '../../../../../app/asset_paths.dart';
+
+// Example model for banner items
+class BannerItem {
+  final String imageUrl;
+  final String title;
+  const BannerItem({required this.imageUrl, required this.title});
+}
+
+class BannerCarousel extends StatefulWidget {
   const BannerCarousel({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  State<BannerCarousel> createState() => _BannerCarouselState();
+}
+
+class _BannerCarouselState extends State<BannerCarousel> {
+  final PageController _controller = PageController();
+  Timer? _timer;
+
+  int _index = 0;
+
+  @override
+  void initState() {
+    super.initState();
+    _startAutoPlay();
+  }
+
+  void _startAutoPlay() {
+    _timer?.cancel();
+    _timer = Timer.periodic(const Duration(seconds: 3), (_) {
+      if (!mounted) return;
+
+      final next = (_index + 1) % _banners(context).length;
+      _controller.animateToPage(
+        next,
+        duration: const Duration(milliseconds: 450),
+        curve: Curves.easeInOut,
+      );
+    });
+  }
+
+  @override
+  void dispose() {
+    _timer?.cancel();
+    _controller.dispose();
+    super.dispose();
+  }
+
+  List<BannerItem> _banners(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
+    return [
+      BannerItem(
+        imageUrl:
+        AssetPaths.slider1,
+        title: l10n.healthBannerText,
+      ),
+      BannerItem(
+        imageUrl:
+        AssetPaths.slider2,
+        title: l10n.healthBannerText, // change to your key
+      ),
+      BannerItem(
+        imageUrl:
+        AssetPaths.slider3,
+        title: l10n.healthBannerText, // change to your key
+      ),
+    ];
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final items = _banners(context);
+
     return Column(
       children: [
         ClipRRect(
           borderRadius: BorderRadius.circular(16.r),
-          child: Stack(
-            children: [
-              SizedBox(
-                height: 148.h,
-                width: double.infinity,
-                child: Image.network(
-                  'https://static.vecteezy.com/system/resources/thumbnails/026/375/249/small/ai-generative-portrait-of-confident-male-doctor-in-white-coat-and-stethoscope-standing-with-arms-crossed-and-looking-at-camera-photo.jpg',
-                  fit: BoxFit.cover,
-                ),
-              ),
-              Positioned(
-                left: 16.w,
-                bottom: 16.h,
-                child: Text(
-                  l10n.expertMedicalCare,
-                  style: TextStyle(
-                    fontSize: 16.sp,
-                    fontWeight: FontWeight.w700,
-                    color: Colors.white,
-                    shadows: [
-                      Shadow(
-                        color: Colors.black45,
-                        blurRadius: 16.r,
+          child: SizedBox(
+            height: 148.h,
+            width: double.infinity,
+            child: PageView.builder(
+              controller: _controller,
+              itemCount: items.length,
+              onPageChanged: (i) => setState(() => _index = i),
+              itemBuilder: (_, i) {
+                final b = items[i];
+                return Stack(
+                  fit: StackFit.expand,
+                  children: [
+                    Image.asset(b.imageUrl, fit: BoxFit.cover),
+                    // (optional) dark overlay for readable text
+                    Container(color: Colors.black.withOpacity(0.18)),
+                    Positioned(
+                      left: 16.w,
+                      right: 16.w,
+                      bottom: 16.h,
+                      child: Text(
+                        b.title,
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis,
+                        style: TextStyle(
+                          fontSize: 16.sp,
+                          fontWeight: FontWeight.w700,
+                          color: Colors.white,
+                          shadows: [
+                            Shadow(
+                              color: Colors.black45,
+                              blurRadius: 16.r,
+                            ),
+                          ],
+                        ),
                       ),
-                    ],
-                  ),
-                ),
-              ),
-            ],
+                    ),
+                  ],
+                );
+              },
+            ),
           ),
         ),
         SizedBox(height: 12.h),
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            const _Dot(active: false),
-            SizedBox(width: 6.w),
-            const _Dot(active: true),
-            SizedBox(width: 6.w),
-            const _Dot(active: false),
-          ],
+          children: List.generate(items.length, (i) {
+            return Padding(
+              padding: EdgeInsets.symmetric(horizontal: 3.w),
+              child: _Dot(active: i == _index),
+            );
+          }),
         ),
       ],
     );
@@ -70,7 +152,7 @@ class _Dot extends StatelessWidget {
     return AnimatedContainer(
       duration: const Duration(milliseconds: 200),
       height: 6.h,
-      width: (active ? 22.w : 6.w),
+      width: active ? 22.w : 6.w,
       decoration: BoxDecoration(
         color: active ? AppColors.themeColor : const Color(0xFFD6DAE6),
         borderRadius: BorderRadius.circular(99.r),
@@ -78,3 +160,4 @@ class _Dot extends StatelessWidget {
     );
   }
 }
+

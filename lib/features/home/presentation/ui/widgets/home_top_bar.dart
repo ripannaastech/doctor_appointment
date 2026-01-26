@@ -1,22 +1,93 @@
+import 'package:doctor_appointment/app/asset_paths.dart';
 import 'package:doctor_appointment/features/notification/presentation/ui/notification_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../../../../../../l10n/app_localizations.dart';
 
-class HomeTopBar extends StatelessWidget {
+import 'dart:convert';
+import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+
+import '../../../../../core/services/shared_preferance/shared_preferance.dart';
+import '../../../../profile/models/user_profile_model.dart';
+
+class HomeTopBar extends StatefulWidget {
   const HomeTopBar({super.key});
+
+  @override
+  State<HomeTopBar> createState() => _HomeTopBarState();
+}
+
+class _HomeTopBarState extends State<HomeTopBar> {
+  final _prefs = SharedPrefs();
+
+  String _name = '—';
+  bool _loading = true;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadName();
+  }
+
+  String timeGreeting(AppLocalizations l10n) {
+    final h = DateTime.now().hour;
+
+    if (h >= 5 && h < 12) return l10n.goodMorning;
+    if (h >= 12 && h < 17) return l10n.goodAfternoon;
+    if (h >= 17 && h < 21) return l10n.goodEvening;
+    return l10n.goodNight;
+  }
+
+  Future<void> _loadName() async {
+    try {
+      final raw = await _prefs.getString(SharedPrefs.patientProfile);
+
+      if (raw == null || raw.trim().isEmpty) {
+        if (!mounted) return;
+        setState(() {
+          _name = '—';
+          _loading = false;
+        });
+        return;
+      }
+
+      final map = jsonDecode(raw) as Map<String, dynamic>;
+      final profile = UserProfile.fromJson(map);
+
+      final first = profile.firstName?.trim() ?? '';
+      final last = profile.lastName?.trim() ?? '';
+
+      final fullName = [first, last]
+          .where((e) => e.isNotEmpty)
+          .join(' ');
+
+      if (!mounted) return;
+      setState(() {
+        _name = fullName.isNotEmpty ? fullName : '—';
+        _loading = false;
+      });
+    } catch (e) {
+      if (!mounted) return;
+      setState(() {
+        _name = '—';
+        _loading = false;
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
+
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: 18.w),
       child: Row(
         children: [
           /// Profile Image
           Container(
-            height: 44.w, // circle → use w
+            height: 44.w,
             width: 44.w,
             decoration: BoxDecoration(
               shape: BoxShape.circle,
@@ -29,8 +100,8 @@ class HomeTopBar extends StatelessWidget {
               ],
             ),
             clipBehavior: Clip.antiAlias,
-            child: Image.network(
-              'https://i.pravatar.cc/100?img=12',
+            child: Image.asset(
+              AssetPaths.profilePicture,
               fit: BoxFit.cover,
             ),
           ),
@@ -45,7 +116,7 @@ class HomeTopBar extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    l10n.goodMorning,
+                    timeGreeting(l10n), // ✅ dynamic greeting
                     style: TextStyle(
                       fontSize: 12.5.sp,
                       fontWeight: FontWeight.w500,
@@ -54,7 +125,7 @@ class HomeTopBar extends StatelessWidget {
                   ),
                   SizedBox(height: 2.h),
                   Text(
-                    'Brooklyn Simmons',
+                    _loading ? l10n.loading : _name, // ✅ name from prefs
                     style: TextStyle(
                       fontSize: 16.5.sp,
                       fontWeight: FontWeight.w700,
@@ -82,17 +153,20 @@ class HomeTopBar extends StatelessWidget {
                 ),
               ],
             ),
-            child: IconButton(onPressed: (
-            ){
-              Navigator.pushNamed(context, NotificationsScreen.name);
-            }, icon: Icon(
-              Icons.notifications_none_rounded,
-              size: 22.sp,
-              color: const Color(0xFF141A2A),
-            ),)
+            child: IconButton(
+              onPressed: () {
+                Navigator.pushNamed(context, NotificationsScreen.name);
+              },
+              icon: Icon(
+                Icons.notifications_none_rounded,
+                size: 22.sp,
+                color: const Color(0xFF141A2A),
+              ),
+            ),
           ),
         ],
       ),
     );
   }
 }
+

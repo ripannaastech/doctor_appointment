@@ -63,8 +63,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     PersonalInfoCard(
                       isEditing: isEditing,
                       onToggleEdit: _toggleEdit,
-                      // ✅ pass profile if your card supports it
-                      // profile: pc.profile.value,
                     ),
                     SizedBox(height: 20.h),
                     LanguageCard(),

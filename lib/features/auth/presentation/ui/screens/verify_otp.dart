@@ -190,7 +190,7 @@ class _OtpScreenState extends State<OtpScreen> {
                         arguments: {'phone': phone},
                       );
                     } else {
-                      Get.offAllNamed(MainScreen.name);
+                      Get.offAllNamed(Dashboard.name);
                     }
                   },
                   child: c.loading.value

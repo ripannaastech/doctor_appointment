@@ -1,3 +1,4 @@
+import 'package:doctor_appointment/app/asset_paths.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
@@ -70,8 +71,8 @@ class ProfileHeader extends StatelessWidget {
             width: 80.r,
             height: 80.r,
             decoration: BoxDecoration(
-              color: Colors.white,
               shape: BoxShape.circle,
+              color: Colors.white,
               boxShadow: [
                 BoxShadow(
                   color: Colors.black.withOpacity(0.1),
@@ -80,7 +81,11 @@ class ProfileHeader extends StatelessWidget {
                 ),
               ],
             ),
-            child: Icon(Icons.person_outline, color: kPrimaryBlue, size: 40.sp),
+            clipBehavior: Clip.antiAlias,
+            child: Image.asset(
+              AssetPaths.profilePicture,
+              fit: BoxFit.cover,
+            )
           ),
 
           SizedBox(height: 16.h),

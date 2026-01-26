@@ -133,6 +133,12 @@ class AppLocalizationsEn extends AppLocalizations {
   String get thu => 'Thu';
 
   @override
+  String get fri => 'Fri';
+
+  @override
+  String get sat => 'Sat';
+
+  @override
   String get selectTimeSlot => 'Select Time Slot';
 
   @override
@@ -294,7 +300,8 @@ class AppLocalizationsEn extends AppLocalizations {
   String get reason => 'Reason';
 
   @override
-  String get expertMedicalCare => 'Expert Medical Care';
+  String get healthBannerText =>
+      'Committed to Your Health\nTrusted Care for a Healthier You';
 
   @override
   String get psychiatrist => 'Psychiatrist';
@@ -327,6 +334,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get noEmail => 'No Email';
 
   @override
+  String get doctorList => 'Doctor List';
+
+  @override
   String get sex => 'Sex';
 
   @override
@@ -337,4 +347,107 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get invalidEmail => 'Please enter a valid email address';
+
+  @override
+  String get labReports => 'Lab Reports';
+
+  @override
+  String get selectLabReport => 'Select a Lab Report';
+
+  @override
+  String get labReportDetails => 'Lab Report Details';
+
+  @override
+  String get results => 'Results';
+
+  @override
+  String get noLabReportsFound => 'No lab reports found';
+
+  @override
+  String get noDetailsFound => 'No details found';
+
+  @override
+  String get noResultItemsFound => 'No result items found';
+
+  @override
+  String get resultDate => 'Result Date';
+
+  @override
+  String get value => 'Value';
+
+  @override
+  String get normalRange => 'Normal Range';
+
+  @override
+  String get test => 'Test';
+
+  @override
+  String get noUpcoming => 'No upcoming appointments';
+
+  @override
+  String get noPast => 'No past appointments';
+
+  @override
+  String get appointmentCanceled => 'Appointment canceled';
+
+  @override
+  String get cancelAppointmentTitle => 'Cancel appointment?';
+
+  @override
+  String get cancelAppointmentBody =>
+      'Are you sure you want to cancel this appointment?';
+
+  @override
+  String get yesCancel => 'Yes, cancel';
+
+  @override
+  String get no => 'No';
+
+  @override
+  String get appointmentId => 'Appointment ID';
+
+  @override
+  String get patientName => 'Patient Name';
+
+  @override
+  String get status => 'Status';
+
+  @override
+  String get appointmentType => 'Appointment Type';
+
+  @override
+  String get billingItem => 'Billing Item';
+
+  @override
+  String get notes => 'Notes';
+
+  @override
+  String get close => 'Close';
+
+  @override
+  String get selectDepartment => 'Select Department';
+
+  @override
+  String get allDepartments => 'All Departments';
+
+  @override
+  String get noDoctorsFound => 'No doctors found';
+
+  @override
+  String get searchDepartment => 'Search department';
+
+  @override
+  String get noDepartmentsFound => 'No departments found';
+
+  @override
+  String get goodAfternoon => 'Good Afternoon';
+
+  @override
+  String get goodEvening => 'Good Evening';
+
+  @override
+  String get goodNight => 'Good Night';
+
+  @override
+  String get loading => 'Loading...';
 }

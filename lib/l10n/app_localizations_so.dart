@@ -133,6 +133,12 @@ class AppLocalizationsSo extends AppLocalizations {
   String get thu => 'Khamiis';
 
   @override
+  String get fri => 'Jimco';
+
+  @override
+  String get sat => 'Sabti';
+
+  @override
   String get selectTimeSlot => 'Dooro Waqti';
 
   @override
@@ -293,7 +299,8 @@ class AppLocalizationsSo extends AppLocalizations {
   String get reason => 'Sababta';
 
   @override
-  String get expertMedicalCare => 'Daryeel Caafimaad Khabiir Ah';
+  String get healthBannerText =>
+      'U heellan Caafimaadkaaga\nDaryeel Lagu Kalsoonaan Karo oo Kuu Horseeda Nolol Caafimaad leh';
 
   @override
   String get psychiatrist => 'Dhakhtar Maskaxda';
@@ -326,6 +333,9 @@ class AppLocalizationsSo extends AppLocalizations {
   String get noEmail => 'Email ma jiro';
 
   @override
+  String get doctorList => 'Liiska Dhakhaatiirta';
+
+  @override
   String get sex => 'Jinsi';
 
   @override
@@ -336,4 +346,107 @@ class AppLocalizationsSo extends AppLocalizations {
 
   @override
   String get invalidEmail => 'Fadlan geli iimayl sax ah';
+
+  @override
+  String get labReports => 'Warbixinada Shaybaarka';
+
+  @override
+  String get selectLabReport => 'Dooro Warbixin Shaybaar';
+
+  @override
+  String get labReportDetails => 'Faahfaahinta Warbixinta Shaybaarka';
+
+  @override
+  String get results => 'Natiijooyinka';
+
+  @override
+  String get noLabReportsFound => 'Lama helin warbixino shaybaar';
+
+  @override
+  String get noDetailsFound => 'Faahfaahin lama helin';
+
+  @override
+  String get noResultItemsFound => 'Lama helin natiijooyin';
+
+  @override
+  String get resultDate => 'Taariikhda Natiijada';
+
+  @override
+  String get value => 'Qiime';
+
+  @override
+  String get normalRange => 'Heerka Caadiga ah';
+
+  @override
+  String get test => 'Baaritaan';
+
+  @override
+  String get noUpcoming => 'Ballamo soo socda ma jiraan';
+
+  @override
+  String get noPast => 'Ballamo hore ma jiraan';
+
+  @override
+  String get appointmentCanceled => 'Ballanta waa la joojiyay';
+
+  @override
+  String get cancelAppointmentTitle => 'Ma joojinaa ballanta?';
+
+  @override
+  String get cancelAppointmentBody =>
+      'Ma hubtaa inaad rabto inaad joojiso ballantan?';
+
+  @override
+  String get yesCancel => 'Haa, jooji';
+
+  @override
+  String get no => 'Maya';
+
+  @override
+  String get appointmentId => 'Aqoonsiga Ballanta';
+
+  @override
+  String get patientName => 'Magaca Bukaanka';
+
+  @override
+  String get status => 'Xaalad';
+
+  @override
+  String get appointmentType => 'Nooca Ballanta';
+
+  @override
+  String get billingItem => 'Shayga Biilka';
+
+  @override
+  String get notes => 'Qoraal';
+
+  @override
+  String get close => 'Xir';
+
+  @override
+  String get selectDepartment => 'Dooro Waaxda';
+
+  @override
+  String get allDepartments => 'Dhammaan Waaxyaha';
+
+  @override
+  String get noDoctorsFound => 'Lama helin dhakhaatiir';
+
+  @override
+  String get searchDepartment => 'Raadi waax';
+
+  @override
+  String get noDepartmentsFound => 'Lama helin waaxyo';
+
+  @override
+  String get goodAfternoon => 'Galab wanaagsan';
+
+  @override
+  String get goodEvening => 'Fiid wanaagsan';
+
+  @override
+  String get goodNight => 'Habeen wanaagsan';
+
+  @override
+  String get loading => 'Waa la soo rarayaa...';
 }

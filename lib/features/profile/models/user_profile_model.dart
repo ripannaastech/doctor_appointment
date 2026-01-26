@@ -47,7 +47,7 @@ class UserProfile {
       patientName: json['patient_name']?.toString(),
       firstName: json['first_name']?.toString(),
       lastName: json['last_name']?.toString(),
-      phone: json['phone']?.toString(),
+      phone: json['mobile']?.toString(),
       mobileNo: json['mobile_no']?.toString(),
       email: json['email']?.toString(),
       sex: json['sex']?.toString(),

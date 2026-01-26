@@ -154,7 +154,8 @@ class _PersonalInfoCardState extends State<PersonalInfoCard> {
                 Icons.person_outline,
                 l10n.fullName,
                 _fullNameController,
-                widget.isEditing,
+                false, // ✅ phone not updateable usually
+
               ),
               _buildField(
                 l10n,
@@ -183,14 +184,14 @@ class _PersonalInfoCardState extends State<PersonalInfoCard> {
                 l10n.gender,
                 widget.isEditing,
               ),
-              _buildField(
-                l10n,
-                Icons.location_on_outlined,
-                l10n.address,
-                _addressController,
-                widget.isEditing,
-                isLast: true,
-              ),
+              // _buildField(
+              //   l10n,
+              //   Icons.location_on_outlined,
+              //   l10n.address,
+              //   _addressController,
+              //   widget.isEditing,
+              //   isLast: true,
+              // ),
 
               if (widget.isEditing) ...[
                 SizedBox(height: 20.h),

@@ -344,6 +344,18 @@ abstract class AppLocalizations {
   /// **'Thu'**
   String get thu;
 
+  /// No description provided for @fri.
+  ///
+  /// In en, this message translates to:
+  /// **'Fri'**
+  String get fri;
+
+  /// No description provided for @sat.
+  ///
+  /// In en, this message translates to:
+  /// **'Sat'**
+  String get sat;
+
   /// No description provided for @selectTimeSlot.
   ///
   /// In en, this message translates to:
@@ -662,11 +674,11 @@ abstract class AppLocalizations {
   /// **'Reason'**
   String get reason;
 
-  /// No description provided for @expertMedicalCare.
+  /// No description provided for @healthBannerText.
   ///
   /// In en, this message translates to:
-  /// **'Expert Medical Care'**
-  String get expertMedicalCare;
+  /// **'Committed to Your Health\nTrusted Care for a Healthier You'**
+  String get healthBannerText;
 
   /// No description provided for @psychiatrist.
   ///
@@ -728,6 +740,12 @@ abstract class AppLocalizations {
   /// **'No Email'**
   String get noEmail;
 
+  /// No description provided for @doctorList.
+  ///
+  /// In en, this message translates to:
+  /// **'Doctor List'**
+  String get doctorList;
+
   /// No description provided for @sex.
   ///
   /// In en, this message translates to:
@@ -751,6 +769,210 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Please enter a valid email address'**
   String get invalidEmail;
+
+  /// No description provided for @labReports.
+  ///
+  /// In en, this message translates to:
+  /// **'Lab Reports'**
+  String get labReports;
+
+  /// No description provided for @selectLabReport.
+  ///
+  /// In en, this message translates to:
+  /// **'Select a Lab Report'**
+  String get selectLabReport;
+
+  /// No description provided for @labReportDetails.
+  ///
+  /// In en, this message translates to:
+  /// **'Lab Report Details'**
+  String get labReportDetails;
+
+  /// No description provided for @results.
+  ///
+  /// In en, this message translates to:
+  /// **'Results'**
+  String get results;
+
+  /// No description provided for @noLabReportsFound.
+  ///
+  /// In en, this message translates to:
+  /// **'No lab reports found'**
+  String get noLabReportsFound;
+
+  /// No description provided for @noDetailsFound.
+  ///
+  /// In en, this message translates to:
+  /// **'No details found'**
+  String get noDetailsFound;
+
+  /// No description provided for @noResultItemsFound.
+  ///
+  /// In en, this message translates to:
+  /// **'No result items found'**
+  String get noResultItemsFound;
+
+  /// No description provided for @resultDate.
+  ///
+  /// In en, this message translates to:
+  /// **'Result Date'**
+  String get resultDate;
+
+  /// No description provided for @value.
+  ///
+  /// In en, this message translates to:
+  /// **'Value'**
+  String get value;
+
+  /// No description provided for @normalRange.
+  ///
+  /// In en, this message translates to:
+  /// **'Normal Range'**
+  String get normalRange;
+
+  /// No description provided for @test.
+  ///
+  /// In en, this message translates to:
+  /// **'Test'**
+  String get test;
+
+  /// No description provided for @noUpcoming.
+  ///
+  /// In en, this message translates to:
+  /// **'No upcoming appointments'**
+  String get noUpcoming;
+
+  /// No description provided for @noPast.
+  ///
+  /// In en, this message translates to:
+  /// **'No past appointments'**
+  String get noPast;
+
+  /// No description provided for @appointmentCanceled.
+  ///
+  /// In en, this message translates to:
+  /// **'Appointment canceled'**
+  String get appointmentCanceled;
+
+  /// No description provided for @cancelAppointmentTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel appointment?'**
+  String get cancelAppointmentTitle;
+
+  /// No description provided for @cancelAppointmentBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Are you sure you want to cancel this appointment?'**
+  String get cancelAppointmentBody;
+
+  /// No description provided for @yesCancel.
+  ///
+  /// In en, this message translates to:
+  /// **'Yes, cancel'**
+  String get yesCancel;
+
+  /// No description provided for @no.
+  ///
+  /// In en, this message translates to:
+  /// **'No'**
+  String get no;
+
+  /// No description provided for @appointmentId.
+  ///
+  /// In en, this message translates to:
+  /// **'Appointment ID'**
+  String get appointmentId;
+
+  /// No description provided for @patientName.
+  ///
+  /// In en, this message translates to:
+  /// **'Patient Name'**
+  String get patientName;
+
+  /// No description provided for @status.
+  ///
+  /// In en, this message translates to:
+  /// **'Status'**
+  String get status;
+
+  /// No description provided for @appointmentType.
+  ///
+  /// In en, this message translates to:
+  /// **'Appointment Type'**
+  String get appointmentType;
+
+  /// No description provided for @billingItem.
+  ///
+  /// In en, this message translates to:
+  /// **'Billing Item'**
+  String get billingItem;
+
+  /// No description provided for @notes.
+  ///
+  /// In en, this message translates to:
+  /// **'Notes'**
+  String get notes;
+
+  /// No description provided for @close.
+  ///
+  /// In en, this message translates to:
+  /// **'Close'**
+  String get close;
+
+  /// No description provided for @selectDepartment.
+  ///
+  /// In en, this message translates to:
+  /// **'Select Department'**
+  String get selectDepartment;
+
+  /// No description provided for @allDepartments.
+  ///
+  /// In en, this message translates to:
+  /// **'All Departments'**
+  String get allDepartments;
+
+  /// No description provided for @noDoctorsFound.
+  ///
+  /// In en, this message translates to:
+  /// **'No doctors found'**
+  String get noDoctorsFound;
+
+  /// No description provided for @searchDepartment.
+  ///
+  /// In en, this message translates to:
+  /// **'Search department'**
+  String get searchDepartment;
+
+  /// No description provided for @noDepartmentsFound.
+  ///
+  /// In en, this message translates to:
+  /// **'No departments found'**
+  String get noDepartmentsFound;
+
+  /// No description provided for @goodAfternoon.
+  ///
+  /// In en, this message translates to:
+  /// **'Good Afternoon'**
+  String get goodAfternoon;
+
+  /// No description provided for @goodEvening.
+  ///
+  /// In en, this message translates to:
+  /// **'Good Evening'**
+  String get goodEvening;
+
+  /// No description provided for @goodNight.
+  ///
+  /// In en, this message translates to:
+  /// **'Good Night'**
+  String get goodNight;
+
+  /// No description provided for @loading.
+  ///
+  /// In en, this message translates to:
+  /// **'Loading...'**
+  String get loading;
 }
 
 class _AppLocalizationsDelegate

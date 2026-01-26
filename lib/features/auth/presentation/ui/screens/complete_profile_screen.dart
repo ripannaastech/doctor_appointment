@@ -81,7 +81,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
     if (!ok) return;
 
     // ✅ after success
-    Get.offAllNamed(MainScreen.name); // or Dashboard/Home
+    Get.offAllNamed(Dashboard.name); // or Dashboard/Home
   }
 
   @override

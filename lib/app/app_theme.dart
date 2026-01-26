@@ -19,6 +19,9 @@ class AppTheme {
             fontWeight: FontWeight.bold
         ),
       ),
+      iconTheme: const IconThemeData(
+        color: Colors.white,
+      ),
 
       dropdownMenuTheme: const DropdownMenuThemeData(
         textStyle: TextStyle(

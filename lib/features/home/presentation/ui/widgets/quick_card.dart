@@ -1,18 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
+import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+
 class QuickCard extends StatelessWidget {
-  final IconData icon;
+  final Widget iconWidget; // 👈 flexible
   final String title;
-  final Color iconColor;
   final Color bg;
   final VoidCallback? onTap;
 
   const QuickCard({
     super.key,
-    required this.icon,
+    required this.iconWidget,
     required this.title,
-    required this.iconColor,
     required this.bg,
     this.onTap,
   });
@@ -42,7 +43,7 @@ class QuickCard extends StatelessWidget {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              /// Icon background
+              /// Icon / Image / SVG background
               Container(
                 height: 40.w,
                 width: 40.w,
@@ -50,11 +51,8 @@ class QuickCard extends StatelessWidget {
                   color: bg,
                   borderRadius: BorderRadius.circular(10.r),
                 ),
-                child: Icon(
-                  icon,
-                  size: 20.sp,
-                  color: iconColor,
-                ),
+                alignment: Alignment.center,
+                child: iconWidget,
               ),
 
               SizedBox(height: 12.h),
