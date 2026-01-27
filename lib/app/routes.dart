@@ -9,7 +9,6 @@ import 'package:doctor_appointment/features/language/presentation/ui/screens/lan
 import 'package:doctor_appointment/features/notification/presentation/ui/notification_screen.dart';
 import 'package:doctor_appointment/features/profile/presentation/ui/screens/profile_screen.dart';
 import 'package:flutter/material.dart';
-
 import '../features/appointment/models/data/practitioner_model.dart';
 import '../features/appointment/presentation/ui/screens/book_appoinment.dart';
 import '../features/auth/presentation/ui/screens/complete_profile_screen.dart';

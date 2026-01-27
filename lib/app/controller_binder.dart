@@ -5,7 +5,6 @@ import 'package:doctor_appointment/features/home/presentation/ui/controller/home
 import 'package:doctor_appointment/features/lab_test/presentation/ui/controller/lab_report_controller.dart';
 import 'package:doctor_appointment/features/profile/presentation/ui/controller/profle_controller.dart';
 import 'package:get/get.dart';
-
 import 'controllers/language_controller.dart';
 
 

@@ -1,7 +1,3 @@
-// ===============================
-// appointment_models.dart
-// ===============================
-
 class AppointmentSummary {
   final String name; // OPD-00057
   final String patient;

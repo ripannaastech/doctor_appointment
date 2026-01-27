@@ -1,4 +1,3 @@
-import 'dart:developer';
 
 import 'package:doctor_appointment/app/app_colors.dart';
 import 'package:doctor_appointment/app/asset_paths.dart';
@@ -8,8 +7,6 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 
 import '../../../../../l10n/app_localizations.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 

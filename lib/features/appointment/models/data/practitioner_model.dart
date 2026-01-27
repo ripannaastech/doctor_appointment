@@ -36,7 +36,7 @@ class Practitioner {
   });
 
   factory Practitioner.fromJson(Map<String, dynamic> json) {
-    double? _parseDouble(dynamic v) {
+    double? parseDouble(dynamic v) {
       if (v == null) return null;
       if (v is num) return v.toDouble();
       return double.tryParse(v.toString());
@@ -59,7 +59,7 @@ class Practitioner {
           ? (json['op_consulting_charge'] as num).toDouble()
           : double.tryParse(json['op_consulting_charge']?.toString() ?? ''),
       opConsultingChargeItem: json['op_consulting_charge_item']?.toString(),
-      inpatientVisitCharge: _parseDouble(json['inpatient_visit_charge']),
+      inpatientVisitCharge: parseDouble(json['inpatient_visit_charge']),
       inpatientVisitChargeItem:
       json['inpatient_visit_charge_item']?.toString(),
     );

@@ -1,7 +1,6 @@
 import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../session/session.dart';
-
 class SharedPrefs {
   static const _kAccess = 'token';
   static const _kRefreshToken = 'refresh_token';
