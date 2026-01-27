@@ -1,3 +1,6 @@
+import 'package:doctor_appointment/features/auth/presentation/ui/screens/splash_screen.dart';
+import 'package:doctor_appointment/features/dashboard/presentation/ui/controller/dashboard_controller.dart';
+import 'package:doctor_appointment/features/home/presentation/ui/controller/home_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
@@ -39,11 +42,19 @@ class LogoutButton extends StatelessWidget {
     if (Get.isRegistered<ProfileControllerGetx>()) {
       Get.delete<ProfileControllerGetx>(force: true);
     }
+
+    if (Get.isRegistered<ProfileControllerGetx>()) {
+      Get.delete<DashboardController>(force: true);
+    }
+
+    if (Get.isRegistered<HomeController>()) {
+      Get.delete<HomeController>(force: true);
+    }
     if (Get.isRegistered<AuthControllerGetx>()) {
       Get.delete<AuthControllerGetx>(force: true);
     }
 
-    Navigator.pushReplacementNamed(context,LoginScreen.name); // or AuthScreen.name
+    Navigator.pushReplacementNamed(context,SplashScreen.name); // or AuthScreen.name
   }
 
   @override
