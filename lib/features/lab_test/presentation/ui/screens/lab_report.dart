@@ -19,8 +19,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 
-// ✅ Your imports (adjust paths)
 import 'lab_report_details_screen.dart';
+
+
 
 
 class LabReportScreen extends StatefulWidget {
@@ -39,7 +40,6 @@ class _LabReportScreenState extends State<LabReportScreen> {
   void initState() {
     super.initState();
 
-    /// ✅ IMPORTANT: avoid multiple instances
     /// If already put somewhere, this will reuse it
     c = Get.isRegistered<LabReportController>()
         ? Get.find<LabReportController>()
@@ -60,7 +60,7 @@ class _LabReportScreenState extends State<LabReportScreen> {
           backgroundColor: const Color(0xFF3F6DE0),
           elevation: 0,
 
-          // ✅ iOS back button
+
           leading: IconButton(
             icon: const Icon(
               Icons.arrow_back_ios,
@@ -100,7 +100,7 @@ class _LabReportScreenState extends State<LabReportScreen> {
             ),
             12.verticalSpace,
 
-            /// ✅ Lab report list
+
             Expanded(
               child: Obx(() {
                 if (c.loadingList.value) {

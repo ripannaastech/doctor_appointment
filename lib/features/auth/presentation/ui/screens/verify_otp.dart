@@ -35,7 +35,6 @@ class _OtpScreenState extends State<OtpScreen> {
 
   Timer? _timer;
 
-  // ✅ Reactive timer (10 minutes)
   final RxInt remainingSeconds = 600.obs;
 
   String get phone {

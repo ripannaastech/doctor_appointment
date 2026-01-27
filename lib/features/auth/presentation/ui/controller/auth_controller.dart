@@ -24,16 +24,15 @@ class AuthControllerGetx extends GetxController {
   // Store last phone
   RxString lastPhone = ''.obs;
 
-  // ✅ Localization getter (works anywhere because GetMaterialApp provides context)
   AppLocalizations get l10n => AppLocalizations.of(Get.context!)!;
 
   String _normalizePhone(String input) => input.trim();
 
-  // ✅ Optional: unified error message
+  //
   String _safeMsg(String? msg) =>
       (msg == null || msg.trim().isEmpty) ? l10n.somethingWentWrong : msg;
 
-  // ✅ Optional: unify begin/end loading
+  //   
   void _setLoading(bool v) => loading.value = v;
 
   /// True if user has saved login state
@@ -69,7 +68,7 @@ class AuthControllerGetx extends GetxController {
         final res = OtpSendRes.fromJson(data);
         otpSendRes.value = res;
 
-        // ✅ localized snackbar
+
         AppSnackbar.success(l10n.success, res.message);
 
         // optional: persist phone returned by backend (formatted)
@@ -154,7 +153,7 @@ class AuthControllerGetx extends GetxController {
         if (res.success == true) {
           AppSnackbar.success(l10n.success, res.message);
 
-          // ✅ Save auth
+
           if ((res.accessToken ?? '').isNotEmpty) {
             await _prefs.setString(SharedPrefs.accessToken, res.accessToken!);
           }
@@ -162,7 +161,7 @@ class AuthControllerGetx extends GetxController {
             await _prefs.setString(SharedPrefs.tokenType, res.tokenType!);
           }
 
-          // ✅ Save patient id/profile
+
           final pid = res.patient?.patientId;
           if ((pid ?? '').isNotEmpty) {
             await _prefs.setString(SharedPrefs.patientId, pid!);
@@ -231,7 +230,7 @@ class AuthControllerGetx extends GetxController {
         final data = Map<String, dynamic>.from(response.responseData ?? {});
         final patientMap = Map<String, dynamic>.from(data['patient'] ?? {});
 
-        // ✅ read patient_id
+
         final patientId =
         (patientMap['patient_id'] ?? patientMap['patientId'])?.toString();
 
@@ -240,16 +239,15 @@ class AuthControllerGetx extends GetxController {
           return false;
         }
 
-        // ✅ save patient id
         await _prefs.setString(SharedPrefs.patientId, patientId);
 
-        // ✅ save profile (optional but useful for Profile screen)
+
         await _prefs.setString(SharedPrefs.patientProfile, jsonEncode(patientMap));
 
-        // ✅ save last phone too
+
         await _prefs.setString(SharedPrefs.lastPhone, p);
 
-        // ✅ if your app treats registration as logged in:
+
         await _prefs.setBool(SharedPrefs.isLoggedIn, true);
 
         AppSnackbar.success(

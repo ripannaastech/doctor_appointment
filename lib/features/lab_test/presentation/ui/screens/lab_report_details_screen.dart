@@ -41,7 +41,7 @@ class _LabReportDetailsScreenState extends State<LabReportDetailsScreen> {
           backgroundColor: const Color(0xFF3F6DE0),
           elevation: 0,
 
-          // ✅ iOS back icon
+
           leading: IconButton(
             icon: const Icon(
               Icons.arrow_back_ios,
@@ -97,7 +97,7 @@ class _LabReportDetailsScreenState extends State<LabReportDetailsScreen> {
             children: [
               20.verticalSpace,
 
-              /// ✅ Header Card
+
               Container(
                 padding: EdgeInsets.all(16.w),
                 decoration: BoxDecoration(

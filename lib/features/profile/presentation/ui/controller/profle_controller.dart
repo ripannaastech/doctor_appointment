@@ -7,9 +7,6 @@ import '../../../../../core/services/shared_preferance/shared_preferance.dart';
 import '../../../../../l10n/app_localizations.dart';
 import '../../../models/user_profile_model.dart';
 
-import 'dart:convert';
-import 'package:get/get.dart';
-
 
 class ProfileControllerGetx extends GetxController {
   final _net = NetworkService().client;
@@ -23,7 +20,7 @@ class ProfileControllerGetx extends GetxController {
   // Optional: for forms
   RxString errorText = ''.obs;
 
-  // ✅ Localization getter
+
   AppLocalizations get l10n => AppLocalizations.of(Get.context!)!;
 
   /// Resolve user_id from prefs (ERPNext patient id)

@@ -133,14 +133,13 @@ class BookingController extends GetxController {
 
       String path;
 
-      // ✅ If user typed something, use your search endpoint
       if (q.isNotEmpty) {
         // NOTE: If your search endpoint also supports department,
         // you can append &department=$dep (only if backend supports).
         path =
         '/api/v1/doctors/erpnext/search/by-name?name=${Uri.encodeQueryComponent(q)}';
       } else {
-        // ✅ Normal list endpoint (department filter)
+
         final params = <String, String>{};
         if (dep.isNotEmpty) params['department'] = dep;
 
@@ -224,7 +223,7 @@ class BookingController extends GetxController {
           final time = (a['appointment_time'] ?? '').toString(); // HH:mm:ss (sometimes H:mm:ss)
           final status = (a['status'] ?? '').toString().toLowerCase();
 
-          // ✅ keep only active bookings (adjust if backend uses different statuses)
+
           final isActive = status != 'cancelled' && status != 'closed';
           if (!isActive) continue;
 
@@ -379,7 +378,7 @@ class BookingController extends GetxController {
       if (response.isSuccess && (response.statusCode == 200 || response.statusCode == 201)) {
         final data = Map<String, dynamic>.from(response.responseData ?? {});
         final appt = Map<String, dynamic>.from(data['appointment'] ?? {});
-        final id = appt['appointment_id']?.toString(); // ✅ OPD-00068
+        final id = appt['appointment_id']?.toString();
 
         if (id == null || id.isEmpty) {
           errorText.value = 'Booked but appointment_id missing';
@@ -416,8 +415,6 @@ class BookingController extends GetxController {
 
     try {
       final method = paymentMethod.trim().toLowerCase();
-
-      // ✅ CASH -> ERPNext payment endpoint
       if (method == 'cash') {
         final path = '/api/v1/payments/erpnext/pay-appointment/$appointmentId';
         final query = {'payment_method': 'cash'};
@@ -435,7 +432,6 @@ class BookingController extends GetxController {
         }
       }
 
-      // ✅ ONLINE -> EVC endpoint (needs phone + pin)
       if (method == 'online') {
         final phone = (phoneNumber ?? '').trim();
         final p = (pin ?? '').trim();
@@ -466,7 +462,6 @@ class BookingController extends GetxController {
         }
       }
 
-      // ✅ unknown method
       errorText.value = 'Invalid payment method: $paymentMethod';
       AppSnackbar.error('Error', errorText.value);
       return false;

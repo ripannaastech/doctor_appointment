@@ -174,7 +174,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   ),
                   SizedBox(height: 8.h),
 
-                  // ✅ reactive dropdown
+
                   Obx(() {
                     return DropdownButtonFormField<String>(
                       value: sex.value,
@@ -269,7 +269,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   ),
                   SizedBox(height: 8.h),
 
-                  // ✅ reactive dropdown
+
                   Obx(() {
                     return DropdownButtonFormField<String>(
                       value: bloodGroup.value,

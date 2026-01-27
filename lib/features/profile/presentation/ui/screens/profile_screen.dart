@@ -25,7 +25,7 @@ class ProfileScreen extends StatefulWidget {
 }
 
 class _ProfileScreenState extends State<ProfileScreen> {
-  // ✅ reactive instead of setState
+
   final RxBool isEditing = false.obs;
 
   late final ProfileControllerGetx pc;
@@ -38,7 +38,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
         ? Get.find<ProfileControllerGetx>()
         : Get.put(ProfileControllerGetx());
 
-    // ✅ instant load then refresh
+
     pc.loadCachedProfile();
     pc.fetchProfile();
   }
@@ -50,7 +50,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
       backgroundColor: kBackground,
       body: Column(
         children: [
-          // ✅ make header reactive too
+
           Obx(() {
             return ProfileHeader(
               isEditing: isEditing.value,
@@ -89,6 +89,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
   }
 
   void _toggleEdit() {
-    isEditing.value = !isEditing.value; // ✅ no setState
+    isEditing.value = !isEditing.value;
   }
 }

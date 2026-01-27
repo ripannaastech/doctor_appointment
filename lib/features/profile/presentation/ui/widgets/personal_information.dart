@@ -408,8 +408,6 @@ class _PersonalInfoCardState extends State<PersonalInfoCard> {
             ],
           ),
           SizedBox(height: 8.h),
-
-          // ✅ reactive dropdown/text
           editable
               ? Obx(() {
             final v = items.contains(selectedGender.value)

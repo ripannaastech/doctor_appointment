@@ -37,7 +37,7 @@ class LanguageController extends GetxController {
 
   Future<void> setLanguage(String code) async {
     if (code != 'en' && code != 'so') return;
-    if (lang.value == code) return; // ✅ prevent extra rebuilds
+    if (lang.value == code) return;
 
     lang.value = code;
 

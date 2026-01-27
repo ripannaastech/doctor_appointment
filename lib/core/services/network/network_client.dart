@@ -68,7 +68,7 @@ class NetworkClient {
         Map<String, String>? headers,
       }) async {
     try {
-      // ✅ Merge global + custom headers safely
+
       final mergedHeaders = <String, String>{};
 
       // Step 1: start with global headers

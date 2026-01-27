@@ -17,7 +17,7 @@ class AppointmentConfirmedScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
 
-    // ✅ read args from Navigator
+
     final args = ModalRoute.of(context)?.settings.arguments;
 
     final map = (args is Map) ? args : const <String, dynamic>{};
@@ -28,7 +28,7 @@ class AppointmentConfirmedScreen extends StatelessWidget {
     final time = (map['time'] ?? '').toString(); // HH:mm:ss
     final fee = (map['fee'] is num) ? (map['fee'] as num).toDouble() : 0.0;
 
-    // ✅ readable formats
+
     final prettyDate = _formatDatePretty(date);
     final prettyTime = _formatTimePretty(time);
 

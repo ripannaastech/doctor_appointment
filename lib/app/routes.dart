@@ -40,7 +40,7 @@ Route<dynamic> onGenerateRoute(RouteSettings settings) {
     case LabReportDetailsScreen.name: {
       final arg = settings.arguments;
 
-      // ✅ safe cast
+
       final labTestId = (arg is String) ? arg : '';
 
       return MaterialPageRoute(
@@ -54,7 +54,7 @@ Route<dynamic> onGenerateRoute(RouteSettings settings) {
     case SelectDateTimeScreen.name: {
       final arg = settings.arguments;
 
-      // ✅ safe cast
+
       final model = (arg is Practitioner) ? arg : null;
 
       if (model == null) {

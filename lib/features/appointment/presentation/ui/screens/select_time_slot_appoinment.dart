@@ -99,7 +99,7 @@ class _SelectDateTimeScreenState extends State<SelectDateTimeScreen> {
       backgroundColor: Colors.white,
       appBar: _appBar(l10n),
 
-      // ✅ SUBMIT BUTTON FIXED AT BOTTOM
+
       bottomNavigationBar: Obx(() {
         final canPress =
             selectedTime.value != -1 && !c.loading.value;
@@ -252,7 +252,7 @@ class _SelectDateTimeScreenState extends State<SelectDateTimeScreen> {
           ),
         );
       }),
-      // ✅ BODY
+
       body: Padding(
         padding: EdgeInsets.symmetric(horizontal: 20.w),
         child: Column(
@@ -276,8 +276,6 @@ class _SelectDateTimeScreenState extends State<SelectDateTimeScreen> {
                     child: GestureDetector(
                       onTap: () {
                         selectedDate.value = index;
-
-                        // ✅ optional: clear selected time when date changes
                         selectedTime.value = -1;
                       },
                       child: Container(
@@ -328,10 +326,10 @@ class _SelectDateTimeScreenState extends State<SelectDateTimeScreen> {
             _sectionTitle(l10n.selectTimeSlot),
             12.verticalSpace,
 
-            /// ✅ ONLY THIS PART SCROLLS
+
             Expanded(
               child: Obx(() {
-                // ✅ selected date key: yyyy-MM-dd
+
                 final sd = selectedDate.value < 0 ? 0 : selectedDate.value;
                 final d = dateList[sd];
 
@@ -340,7 +338,7 @@ class _SelectDateTimeScreenState extends State<SelectDateTimeScreen> {
                     '${d.month.toString().padLeft(2, '0')}-'
                     '${d.day.toString().padLeft(2, '0')}';
 
-                // ✅ booked set for this date
+
                 final booked =
                     c.bookedSlotsByDate[selectedDateKey] ?? <String>{};
 
@@ -352,10 +350,10 @@ class _SelectDateTimeScreenState extends State<SelectDateTimeScreen> {
                     children: List.generate(times.length, (index) {
                       final isSelected = selectedTime.value == index;
 
-                      // ✅ slot start time: HH:mm:ss
+
                       final slotStart = _extractStartTimeHHmmss(times[index]);
 
-                      // ✅ disable if booked
+
                       final isBooked = booked.contains(slotStart);
 
                       return GestureDetector(
@@ -731,7 +729,7 @@ class _SelectDateTimeScreenState extends State<SelectDateTimeScreen> {
         );
       },
     ).then((result) {
-      // ✅ Delay dispose until after the pop animation/frame
+
       WidgetsBinding.instance.addPostFrameCallback((_) {
         phoneCtrl.dispose();
         pinCtrl.dispose();

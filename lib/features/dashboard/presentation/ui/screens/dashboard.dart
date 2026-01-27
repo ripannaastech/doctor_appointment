@@ -16,11 +16,6 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
-// import your files:
-// import 'main_controller.dart';
-// import 'app_localizations.dart';
-// import 'app_colors.dart';
-// import 'asset_paths.dart';
 
 class Dashboard extends StatelessWidget {
   static const String name = '/mainScreen';

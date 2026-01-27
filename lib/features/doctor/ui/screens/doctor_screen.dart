@@ -83,7 +83,7 @@ class _DoctorScreenState extends State<DoctorScreen> {
             ),
             12.verticalSpace,
 
-            /// ✅ Search + Filter (same design)
+
             Container(
               height: 48.h,
               padding: EdgeInsets.symmetric(horizontal: 14.w),
@@ -125,7 +125,7 @@ class _DoctorScreenState extends State<DoctorScreen> {
                     );
                   }),
 
-                  /// ✅ Filter icon (department)
+
                   Obx(() {
                     final active = c.selectedDepartment.value.trim().isNotEmpty;
                     return InkWell(
@@ -149,7 +149,7 @@ class _DoctorScreenState extends State<DoctorScreen> {
 
             16.verticalSpace,
 
-            /// ✅ Doctor list (API)
+
             Expanded(
               child: Obx(() {
                 if (c.loadingPractitioners.value) {
@@ -305,7 +305,7 @@ class _DoctorScreenState extends State<DoctorScreen> {
   }
 
 
-  /// ✅ BottomSheet: Department filter
+
   void _showDepartmentFilter(BuildContext context, AppLocalizations l10n) {
     final TextEditingController searchCtrl = TextEditingController();
     final RxString localSearch = ''.obs;

@@ -26,7 +26,7 @@ class _BannerCarouselState extends State<BannerCarousel> {
   final PageController _controller = PageController();
   Timer? _timer;
 
-  // ✅ reactive index (no setState)
+
   final RxInt _index = 0.obs;
 
   @override
@@ -54,7 +54,7 @@ class _BannerCarouselState extends State<BannerCarousel> {
 
       final next = (_index.value + 1) % items.length;
 
-      // ✅ keep dot + page in sync
+
       _index.value = next;
 
       _controller.animateToPage(
@@ -97,7 +97,7 @@ class _BannerCarouselState extends State<BannerCarousel> {
             child: PageView.builder(
               controller: _controller,
               itemCount: items.length,
-              onPageChanged: (i) => _index.value = i, // ✅ no setState
+              onPageChanged: (i) => _index.value = i,
               itemBuilder: (_, i) {
                 final b = items[i];
                 return Stack(
@@ -134,7 +134,7 @@ class _BannerCarouselState extends State<BannerCarousel> {
         ),
         SizedBox(height: 12.h),
 
-        // ✅ dots react to _index
+
         Obx(() {
           final current = _index.value;
           return Row(

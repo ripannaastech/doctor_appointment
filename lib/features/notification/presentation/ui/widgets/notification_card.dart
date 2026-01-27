@@ -15,12 +15,13 @@ class NotificationCard extends StatefulWidget {
 }
 
 class _NotificationCardState extends State<NotificationCard> {
-  // ✅ reactive instead of setState
+
   final RxBool expanded = false.obs;
 
   @override
   void dispose() {
-    expanded.close(); // ✅ clean up worker stream
+    expanded.close();
+
     super.dispose();
   }
 

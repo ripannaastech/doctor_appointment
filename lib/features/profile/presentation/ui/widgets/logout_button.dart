@@ -64,7 +64,7 @@ class LogoutButton extends StatelessWidget {
             borderRadius: BorderRadius.circular(12.r),
           ),
         ),
-        onPressed: () => _logout(context), // ✅ connected
+        onPressed: () => _logout(context),
         icon: Icon(Icons.logout, size: 20.sp),
         label: Text(
           l10n.logout,

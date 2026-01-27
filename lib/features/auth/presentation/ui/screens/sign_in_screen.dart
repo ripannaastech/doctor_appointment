@@ -63,7 +63,6 @@ class LoginScreen extends StatelessWidget {
                       : () async {
                     final phone = phoneCtrl.text.trim();
 
-                    // ✅ validate phone
                     if (phone.isEmpty) {
                       AppSnackbar.error(l10n.error, l10n.enterPhoneNumber);
                       return;
@@ -72,7 +71,6 @@ class LoginScreen extends StatelessWidget {
                     final ok = await c.requestOtpErpnext(phone);
                     if (!ok) return;
 
-                    // ✅ go OTP screen with phone
                     Navigator.pushNamed(
                       context,
                       OtpScreen.name,

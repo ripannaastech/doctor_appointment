@@ -31,7 +31,7 @@ class HomeController extends GetxController {
       final map = jsonDecode(raw) as Map<String, dynamic>;
       final profile = UserProfile.fromJson(map);
 
-      // ✅ Use patientName safely
+
       final patientName = (profile.patientName ?? '').trim();
       name.value = patientName.isNotEmpty ? patientName : '—';
     } catch (_) {

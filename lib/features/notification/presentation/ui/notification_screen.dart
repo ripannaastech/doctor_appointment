@@ -17,7 +17,7 @@ class NotificationsScreen extends StatefulWidget {
 }
 
 class _NotificationsScreenState extends State<NotificationsScreen> {
-  // ✅ reactive instead of setState
+
   final RxInt tabIndex = 0.obs;
 
   // replace with your real list
@@ -71,7 +71,7 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
       backgroundColor: const Color(0xFFF8F9FA),
       body: Column(
         children: [
-          /// ✅ Appointment-style AppBar (rounded)
+
           Container(
             height: statusBarHeight + 90.h,
             decoration: BoxDecoration(
@@ -115,7 +115,7 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
             ),
           ),
 
-          /// ✅ Body like appointment (Stack + floating tabs)
+
           Expanded(
             child: Stack(
               clipBehavior: Clip.none,

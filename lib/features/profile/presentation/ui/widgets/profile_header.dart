@@ -86,7 +86,7 @@ class ProfileHeader extends StatelessWidget {
 
           SizedBox(height: 16.h),
 
-          // ✅ dynamic name/email
+
           Obx(() {
             final p = pc.profile.value;
 

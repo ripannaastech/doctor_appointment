@@ -116,7 +116,7 @@ class _SelectDoctorScreenState extends State<SelectDoctorScreen> {
             ),
             12.verticalSpace,
 
-            /// ✅ Search + Filter
+
             Container(
               height: 48.h,
               padding: EdgeInsets.symmetric(horizontal: 14.w),
@@ -178,7 +178,7 @@ class _SelectDoctorScreenState extends State<SelectDoctorScreen> {
 
             16.verticalSpace,
 
-            /// ✅ Doctor List (GetX)
+
             Expanded(
               child: Obx(() {
                 if (c.loadingPractitioners.value) {
@@ -267,12 +267,12 @@ class _SelectDoctorScreenState extends State<SelectDoctorScreen> {
               }),
             ),
 
-            /// ✅ Next button (enabled only if selected)
+
           Padding(
             padding: EdgeInsets.only(bottom: 20.h),
             child: Obx(() {
               final enabled = c.selectedPractitioner.value != null;
-              final isLoading = c.loadingDoctorAppointments.value; // ✅ add in controller
+              final isLoading = c.loadingDoctorAppointments.value;
 
               return SizedBox(
                 width: double.infinity,
