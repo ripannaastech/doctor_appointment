@@ -17,52 +17,94 @@ import '../features/auth/presentation/ui/screens/splash_screen.dart';
 import '../features/auth/presentation/ui/screens/verify_otp.dart';
 import '../features/lab_test/presentation/ui/screens/lab_report_details_screen.dart';
 
-MaterialPageRoute onGenerateRoute(RouteSettings settings) {
-  late Widget screen;
+Route<dynamic> onGenerateRoute(RouteSettings settings) {
+  switch (settings.name) {
+    case SplashScreen.name:
+      return MaterialPageRoute(builder: (_) => const SplashScreen());
 
-  if (settings.name == SplashScreen.name) {
-    screen = SplashScreen();
-  }
+    case LanguageSelectScreen.name:
+      return MaterialPageRoute(builder: (_) => const LanguageSelectScreen());
 
-  else if (settings.name == LanguageSelectScreen.name) {
-    screen = LanguageSelectScreen();
-  }
-  else if (settings.name == LoginScreen.name) {
-    screen = LoginScreen();
-  }else if (settings.name == OtpScreen.name) {
-    screen = OtpScreen();
-  }else if (settings.name == RegisterScreen.name) {
-    screen = RegisterScreen();
-  }
-  else if (settings.name == LabReportScreen.name) {
-    screen = LabReportScreen();
-  }
-  else if (settings.name == LabReportDetailsScreen.name) {
-    final labTestId = settings.arguments as String;
+    case LoginScreen.name:
+      return MaterialPageRoute(builder: (_) => const LoginScreen());
 
-    screen = LabReportDetailsScreen(
-      labTestId: labTestId,
-    );
-  }
+    case OtpScreen.name:
+      return MaterialPageRoute(builder: (_) => const OtpScreen());
 
-  else if (settings.name == MyAppointmentScreen.name) {
-    screen = MyAppointmentScreen();
-  }else if (settings.name == SelectDateTimeScreen.name) {
-    final model = settings.arguments as Practitioner;
+    case RegisterScreen.name:
+      return MaterialPageRoute(builder: (_) => const RegisterScreen());
 
-    screen = SelectDateTimeScreen( doctor: model,);
-  }
-  else if (settings.name == SelectDoctorScreen.name) {
-    screen = SelectDoctorScreen();
-  }else if (settings.name == ProfileScreen.name) {
-    screen = ProfileScreen();
-  }else if (settings.name == HomeScreen.name) {
-    screen = HomeScreen();
-  }else if (settings.name == Dashboard.name) {
-    screen = Dashboard();
-  }else if (settings.name == NotificationsScreen.name) {
-    screen = NotificationsScreen();
-  }
+    case LabReportScreen.name:
+      return MaterialPageRoute(builder: (_) => const LabReportScreen());
 
-  return MaterialPageRoute(builder: (ctx) => screen);
+    case LabReportDetailsScreen.name: {
+      final arg = settings.arguments;
+
+      // ✅ safe cast
+      final labTestId = (arg is String) ? arg : '';
+
+      return MaterialPageRoute(
+        builder: (_) => LabReportDetailsScreen(labTestId: labTestId),
+      );
+    }
+
+    case MyAppointmentScreen.name:
+      return MaterialPageRoute(builder: (_) => const MyAppointmentScreen());
+
+    case SelectDateTimeScreen.name: {
+      final arg = settings.arguments;
+
+      // ✅ safe cast
+      final model = (arg is Practitioner) ? arg : null;
+
+      if (model == null) {
+        return _errorRoute('Practitioner missing for SelectDateTimeScreen');
+      }
+
+      return MaterialPageRoute(
+        builder: (_) => SelectDateTimeScreen(doctor: model),
+      );
+    }
+
+    case SelectDoctorScreen.name:
+      return MaterialPageRoute(builder: (_) => const SelectDoctorScreen());
+
+    case ProfileScreen.name:
+      return MaterialPageRoute(builder: (_) => const ProfileScreen());
+
+    case HomeScreen.name:
+      return MaterialPageRoute(builder: (_) => const HomeScreen());
+
+    case Dashboard.name:
+      return MaterialPageRoute(builder: (_) => const Dashboard());
+
+    case NotificationsScreen.name:
+      return MaterialPageRoute(builder: (_) => const NotificationsScreen());
+
+    case AppointmentConfirmedScreen.name: {
+      final args = settings.arguments;
+
+      final map = (args is Map<String, dynamic>) ? args : const {};
+
+      return MaterialPageRoute(
+        builder: (_) => const AppointmentConfirmedScreen(),
+        settings: RouteSettings(
+          name: AppointmentConfirmedScreen.name,
+          arguments: map, // pass through safely
+        ),
+      );
+    }
+
+    default:
+      return _errorRoute('No route defined for ${settings.name}');
+  }
+}
+
+Route<dynamic> _errorRoute(String message) {
+  return MaterialPageRoute(
+    builder: (_) => Scaffold(
+      appBar: AppBar(title: const Text('Route Error')),
+      body: Center(child: Text(message)),
+    ),
+  );
 }

@@ -13,7 +13,9 @@ class LanguageCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
-    final lc = Get.put(LanguageController(), permanent: true);
+    final lc = Get.isRegistered<LanguageController>()
+        ? Get.find<LanguageController>()
+        : Get.put(LanguageController());
 
     return Container(
       decoration: BoxDecoration(

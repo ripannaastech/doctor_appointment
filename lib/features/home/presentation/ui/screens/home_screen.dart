@@ -23,7 +23,9 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   int bottomIndex = 0;
-  final pc = Get.put(ProfileControllerGetx());
+  final pc = Get.isRegistered<ProfileControllerGetx>()
+      ? Get.find<ProfileControllerGetx>()
+      : Get.put(ProfileControllerGetx());
 
   @override
   void initState() {
@@ -51,7 +53,7 @@ class _HomeScreenState extends State<HomeScreen> {
         child: Column(
           children: [
             SizedBox(height: 8.h),
-            const HomeTopBar(),
+             HomeTopBar(),
             SizedBox(height: 14.h),
             Expanded(
               child: ListView(

@@ -14,6 +14,7 @@ class SharedPrefs {
   static const patientId = 'patient_id';
   static const patientProfile = 'patient_profile_json';
   static const isLoggedIn = 'is_logged_in';
+  static const lastPhone = 'last_phone';
 
   Future<void> saveToken(String token) async {
     final p = await SharedPreferences.getInstance();

@@ -155,15 +155,7 @@ class _DoctorScreenState extends State<DoctorScreen> {
                   return const Center(child: CircularProgressIndicator());
                 }
 
-                if (c.errorText.value.isNotEmpty) {
-                  return Center(
-                    child: Text(
-                      c.errorText.value,
-                      style: TextStyle(fontSize: 14.sp, color: Colors.black54),
-                      textAlign: TextAlign.center,
-                    ),
-                  );
-                }
+
 
                 if (c.practitioners.isEmpty) {
                   return Center(

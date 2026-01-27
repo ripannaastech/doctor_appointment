@@ -449,4 +449,86 @@ class AppLocalizationsSo extends AppLocalizations {
 
   @override
   String get loading => 'Waa la soo rarayaa...';
+
+  @override
+  String get selectPaymentMethod => 'Dooro Habka Lacag Bixinta';
+
+  @override
+  String get choosePaymentMethodDesc =>
+      'Dooro sida aad u rabto inaad u bixiso ballantan.';
+
+  @override
+  String get cashPayment => 'Lacag Caddaan';
+
+  @override
+  String get cashPaymentDesc => 'Ku bixi isbitaalka ama rugta caafimaadka';
+
+  @override
+  String get onlinePayment => 'Lacag Online ah';
+
+  @override
+  String get onlinePaymentDesc => 'Ku bixi hadda adigoo isticmaalaya online';
+
+  @override
+  String get success => 'Guul';
+
+  @override
+  String get error => 'Khalad';
+
+  @override
+  String get somethingWentWrong => 'Wax ayaa khaldamay';
+
+  @override
+  String get otpRequestFailed => 'Codsiga OTP wuu fashilmay';
+
+  @override
+  String get otpResentSuccessfully => 'OTP si guul leh ayaa mar kale loo diray';
+
+  @override
+  String get resendOtpFailed => 'Dib u dirista OTP way fashilantay';
+
+  @override
+  String get otpVerifyFailed => 'Xaqiijinta OTP way fashilantay';
+
+  @override
+  String get registrationCompleted => 'Diiwaangelinta waa la dhammeeyay';
+
+  @override
+  String get registrationFailed => 'Diiwaangelinta way fashilantay';
+
+  @override
+  String get doctorInfoMissing => 'Macluumaadka dhakhtarka wuu maqan yahay';
+
+  @override
+  String get feeAmountMissing => 'Lacagta bixinta way maqan tahay';
+
+  @override
+  String get bookingFailed => 'Ballansashada way fashilantay';
+
+  @override
+  String get enter6DigitOtp => 'Geli OTP 6-lambar ah';
+
+  @override
+  String get info => 'Macluumaad';
+
+  @override
+  String get patientIdNotFoundPleaseLoginAgain =>
+      'Aqoonsiga bukaanka lama helin. Fadlan mar kale soo gal.';
+
+  @override
+  String get failedToLoadProfile =>
+      'Soo dejinta xogta profile-ka way fashilantay';
+
+  @override
+  String get failedToUpdateProfile =>
+      'Cusboonaysiinta profile-ka way fashilantay';
+
+  @override
+  String get nothingToUpdate => 'Wax la cusboonaysiinayo ma jiraan';
+
+  @override
+  String get totalPayable => 'Wadarta Lacagta La Bixinayo';
+
+  @override
+  String get feeAmount => 'Qiimaha La-tashiga';
 }

@@ -7,6 +7,7 @@ import 'package:get/get.dart';
 
 import 'package:pin_code_fields/pin_code_fields.dart';
 
+import '../../../../../app/app_snackbar.dart';
 import '../../../../../l10n/app_localizations.dart';
 import '../../../../dashboard/presentation/ui/screens/dashboard.dart';
 import 'complete_profile_screen.dart';
@@ -32,20 +33,29 @@ class _OtpScreenState extends State<OtpScreen> {
 
   String otp = '';
 
-  // ✅ 10 min timer
   Timer? _timer;
-  int _remainingSeconds = 600; // 10 minutes = 600 seconds
+
+  // ✅ Reactive timer (10 minutes)
+  final RxInt remainingSeconds = 600.obs;
 
   String get phone {
-    final arg = Get.arguments;
-    if (arg is Map && arg['phone'] != null) return arg['phone'].toString();
+    final route = ModalRoute.of(context);
+    if (route == null) return c.lastPhone.value;
+
+    final args = route.settings.arguments;
+    if (args is Map<String, dynamic>) {
+      final p = args['phone'];
+      if (p != null) return p.toString();
+    }
+
     return c.lastPhone.value;
   }
+
 
   @override
   void initState() {
     super.initState();
-    _startTimer(); // ✅ start timer when screen opens
+    _startTimer();
   }
 
   @override
@@ -56,28 +66,24 @@ class _OtpScreenState extends State<OtpScreen> {
 
   void _startTimer() {
     _timer?.cancel();
-    setState(() {
-      _remainingSeconds = 600;
-    });
+    remainingSeconds.value = 600;
 
     _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
-      if (!mounted) return;
-
-      if (_remainingSeconds <= 0) {
+      if (remainingSeconds.value <= 0) {
         timer.cancel();
       } else {
-        setState(() => _remainingSeconds--);
+        remainingSeconds.value--;
       }
     });
   }
 
-  String get _timerText {
-    final min = (_remainingSeconds ~/ 60).toString().padLeft(2, '0');
-    final sec = (_remainingSeconds % 60).toString().padLeft(2, '0');
+  String get timerText {
+    final min = (remainingSeconds.value ~/ 60).toString().padLeft(2, '0');
+    final sec = (remainingSeconds.value % 60).toString().padLeft(2, '0');
     return "$min:$sec";
   }
 
-  bool get _otpExpired => _remainingSeconds <= 0;
+  bool get otpExpired => remainingSeconds.value <= 0;
 
   @override
   Widget build(BuildContext context) {
@@ -94,6 +100,7 @@ class _OtpScreenState extends State<OtpScreen> {
               l10n.otpVerification,
               style: TextStyle(fontSize: 24.sp, fontWeight: FontWeight.w500),
             ),
+
             SizedBox(height: 8.h),
 
             Text(
@@ -104,7 +111,7 @@ class _OtpScreenState extends State<OtpScreen> {
 
             SizedBox(height: 24.h),
 
-            /// PIN CODE FIELD (6 digits)
+            /// OTP FIELD
             SizedBox(
               width: 260.w,
               child: PinCodeTextField(
@@ -119,36 +126,30 @@ class _OtpScreenState extends State<OtpScreen> {
                   shape: PinCodeFieldShape.box,
                   fieldHeight: 40.h,
                   fieldWidth: 40.w,
-                  fieldOuterPadding: EdgeInsets.zero,
                   inactiveColor: Colors.grey.shade400,
                   activeColor: theme.primaryColor,
                   selectedColor: theme.primaryColor,
-                  inactiveBorderWidth: 1,
-                  activeBorderWidth: 2,
-                  selectedBorderWidth: 2,
                 ),
-                onChanged: (value) => otp = value,
+                onChanged: (v) => otp = v,
               ),
             ),
 
+            SizedBox(height: 16.h),
 
-
-            /// RESEND (disabled until timer ends)
+            /// RESEND BUTTON
             Obx(() {
-              final disabled = c.loading.value || !_otpExpired;
+              final disabled = c.loading.value || remainingSeconds.value > 0;
 
               return TextButton(
                 onPressed: disabled
                     ? null
                     : () async {
                   await c.resendOtpErpnext(phone);
-                  _startTimer(); // ✅ reset 10 min timer
+                  _startTimer();
                 },
-                child: c.loading.value
-                    ? const Text("Sending...")
-                    : Text(
-                  !_otpExpired
-                      ? "${l10n.resendIn} $_timerText"
+                child: Text(
+                  remainingSeconds.value > 0
+                      ? "${l10n.resendIn} $timerText"
                       : l10n.resendOtp,
                 ),
               );
@@ -156,7 +157,7 @@ class _OtpScreenState extends State<OtpScreen> {
 
             SizedBox(height: 16.h),
 
-            /// CONFIRM
+            /// CONFIRM BUTTON
             Obx(() {
               return SizedBox(
                 width: double.infinity,
@@ -165,14 +166,19 @@ class _OtpScreenState extends State<OtpScreen> {
                   onPressed: c.loading.value
                       ? null
                       : () async {
-                    // ✅ optional: block confirm if expired
-                    if (_otpExpired) {
-                      Get.snackbar('Error', l10n.otpExpiredPleaseResend);
+                    if (otpExpired) {
+                      AppSnackbar.error(
+                        l10n.error,
+                        l10n.otpExpiredPleaseResend,
+                      );
                       return;
                     }
 
                     if (otp.trim().length != 6) {
-                      Get.snackbar('Error', 'Enter 6 digit OTP');
+                      AppSnackbar.error(
+                        l10n.error,
+                        l10n.enter6DigitOtp,
+                      );
                       return;
                     }
 
@@ -180,6 +186,7 @@ class _OtpScreenState extends State<OtpScreen> {
                       phone: phone,
                       otp: otp.trim(),
                     );
+
                     if (!ok) return;
 
                     final res = c.otpVerifyRes.value;

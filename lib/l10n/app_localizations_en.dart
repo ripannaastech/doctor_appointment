@@ -450,4 +450,84 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get loading => 'Loading...';
+
+  @override
+  String get selectPaymentMethod => 'Select Payment Method';
+
+  @override
+  String get choosePaymentMethodDesc =>
+      'Choose how you want to pay for this appointment.';
+
+  @override
+  String get cashPayment => 'Cash Payment';
+
+  @override
+  String get cashPaymentDesc => 'Pay at hospital or clinic';
+
+  @override
+  String get onlinePayment => 'Online Payment';
+
+  @override
+  String get onlinePaymentDesc => 'Pay now using online method';
+
+  @override
+  String get success => 'Success';
+
+  @override
+  String get error => 'Error';
+
+  @override
+  String get somethingWentWrong => 'Something went wrong';
+
+  @override
+  String get otpRequestFailed => 'OTP request failed';
+
+  @override
+  String get otpResentSuccessfully => 'OTP resent successfully';
+
+  @override
+  String get resendOtpFailed => 'Resend OTP failed';
+
+  @override
+  String get otpVerifyFailed => 'OTP verify failed';
+
+  @override
+  String get registrationCompleted => 'Registration completed';
+
+  @override
+  String get registrationFailed => 'Registration failed';
+
+  @override
+  String get doctorInfoMissing => 'Doctor info missing';
+
+  @override
+  String get feeAmountMissing => 'Fee amount missing';
+
+  @override
+  String get bookingFailed => 'Booking failed';
+
+  @override
+  String get enter6DigitOtp => 'Enter 6 digit OTP';
+
+  @override
+  String get info => 'Info';
+
+  @override
+  String get patientIdNotFoundPleaseLoginAgain =>
+      'Patient ID not found. Please login again.';
+
+  @override
+  String get failedToLoadProfile => 'Failed to load profile';
+
+  @override
+  String get failedToUpdateProfile => 'Failed to update profile';
+
+  @override
+  String get nothingToUpdate => 'Nothing to update';
+
+  @override
+  String get totalPayable => 'Total Payable';
+
+  @override
+  String get feeAmount => 'Consultation Fee';
 }

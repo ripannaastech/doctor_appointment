@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
+import '../../../../../app/app_snackbar.dart';
 import '../../../../../l10n/app_localizations.dart';
 import '../../../models/data/appoinment_model.dart';
 import '../controller/booking_controller.dart';
@@ -353,35 +354,6 @@ import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 
 
-
-// If you already have InfoRow widget, keep using yours.
-// Otherwise use this simple one:
-class InfoRow extends StatelessWidget {
-  final IconData icon;
-  final String text;
-  const InfoRow({super.key, required this.icon, required this.text});
-
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      children: [
-        Icon(icon, size: 18.sp, color: const Color(0xFF6B7280)),
-        10.horizontalSpace,
-        Expanded(
-          child: Text(
-            text,
-            style: TextStyle(
-              fontSize: 13.sp,
-              color: const Color(0xFF6B7280),
-              fontWeight: FontWeight.w500,
-            ),
-          ),
-        ),
-      ],
-    );
-  }
-}
-
 class MyAppointmentScreen extends StatefulWidget {
   static const String name = '/myAppointment';
   const MyAppointmentScreen({super.key});
@@ -391,7 +363,7 @@ class MyAppointmentScreen extends StatefulWidget {
 }
 
 class _MyAppointmentScreenState extends State<MyAppointmentScreen> {
-  bool isUpcoming = true;
+  final RxBool isUpcoming = true.obs;
 
   late final BookingController c;
 
@@ -415,7 +387,6 @@ class _MyAppointmentScreenState extends State<MyAppointmentScreen> {
       backgroundColor: const Color(0xFFF8F9FA),
       body: Column(
         children: [
-          /// Custom AppBar
           Container(
             height: statusBarHeight + 90.h,
             decoration: BoxDecoration(
@@ -425,44 +396,37 @@ class _MyAppointmentScreenState extends State<MyAppointmentScreen> {
             child: Column(
               children: [
                 SizedBox(height: statusBarHeight),
-                SizedBox(
-                  height: 56.h,
-                  child: Row(
-                    children: [
-                      IconButton(
-                        icon: const Icon(
-                          Icons.arrow_back_ios,
-                          color: Colors.white,
-                          size: 20,
-                        ),
-                        onPressed: () => Navigator.of(context).pop(),
-                      ),
-                      Expanded(
-                        child: Text(
-                          l10n.myAppointment,
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                            fontSize: 18.sp,
-                            color: Colors.white,
-                            fontWeight: FontWeight.w600,
-                            letterSpacing: 0.2,
-                          ),
-                        ),
-                      ),
-                      SizedBox(width: 48.w),
-                    ],
+        SizedBox(
+          height: 56.h,
+          child: Row(
+            children: [
+              SizedBox(width: 48.w),
+
+              Expanded(
+                child: Text(
+                  l10n.myAppointment,
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    fontSize: 18.sp,
+                    color: Colors.white,
+                    fontWeight: FontWeight.w600,
+                    letterSpacing: 0.2,
                   ),
                 ),
+              ),
+
+              SizedBox(width: 48.w),
+            ],
+          ),
+        )
               ],
             ),
           ),
 
-          /// Body with Tabs and Content
           Expanded(
             child: Stack(
               clipBehavior: Clip.none,
               children: [
-                /// Main Content
                 Padding(
                   padding: EdgeInsets.only(
                     top: MediaQuery.of(context).padding.top + 20.h,
@@ -472,27 +436,16 @@ class _MyAppointmentScreenState extends State<MyAppointmentScreen> {
                       return const Center(child: CircularProgressIndicator());
                     }
 
-                    if (c.errorText.value.isNotEmpty) {
-                      return Center(
-                        child: Text(
-                          c.errorText.value,
-                          style: TextStyle(fontSize: 14.sp, color: Colors.black54),
-                          textAlign: TextAlign.center,
-                        ),
-                      );
-                    }
-
                     final all = c.appointments.toList();
-
                     final upcoming = _filterUpcoming(all);
                     final past = _filterPast(all);
 
-                    final list = isUpcoming ? upcoming : past;
+                    final list = isUpcoming.value ? upcoming : past;
 
                     if (list.isEmpty) {
                       return Center(
                         child: Text(
-                          isUpcoming ? l10n.noUpcoming : l10n.noPast,
+                          isUpcoming.value ? l10n.noUpcoming : l10n.noPast,
                           style: TextStyle(fontSize: 14.sp, color: Colors.black54),
                         ),
                       );
@@ -501,17 +454,18 @@ class _MyAppointmentScreenState extends State<MyAppointmentScreen> {
                     return ListView(
                       padding: EdgeInsets.fromLTRB(20.w, 12.h, 20.w, 0.h),
                       children: list
-                          .map((a) => _appointmentCard(
-                        appointment: a,
-                        l10n: l10n,
-                        showActions: isUpcoming,
-                      ))
+                          .map(
+                            (a) => _appointmentCard(
+                          appointment: a,
+                          l10n: l10n,
+                          showActions: isUpcoming.value,
+                        ),
+                      )
                           .toList(),
                     );
                   }),
                 ),
 
-                /// Floating Tabs
                 Positioned(
                   top: -28.h,
                   left: 20.w,
@@ -526,9 +480,6 @@ class _MyAppointmentScreenState extends State<MyAppointmentScreen> {
     );
   }
 
-  // ----------------------------
-  // Tabs
-  // ----------------------------
   Widget _tabSwitcher(AppLocalizations l10n) {
     return Container(
       margin: EdgeInsets.only(top: 12.h),
@@ -544,16 +495,18 @@ class _MyAppointmentScreenState extends State<MyAppointmentScreen> {
           ),
         ],
       ),
-      child: Row(
-        children: [
-          _tabButton(l10n.upcoming, isUpcoming, () {
-            setState(() => isUpcoming = true);
-          }),
-          _tabButton(l10n.past, !isUpcoming, () {
-            setState(() => isUpcoming = false);
-          }),
-        ],
-      ),
+      child: Obx(() {
+        return Row(
+          children: [
+            _tabButton(l10n.upcoming, isUpcoming.value, () {
+              isUpcoming.value = true;
+            }),
+            _tabButton(l10n.past, !isUpcoming.value, () {
+              isUpcoming.value = false;
+            }),
+          ],
+        );
+      }),
     );
   }
 
@@ -583,9 +536,7 @@ class _MyAppointmentScreenState extends State<MyAppointmentScreen> {
     );
   }
 
-  // ----------------------------
-  // Card (ERPNext data)
-  // ----------------------------
+
   Widget _appointmentCard({
     required AppointmentSummary appointment,
     required AppLocalizations l10n,
@@ -701,12 +652,13 @@ class _MyAppointmentScreenState extends State<MyAppointmentScreen> {
                     const Color(0xFFFEF2F2),
                     const Color(0xFFEF4444),
                     onTap: () async {
-                      final ok = await _confirmCancel(l10n);
+                      final ok = await confirmCancel(l10n);
                       if (!ok) return;
 
                       final success = await c.cancelAppointment(appointment.name);
                       if (success) {
-                        Get.snackbar('Success', l10n.appointmentCanceled);
+                        AppSnackbar.success('Success',  l10n.appointmentCanceled );
+
                       }
                     },
                   ),
@@ -832,9 +784,7 @@ class _MyAppointmentScreenState extends State<MyAppointmentScreen> {
     );
   }
 
-  // ----------------------------
-  // Filtering helpers
-  // ----------------------------
+
   List<AppointmentSummary> _filterUpcoming(List<AppointmentSummary> all) {
     final now = DateTime.now();
     return all.where((a) {
@@ -845,7 +795,7 @@ class _MyAppointmentScreenState extends State<MyAppointmentScreen> {
       ..sort((a, b) {
         final da = _parseAppointmentDateTime(a.appointmentDate, a.appointmentTime) ?? DateTime(1970);
         final db = _parseAppointmentDateTime(b.appointmentDate, b.appointmentTime) ?? DateTime(1970);
-        return da.compareTo(db); // soonest first
+        return da.compareTo(db);
       });
   }
 
@@ -872,7 +822,6 @@ class _MyAppointmentScreenState extends State<MyAppointmentScreen> {
 
   DateTime? _parseAppointmentDateTime(String date, String time) {
     try {
-      // date: "2026-01-29", time: "11:00:00"
       final d = DateTime.parse(date);
       final parts = time.split(':');
       final h = int.tryParse(parts[0]) ?? 0;
@@ -884,9 +833,6 @@ class _MyAppointmentScreenState extends State<MyAppointmentScreen> {
     }
   }
 
-  // ----------------------------
-  // Formatting helpers
-  // ----------------------------
   String _formatDatePretty(String yyyyMmDd) {
     try {
       final dt = DateTime.parse(yyyyMmDd);
@@ -925,24 +871,103 @@ class _MyAppointmentScreenState extends State<MyAppointmentScreen> {
     }
   }
 
-  Future<bool> _confirmCancel(AppLocalizations l10n) async {
-    return await showDialog<bool>(
-      context: context,
-      builder: (_) => AlertDialog(
-        title: Text(l10n.cancelAppointmentTitle),
-        content: Text(l10n.cancelAppointmentBody),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context, false),
-            child: Text(l10n.no),
+  Future<bool> confirmCancel(AppLocalizations l10n) async {
+    final result = await Get.dialog<bool>(
+      Dialog(
+        insetPadding: const EdgeInsets.symmetric(horizontal: 20),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(18)),
+        child: Padding(
+          padding: const EdgeInsets.fromLTRB(18, 18, 18, 14),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              // Icon
+              Container(
+                height: 54,
+                width: 54,
+                decoration: BoxDecoration(
+                  color: const Color(0xFFFFF3E0), // soft warm
+                  shape: BoxShape.circle,
+                ),
+                child: const Icon(
+                  Icons.event_busy_rounded,
+                  size: 28,
+                  color: Color(0xFFEF6C00),
+                ),
+              ),
+
+              const SizedBox(height: 14),
+
+              // Title
+              Text(
+                l10n.cancelAppointmentTitle,
+                textAlign: TextAlign.center,
+                style: const TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.w800,
+                  color: Color(0xFF141A2A),
+                  height: 1.2,
+                ),
+              ),
+
+              const SizedBox(height: 8),
+
+              // Body
+              Text(
+                l10n.cancelAppointmentBody,
+                textAlign: TextAlign.center,
+                style: const TextStyle(
+                  fontSize: 13.5,
+                  fontWeight: FontWeight.w500,
+                  color: Color(0xFF6B7280),
+                  height: 1.35,
+                ),
+              ),
+
+              const SizedBox(height: 16),
+
+              // Buttons
+              Row(
+                children: [
+                  Expanded(
+                    child: OutlinedButton(
+                      onPressed: () => Navigator.pop(context, false),
+                      style: OutlinedButton.styleFrom(
+                        foregroundColor: const Color(0xFF141A2A),
+                        side: const BorderSide(color: Color(0xFFE5E7EB)),
+                        padding: const EdgeInsets.symmetric(vertical: 12),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                      ),
+                      child: Text(l10n.no),
+                    ),
+                  ),
+                  const SizedBox(width: 10),
+                  Expanded(
+                    child: ElevatedButton(
+                      onPressed: () => Navigator.pop(context, true),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: const Color(0xFFEF4444), // red
+                        foregroundColor: Colors.white,
+                        elevation: 0,
+                        padding: const EdgeInsets.symmetric(vertical: 12),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                      ),
+                      child: Text(l10n.yesCancel),
+                    ),
+                  ),
+                ],
+              ),
+            ],
           ),
-          TextButton(
-            onPressed: () => Navigator.pop(context, true),
-            child: Text(l10n.yesCancel),
-          ),
-        ],
+        ),
       ),
-    ) ??
-        false;
+      barrierDismissible: true, // tap outside = close
+    );
+
+    return result ?? false;
   }
 }

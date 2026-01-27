@@ -2,6 +2,7 @@
 import 'package:doctor_appointment/features/notification/presentation/ui/widgets/notification_card.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:get/get.dart';
 
 import '../../../../../l10n/app_localizations.dart';
 import '../../data/models/appoinment_model.dart';
@@ -16,7 +17,8 @@ class NotificationsScreen extends StatefulWidget {
 }
 
 class _NotificationsScreenState extends State<NotificationsScreen> {
-  int tabIndex = 0;
+  // ✅ reactive instead of setState
+  final RxInt tabIndex = 0.obs;
 
   // replace with your real list
   final items = <NotificationItem>[
@@ -55,12 +57,15 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
   ];
 
   @override
+  void dispose() {
+    tabIndex.close();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     final statusBarHeight = MediaQuery.of(context).padding.top;
     final l10n = AppLocalizations.of(context)!;
-
-    final filtered =
-    tabIndex == 0 ? items : items.where((e) => e.isUnread).toList();
 
     return Scaffold(
       backgroundColor: const Color(0xFFF8F9FA),
@@ -83,8 +88,11 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
                   child: Row(
                     children: [
                       IconButton(
-                        icon: const Icon(Icons.arrow_back_ios,
-                            color: Colors.white, size: 20),
+                        icon: const Icon(
+                          Icons.arrow_back_ios,
+                          color: Colors.white,
+                          size: 20,
+                        ),
                         onPressed: () => Navigator.of(context).pop(),
                       ),
                       Expanded(
@@ -99,7 +107,7 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
                           ),
                         ),
                       ),
-                      SizedBox(width: 48.w), // balance
+                      SizedBox(width: 48.w),
                     ],
                   ),
                 ),
@@ -114,13 +122,21 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
               children: [
                 /// List content pushed down
                 Padding(
-                  padding: EdgeInsets.only(top: MediaQuery.of(context).padding.top+20.h),
-                  child: ListView.separated(
-                    padding: EdgeInsets.fromLTRB(20.w, 12.h, 20.w, 20.h),
-                    itemBuilder: (_, i) => NotificationCard(item: filtered[i]),
-                    separatorBuilder: (_, __) => SizedBox(height: 14.h),
-                    itemCount: filtered.length,
+                  padding: EdgeInsets.only(
+                    top: MediaQuery.of(context).padding.top + 20.h,
                   ),
+                  child: Obx(() {
+                    final filtered = tabIndex.value == 0
+                        ? items
+                        : items.where((e) => e.isUnread).toList();
+
+                    return ListView.separated(
+                      padding: EdgeInsets.fromLTRB(20.w, 12.h, 20.w, 20.h),
+                      itemBuilder: (_, i) => NotificationCard(item: filtered[i]),
+                      separatorBuilder: (_, __) => SizedBox(height: 14.h),
+                      itemCount: filtered.length,
+                    );
+                  }),
                 ),
 
                 /// Floating Tabs (same style as appointment)
@@ -128,11 +144,14 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
                   top: -28.h,
                   left: 20.w,
                   right: 20.w,
-                  child: _notificationTabSwitcher(
-                    allText: '${l10n.all}(${items.length})',
-                    unreadText:
-                    '${l10n.unread}(${items.where((e) => e.isUnread).length})',
-                  ),
+                  child: Obx(() {
+                    final unreadCount = items.where((e) => e.isUnread).length;
+
+                    return _notificationTabSwitcher(
+                      allText: '${l10n.all}(${items.length})',
+                      unreadText: '${l10n.unread}($unreadCount)',
+                    );
+                  }),
                 ),
               ],
             ),
@@ -146,7 +165,6 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
     required String allText,
     required String unreadText,
   }) {
-
     return Container(
       margin: EdgeInsets.only(top: 12.h),
       padding: EdgeInsets.all(4.w),
@@ -161,16 +179,18 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
           ),
         ],
       ),
-      child: Row(
-        children: [
-          _tabButton(allText, tabIndex == 0, () {
-            setState(() => tabIndex = 0);
-          }),
-          _tabButton(unreadText, tabIndex == 1, () {
-            setState(() => tabIndex = 1);
-          }),
-        ],
-      ),
+      child: Obx(() {
+        return Row(
+          children: [
+            _tabButton(allText, tabIndex.value == 0, () {
+              tabIndex.value = 0;
+            }),
+            _tabButton(unreadText, tabIndex.value == 1, () {
+              tabIndex.value = 1;
+            }),
+          ],
+        );
+      }),
     );
   }
 

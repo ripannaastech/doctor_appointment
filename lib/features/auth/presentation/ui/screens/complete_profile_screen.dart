@@ -9,7 +9,6 @@ import '../../../../../app/controllers/language_controller.dart';
 import '../../../../../l10n/app_localizations.dart';
 import '../../../../dashboard/presentation/ui/screens/dashboard.dart';
 import '../controller/auth_controller.dart';
-
 class RegisterScreen extends StatefulWidget {
   const RegisterScreen({super.key});
   static const String name = '/register';
@@ -29,14 +28,22 @@ class _RegisterScreenState extends State<RegisterScreen> {
   final _dobCtrl = TextEditingController();
   final _emailCtrl = TextEditingController();
 
-  String _sex = 'Male';
-  String? _bloodGroup;
+  final RxString sex = 'Male'.obs;
+  final RxnString bloodGroup = RxnString();
 
-  String get _phone {
-    final arg = Get.arguments;
-    if (arg is Map && arg['phone'] != null) return arg['phone'].toString();
-    return c.lastPhone.value; // fallback
+  String get phone {
+    final route = ModalRoute.of(context);
+    if (route == null) return c.lastPhone.value;
+
+    final args = route.settings.arguments;
+    if (args is Map<String, dynamic>) {
+      final p = args['phone'];
+      if (p != null) return p.toString();
+    }
+
+    return c.lastPhone.value;
   }
+
 
   @override
   void dispose() {
@@ -63,25 +70,25 @@ class _RegisterScreenState extends State<RegisterScreen> {
     final mm = picked.month.toString().padLeft(2, '0');
     final dd = picked.day.toString().padLeft(2, '0');
     _dobCtrl.text = "${picked.year}-$mm-$dd";
-    setState(() {});
   }
 
   Future<void> _submit() async {
     if (!_formKey.currentState!.validate()) return;
 
     final ok = await c.registerPatientErpnext(
-      phone: _phone,
+      phone: phone,
       patientName: _nameCtrl.text.trim(),
-      sex: _sex,
+      sex: sex.value,
       dob: _dobCtrl.text.trim().isEmpty ? null : _dobCtrl.text.trim(),
       email: _emailCtrl.text.trim().isEmpty ? null : _emailCtrl.text.trim(),
-      bloodGroup: _bloodGroup,
+      bloodGroup: bloodGroup.value,
     );
 
     if (!ok) return;
-
-    // ✅ after success
-    Get.offAllNamed(Dashboard.name); // or Dashboard/Home
+    Navigator.pushReplacementNamed(
+      context,
+      Dashboard.name,
+    );
   }
 
   @override
@@ -89,10 +96,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
     final theme = Theme.of(context);
     final l10n = AppLocalizations.of(context)!;
 
-    // ✅ consistent style (not bold-jumping)
     const TextStyle kLangTextStyle = TextStyle(
       fontSize: 14,
-      fontWeight: FontWeight.w500, // same always
+      fontWeight: FontWeight.w500,
     );
 
     return Scaffold(
@@ -108,7 +114,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 children: [
                   SizedBox(height: 24.h),
 
-                  /// HEADER
                   Text(
                     l10n.welcome,
                     textAlign: TextAlign.center,
@@ -123,9 +128,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
                   SizedBox(height: 14.h),
 
-                  /// phone display
                   Text(
-                    _phone,
+                    phone,
                     style: TextStyle(fontSize: 13.sp, color: Colors.grey.shade600),
                   ),
 
@@ -141,7 +145,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     controller: _nameCtrl,
                     textAlignVertical: TextAlignVertical.center,
                     validator: (v) {
-                      if (v == null || v.trim().isEmpty) return l10n.fullName; // or custom localized msg
+                      if (v == null || v.trim().isEmpty) return l10n.fullName;
                       if (v.trim().length < 3) return "Enter a valid name";
                       return null;
                     },
@@ -152,7 +156,10 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         child: SizedBox(
                           width: 20.w,
                           height: 20.w,
-                          child: SvgPicture.asset(AssetPaths.profileLogo, fit: BoxFit.contain),
+                          child: SvgPicture.asset(
+                            AssetPaths.profileLogo,
+                            fit: BoxFit.contain,
+                          ),
                         ),
                       ),
                     ),
@@ -166,56 +173,48 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     child: Text(l10n.sex, style: TextStyle(fontSize: 14.sp)),
                   ),
                   SizedBox(height: 8.h),
-                  DropdownButtonFormField<String>(
-                    value: _sex,
-                    isExpanded: true, // ✅ prevents overflow
-                    icon: Icon(
-                      Icons.keyboard_arrow_down_rounded,
-                      color: Colors.grey.shade700,
-                    ),
-                    dropdownColor: Colors.white,
-                    style: TextStyle(
-                      fontSize: 14.sp,
-                      fontWeight: FontWeight.w500, // ✅ NOT bold
-                      color: Colors.black87,
-                    ),
-                    decoration: InputDecoration(
-                      hintText: l10n.sex,
-                      contentPadding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 14.h),
-                      border: OutlineInputBorder(borderRadius: BorderRadius.circular(12.r)),
-                      enabledBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(12.r),
-                        borderSide: BorderSide(color: Colors.grey.shade300),
+
+                  // ✅ reactive dropdown
+                  Obx(() {
+                    return DropdownButtonFormField<String>(
+                      value: sex.value,
+                      isExpanded: true,
+                      icon: Icon(
+                        Icons.keyboard_arrow_down_rounded,
+                        color: Colors.grey.shade700,
                       ),
-                      focusedBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(12.r),
-                        borderSide: BorderSide(color: AppColors.themeColor, width: 1.5),
+                      dropdownColor: Colors.white,
+                      style: TextStyle(
+                        fontSize: 14.sp,
+                        fontWeight: FontWeight.w500,
+                        color: Colors.black87,
                       ),
-                    ),
-                    items: [
-                      DropdownMenuItem(
-                        value: 'Male',
-                        child: Text(
-                          l10n.male,
-                          style: TextStyle(
-                            fontSize: 14.sp,
-                            fontWeight: FontWeight.w400,
-                          ),
+                      decoration: InputDecoration(
+                        hintText: l10n.sex,
+                        contentPadding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 14.h),
+                        border: OutlineInputBorder(borderRadius: BorderRadius.circular(12.r)),
+                        enabledBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(12.r),
+                          borderSide: BorderSide(color: Colors.grey.shade300),
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(12.r),
+                          borderSide: BorderSide(color: AppColors.themeColor, width: 1.5),
                         ),
                       ),
-                      DropdownMenuItem(
-                        value: 'Female',
-                        child: Text(
-                          l10n.female,
-                          style: TextStyle(
-                            fontSize: 14.sp,
-                            fontWeight: FontWeight.w400,
-                          ),
+                      items: [
+                        DropdownMenuItem(
+                          value: 'Male',
+                          child: Text(l10n.male, style: TextStyle(fontSize: 14.sp, fontWeight: FontWeight.w400)),
                         ),
-                      ),
-                    ],
-                    onChanged: (v) => setState(() => _sex = v ?? 'Male'),
-                  ),
+                        DropdownMenuItem(
+                          value: 'Female',
+                          child: Text(l10n.female, style: TextStyle(fontSize: 14.sp, fontWeight: FontWeight.w400)),
+                        ),
+                      ],
+                      onChanged: (v) => sex.value = (v ?? 'Male'),
+                    );
+                  }),
 
                   SizedBox(height: 20.h),
 
@@ -269,52 +268,53 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     child: Text(l10n.bloodGroupOptional, style: TextStyle(fontSize: 14.sp)),
                   ),
                   SizedBox(height: 8.h),
-                  DropdownButtonFormField<String>(
-                    value: _bloodGroup,
-                    isExpanded: true, // ✅ prevents overflow
-                    icon: Icon(
-                      Icons.keyboard_arrow_down_rounded,
-                      color: Colors.grey.shade700,
-                    ),
-                    dropdownColor: Colors.white, // ✅ menu background
-                    style: TextStyle(
-                      fontSize: 14.sp,
-                      fontWeight: FontWeight.w500, // ✅ keep consistent, not bold
-                      color: Colors.black87,
-                    ),
-                    decoration: InputDecoration(
-                      hintText: AppLocalizations.of(context)!.bloodGroupOptional, // or "Select blood group"
-                      contentPadding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 14.h),
-                      border: OutlineInputBorder(borderRadius: BorderRadius.circular(12.r)),
-                      enabledBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(12.r),
-                        borderSide: BorderSide(color: Colors.grey.shade300, width: 1),
-                      ),
-                      focusedBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(12.r),
-                        borderSide: BorderSide(color: AppColors.themeColor, width: 1.5),
-                      ),
-                    ),
-                    hint: Text(
-                      AppLocalizations.of(context)!.bloodGroupOptional,
+
+                  // ✅ reactive dropdown
+                  Obx(() {
+                    return DropdownButtonFormField<String>(
+                      value: bloodGroup.value,
+                      isExpanded: true,
+                      icon: Icon(Icons.keyboard_arrow_down_rounded, color: Colors.grey.shade700),
+                      dropdownColor: Colors.white,
                       style: TextStyle(
                         fontSize: 14.sp,
-                        color: Colors.grey,
-                        fontWeight: FontWeight.w400,
+                        fontWeight: FontWeight.w500,
+                        color: Colors.black87,
                       ),
-                    ),
-                    items: const [
-                      DropdownMenuItem(value: 'A+', child: Text('A+')),
-                      DropdownMenuItem(value: 'A-', child: Text('A-')),
-                      DropdownMenuItem(value: 'B+', child: Text('B+')),
-                      DropdownMenuItem(value: 'B-', child: Text('B-')),
-                      DropdownMenuItem(value: 'O+', child: Text('O+')),
-                      DropdownMenuItem(value: 'O-', child: Text('O-')),
-                      DropdownMenuItem(value: 'AB+', child: Text('AB+')),
-                      DropdownMenuItem(value: 'AB-', child: Text('AB-')),
-                    ],
-                    onChanged: (v) => setState(() => _bloodGroup = v),
-                  ),
+                      decoration: InputDecoration(
+                        hintText: l10n.bloodGroupOptional,
+                        contentPadding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 14.h),
+                        border: OutlineInputBorder(borderRadius: BorderRadius.circular(12.r)),
+                        enabledBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(12.r),
+                          borderSide: BorderSide(color: Colors.grey.shade300, width: 1),
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(12.r),
+                          borderSide: BorderSide(color: AppColors.themeColor, width: 1.5),
+                        ),
+                      ),
+                      hint: Text(
+                        l10n.bloodGroupOptional,
+                        style: TextStyle(
+                          fontSize: 14.sp,
+                          color: Colors.grey,
+                          fontWeight: FontWeight.w400,
+                        ),
+                      ),
+                      items: const [
+                        DropdownMenuItem(value: 'A+', child: Text('A+')),
+                        DropdownMenuItem(value: 'A-', child: Text('A-')),
+                        DropdownMenuItem(value: 'B+', child: Text('B+')),
+                        DropdownMenuItem(value: 'B-', child: Text('B-')),
+                        DropdownMenuItem(value: 'O+', child: Text('O+')),
+                        DropdownMenuItem(value: 'O-', child: Text('O-')),
+                        DropdownMenuItem(value: 'AB+', child: Text('AB+')),
+                        DropdownMenuItem(value: 'AB-', child: Text('AB-')),
+                      ],
+                      onChanged: (v) => bloodGroup.value = v,
+                    );
+                  }),
 
                   SizedBox(height: 24.h),
 
@@ -370,29 +370,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       ),
                     );
                   }),
-
-                  // const OrDivider(),
-                  // SizedBox(height: 20.h),
-                  //
-                  // GestureDetector(
-                  //   onTap: () => Get.back(),
-                  //   child: Text.rich(
-                  //     TextSpan(
-                  //       text: "${l10n.alreadyHaveAnAccount} ",
-                  //       style: TextStyle(fontSize: 14.sp),
-                  //       children: [
-                  //         TextSpan(
-                  //           text: l10n.logIn,
-                  //           style: const TextStyle(
-                  //             color: Colors.blue,
-                  //             fontWeight: FontWeight.w600,
-                  //           ),
-                  //         ),
-                  //       ],
-                  //     ),
-                  //     textAlign: TextAlign.center,
-                  //   ),
-                  // ),
                 ],
               ),
             ),
@@ -402,6 +379,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
     );
   }
 }
+
 class _LanguageCard extends StatelessWidget {
   final String text;
   final String code; // 'en' | 'so'

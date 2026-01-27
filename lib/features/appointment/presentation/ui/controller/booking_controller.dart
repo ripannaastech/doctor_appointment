@@ -1,5 +1,6 @@
 import 'package:get/get.dart';
 
+import '../../../../../app/app_snackbar.dart';
 import '../../../../../core/services/api_service/api_service.dart';
 import '../../../../../core/services/shared_preferance/shared_preferance.dart';
 
@@ -112,12 +113,13 @@ class BookingController extends GetxController {
         return true;
       } else {
         errorText.value = _extractError(response) ?? 'Failed to load departments';
-        Get.snackbar('Error', errorText.value);
+        AppSnackbar.error('Error', errorText.value);
+
         return false;
       }
     } catch (e) {
       errorText.value = 'Something went wrong: $e';
-      Get.snackbar('Error', errorText.value);
+      AppSnackbar.error('Error', errorText.value);
       return false;
     } finally {
       loadingDepartments.value = false;
@@ -184,11 +186,84 @@ class BookingController extends GetxController {
     } catch (e) {
       practitioners.clear();
       errorText.value = 'Something went wrong: $e';
-      Get.snackbar('Error', errorText.value);
+      AppSnackbar.error('Error', errorText.value);
       return false;
     } finally {
       loadingPractitioners.value = false;
     }
+  }
+// inside BookingController
+
+  final RxBool loadingDoctorAppointments = false.obs;
+
+  /// date -> set of booked times (HH:mm:ss)
+  final RxMap<String, Set<String>> bookedSlotsByDate = <String, Set<String>>{}.obs;
+
+  /// GET /api/v1/appointments/erpnext/all?practitioner=...&offset=0
+  Future<bool> fetchDoctorBookedAppointments({
+    required String practitionerName,
+    int offset = 0,
+  }) async {
+    loadingDoctorAppointments.value = true;
+    errorText.value = '';
+
+    try {
+      final p = practitionerName.trim();
+      if (p.isEmpty) return false;
+
+      final path =
+          '/api/v1/appointments/erpnext/all?practitioner=${Uri.encodeQueryComponent(p)}&offset=$offset';
+
+      final response = await _net.getRequest(path);
+
+      if (response.isSuccess && response.statusCode == 200) {
+        final body = Map<String, dynamic>.from(response.responseData);
+
+        final list = (body['data'] as List? ?? [])
+            .map((e) => Map<String, dynamic>.from(e))
+            .toList();
+
+        final Map<String, Set<String>> map = {};
+
+        for (final a in list) {
+          final date = (a['appointment_date'] ?? '').toString(); // yyyy-MM-dd
+          final time = (a['appointment_time'] ?? '').toString(); // HH:mm:ss (sometimes H:mm:ss)
+          final status = (a['status'] ?? '').toString().toLowerCase();
+
+          // ✅ keep only active bookings (adjust if backend uses different statuses)
+          final isActive = status != 'cancelled' && status != 'closed';
+          if (!isActive) continue;
+
+          if (date.isEmpty || time.isEmpty) continue;
+
+          // normalize time to HH:mm:ss
+          final fixedTime = _normalizeHHmmss(time);
+
+          map.putIfAbsent(date, () => <String>{}).add(fixedTime);
+        }
+
+        bookedSlotsByDate.assignAll(map);
+        return true;
+      } else {
+        errorText.value = _extractError(response) ?? 'Failed to load doctor appointments';
+        return false;
+      }
+    } catch (e) {
+      errorText.value = 'Something went wrong: $e';
+      return false;
+    } finally {
+      loadingDoctorAppointments.value = false;
+    }
+  }
+
+  String _normalizeHHmmss(String t) {
+    // handles "9:00:00" -> "09:00:00"
+    final parts = t.split(':');
+    if (parts.length < 2) return t;
+    final h = parts[0].padLeft(2, '0');
+    final m = parts[1].padLeft(2, '0');
+    final s = (parts.length >= 3 ? parts[2] : '00').padLeft(2, '0');
+    return '$h:$m:$s';
   }
 
   // -------------------------
@@ -201,7 +276,14 @@ class BookingController extends GetxController {
     errorText.value = '';
 
     try {
-      final path = '/api/v1/appointments/erpnext/all';
+      final pid = await _getUserId();
+      if (pid == null || pid.isEmpty) {
+        errorText.value = 'Patient ID not found';
+        AppSnackbar.error('Error', errorText.value);
+        return false;
+      }
+
+      final path = '/api/v1/appointments/erpnext/all?patient=$pid';
       final response = await _net.getRequest(path);
 
       if (response.isSuccess && response.statusCode == 200) {
@@ -228,7 +310,7 @@ class BookingController extends GetxController {
       }
     } catch (e) {
       errorText.value = 'Something went wrong: $e';
-      Get.snackbar('Error', errorText.value);
+      AppSnackbar.error('Error', errorText.value);
       return false;
     } finally {
       loadingAppointments.value = false;
@@ -251,12 +333,12 @@ class BookingController extends GetxController {
       } else {
         errorText.value =
             _extractError(response) ?? 'Failed to cancel appointment';
-        Get.snackbar('Error', errorText.value);
+        AppSnackbar.error('Error', errorText.value);
         return false;
       }
     } catch (e) {
       errorText.value = 'Something went wrong: $e';
-      Get.snackbar('Error', errorText.value);
+      AppSnackbar.error('Error', errorText.value);
       return false;
     } finally {
       cancelingAppointment.value = false;
@@ -266,12 +348,12 @@ class BookingController extends GetxController {
   /// POST /api/v1/appointments/erpnext/book
   ///
   /// This uses patientId from prefs automatically unless you pass payload.patient yourself.
-  Future<bool> bookAppointment({
+  Future<String?> bookAppointment({
     required String practitioner,
     required String department,
-    required String appointmentDate, // "YYYY-MM-DD"
-    required String appointmentTime, // "HH:mm:ss"
-    required double feeAmount,       // ✅ REQUIRED by API
+    required String appointmentDate,
+    required String appointmentTime,
+    required double feeAmount,
     String? notes,
     String? patientIdOverride,
   }) async {
@@ -282,47 +364,52 @@ class BookingController extends GetxController {
       final pid = patientIdOverride ?? await _getUserId();
       if (pid == null || pid.isEmpty) {
         errorText.value = 'Patient ID not found';
-        Get.snackbar('Error', errorText.value);
-        return false;
+        AppSnackbar.error('Error', errorText.value);
+        return null;
       }
 
-      // ✅ Correct endpoint from your docs
       const path = '/api/v1/payments/erpnext/book-appointment';
 
-      // ✅ API expects QUERY params
       final query = <String, dynamic>{
         'patient_id': pid,
         'practitioner': practitioner,
         'appointment_date': appointmentDate,
         'appointment_time': appointmentTime,
-        'fee_amount': feeAmount.toString(), // double/number
+        'fee_amount': feeAmount.toString(),
         'department': department,
         if (notes != null && notes.trim().isNotEmpty) 'notes': notes.trim(),
       };
 
-      // ✅ If your postRequest supports queryParameters, use this:
-      final response = await _net.postRequest(path, body: query);
-
-      // If your client DOES NOT support queryParameters, use fallback below (commented):
-      // final uri = Uri(path: path, queryParameters: query.map((k, v) => MapEntry(k, '$v')));
-      // final response = await _net.postRequest(uri.toString());
+      final response = await _net.postRequest(path, query: query,body: query);
 
       if (response.isSuccess && (response.statusCode == 200 || response.statusCode == 201)) {
-        await fetchAllAppointments(); // refresh list
-        return true;
+        final data = Map<String, dynamic>.from(response.responseData ?? {});
+        final appt = Map<String, dynamic>.from(data['appointment'] ?? {});
+        final id = appt['appointment_id']?.toString(); // ✅ OPD-00068
+
+        if (id == null || id.isEmpty) {
+          errorText.value = 'Booked but appointment_id missing';
+          AppSnackbar.error('Error', errorText.value);
+          return null;
+        }
+
+        await fetchAllAppointments();
+        return id;
       } else {
         errorText.value = _extractError(response) ?? 'Failed to book appointment';
-        Get.snackbar('Error', errorText.value);
-        return false;
+        AppSnackbar.error('Error', errorText.value);
+        return null;
       }
     } catch (e) {
       errorText.value = 'Something went wrong: $e';
-      Get.snackbar('Error', errorText.value);
-      return false;
+      AppSnackbar.error('Error', errorText.value);
+      return null;
     } finally {
       bookingAppointment.value = false;
     }
   }
+
+
 
   Future<bool> payAppointment({
     required String appointmentId,
@@ -335,19 +422,19 @@ class BookingController extends GetxController {
       final path = '/api/v1/payments/erpnext/pay-appointment/$appointmentId';
       final query = {'payment_method': paymentMethod};
 
-      final response = await _net.postRequest(path, body: query);
+      final response = await _net.postRequest(path, query: query,body: query);
 
       if (response.isSuccess && (response.statusCode == 200 || response.statusCode == 201)) {
         await fetchAllAppointments();
         return true;
       } else {
         errorText.value = _extractError(response) ?? 'Payment failed';
-        Get.snackbar('Error', errorText.value);
+        AppSnackbar.error('Error', errorText.value);
         return false;
       }
     } catch (e) {
       errorText.value = 'Something went wrong: $e';
-      Get.snackbar('Error', errorText.value);
+      AppSnackbar.error('Error', errorText.value);
       return false;
     } finally {
       loading.value = false;

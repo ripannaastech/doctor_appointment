@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 
+import '../../../../../app/app_snackbar.dart';
 import '../../../../../l10n/app_localizations.dart';
 
 class LoginScreen extends StatelessWidget {
@@ -61,8 +62,10 @@ class LoginScreen extends StatelessWidget {
                       ? null
                       : () async {
                     final phone = phoneCtrl.text.trim();
+
+                    // ✅ validate phone
                     if (phone.isEmpty) {
-                      Get.snackbar('Error', 'Enter phone number');
+                      AppSnackbar.error(l10n.error, l10n.enterPhoneNumber);
                       return;
                     }
 
@@ -70,7 +73,12 @@ class LoginScreen extends StatelessWidget {
                     if (!ok) return;
 
                     // ✅ go OTP screen with phone
-                    Get.toNamed(OtpScreen.name, arguments: {'phone': phone});
+                    Navigator.pushNamed(
+                      context,
+                      OtpScreen.name,
+                      arguments: {'phone': phone},
+                    );
+
                   },
                   child: c.loading.value
                       ? const SizedBox(
@@ -78,7 +86,10 @@ class LoginScreen extends StatelessWidget {
                     height: 22,
                     child: CircularProgressIndicator(strokeWidth: 2),
                   )
-                      : Text(l10n.continueButton, style: TextStyle(fontSize: 16.sp)),
+                      : Text(
+                    l10n.continueButton,
+                    style: TextStyle(fontSize: 16.sp),
+                  ),
                 ),
               );
             }),

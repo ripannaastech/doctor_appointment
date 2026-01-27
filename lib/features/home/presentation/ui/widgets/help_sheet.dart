@@ -3,6 +3,22 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../../../../../../l10n/app_localizations.dart';
 import 'help_row.dart';
+import 'package:url_launcher/url_launcher.dart';
+
+Future<void> openCall(String phone) async {
+  final uri = Uri(scheme: 'tel', path: phone);
+  await launchUrl(uri, mode: LaunchMode.externalApplication);
+}
+
+Future<void> openEmail(String email) async {
+  final uri = Uri(scheme: 'mailto', path: email);
+  await launchUrl(uri, mode: LaunchMode.externalApplication);
+}
+
+Future<void> openWhatsApp(String phoneE164) async {
+  final uri = Uri.parse('https://wa.me/$phoneE164');
+  await launchUrl(uri, mode: LaunchMode.externalApplication);
+}
 
 class HelpSheet extends StatelessWidget {
   const HelpSheet({super.key});
@@ -76,11 +92,12 @@ class HelpSheet extends StatelessWidget {
           ),
 
           SizedBox(height: 18.h),
-          HelpRow(Icons.call_rounded, l10n.callUs, '6677'),
+          HelpRow(Icons.call_rounded, l10n.callUs, '6677',            onTap: () => openCall('6677'),
+          ),
           SizedBox(height: 10.h),
-          HelpRow(Icons.chat_bubble_rounded, l10n.whatsApp, '+465857474774'),
+          HelpRow(Icons.chat_bubble_rounded, l10n.whatsApp, '+252 63 4036735',  onTap: () => openWhatsApp('252634036735'),),
           SizedBox(height: 10.h),
-          HelpRow(Icons.email_rounded, l10n.email, 'info@alihsanhospital.so'),
+          HelpRow(Icons.email_rounded, l10n.email, 'info@alihsanhospital.so', onTap: () => openEmail('info@alihsanhospital.so'),),
         ],
       ),
     );

@@ -16,7 +16,6 @@ const kTextGray = Color(0xFF718096);
 const kCardRadius = 16.0;
 const kPadding = 20.0;
 
-
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
   static const String name = '/profileScreen';
@@ -26,7 +25,8 @@ class ProfileScreen extends StatefulWidget {
 }
 
 class _ProfileScreenState extends State<ProfileScreen> {
-  bool isEditing = false;
+  // ✅ reactive instead of setState
+  final RxBool isEditing = false.obs;
 
   late final ProfileControllerGetx pc;
 
@@ -34,12 +34,15 @@ class _ProfileScreenState extends State<ProfileScreen> {
   void initState() {
     super.initState();
 
-    pc = Get.put(ProfileControllerGetx(), permanent: true);
+    pc = Get.isRegistered<ProfileControllerGetx>()
+        ? Get.find<ProfileControllerGetx>()
+        : Get.put(ProfileControllerGetx());
 
     // ✅ instant load then refresh
     pc.loadCachedProfile();
     pc.fetchProfile();
   }
+
 
   @override
   Widget build(BuildContext context) {
@@ -47,29 +50,36 @@ class _ProfileScreenState extends State<ProfileScreen> {
       backgroundColor: kBackground,
       body: Column(
         children: [
-          ProfileHeader(isEditing: isEditing, onToggle: _toggleEdit),
+          // ✅ make header reactive too
+          Obx(() {
+            return ProfileHeader(
+              isEditing: isEditing.value,
+              onToggle: _toggleEdit,
+            );
+          }),
 
           Expanded(
             child: Obx(() {
-              // optional loading indicator
               if (pc.loading.value && pc.profile.value == null) {
                 return const Center(child: CircularProgressIndicator());
               }
 
               return SingleChildScrollView(
                 padding: EdgeInsets.all(kPadding.w),
-                child: Column(
-                  children: [
-                    PersonalInfoCard(
-                      isEditing: isEditing,
-                      onToggleEdit: _toggleEdit,
-                    ),
-                    SizedBox(height: 20.h),
-                    LanguageCard(),
-                    SizedBox(height: 20.h),
-                    LogoutButton(),
-                  ],
-                ),
+                child: Obx(() {
+                  return Column(
+                    children: [
+                      PersonalInfoCard(
+                        isEditing: isEditing.value,
+                        onToggleEdit: _toggleEdit,
+                      ),
+                      SizedBox(height: 20.h),
+                      LanguageCard(),
+                      SizedBox(height: 20.h),
+                      LogoutButton(),
+                    ],
+                  );
+                }),
               );
             }),
           ),
@@ -79,14 +89,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
   }
 
   void _toggleEdit() {
-    setState(() => isEditing = !isEditing);
+    isEditing.value = !isEditing.value; // ✅ no setState
   }
 }
-
-
-
-
-
-
-
-

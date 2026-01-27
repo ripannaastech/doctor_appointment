@@ -973,6 +973,162 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Loading...'**
   String get loading;
+
+  /// No description provided for @selectPaymentMethod.
+  ///
+  /// In en, this message translates to:
+  /// **'Select Payment Method'**
+  String get selectPaymentMethod;
+
+  /// No description provided for @choosePaymentMethodDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose how you want to pay for this appointment.'**
+  String get choosePaymentMethodDesc;
+
+  /// No description provided for @cashPayment.
+  ///
+  /// In en, this message translates to:
+  /// **'Cash Payment'**
+  String get cashPayment;
+
+  /// No description provided for @cashPaymentDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Pay at hospital or clinic'**
+  String get cashPaymentDesc;
+
+  /// No description provided for @onlinePayment.
+  ///
+  /// In en, this message translates to:
+  /// **'Online Payment'**
+  String get onlinePayment;
+
+  /// No description provided for @onlinePaymentDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Pay now using online method'**
+  String get onlinePaymentDesc;
+
+  /// No description provided for @success.
+  ///
+  /// In en, this message translates to:
+  /// **'Success'**
+  String get success;
+
+  /// No description provided for @error.
+  ///
+  /// In en, this message translates to:
+  /// **'Error'**
+  String get error;
+
+  /// No description provided for @somethingWentWrong.
+  ///
+  /// In en, this message translates to:
+  /// **'Something went wrong'**
+  String get somethingWentWrong;
+
+  /// No description provided for @otpRequestFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'OTP request failed'**
+  String get otpRequestFailed;
+
+  /// No description provided for @otpResentSuccessfully.
+  ///
+  /// In en, this message translates to:
+  /// **'OTP resent successfully'**
+  String get otpResentSuccessfully;
+
+  /// No description provided for @resendOtpFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Resend OTP failed'**
+  String get resendOtpFailed;
+
+  /// No description provided for @otpVerifyFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'OTP verify failed'**
+  String get otpVerifyFailed;
+
+  /// No description provided for @registrationCompleted.
+  ///
+  /// In en, this message translates to:
+  /// **'Registration completed'**
+  String get registrationCompleted;
+
+  /// No description provided for @registrationFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Registration failed'**
+  String get registrationFailed;
+
+  /// No description provided for @doctorInfoMissing.
+  ///
+  /// In en, this message translates to:
+  /// **'Doctor info missing'**
+  String get doctorInfoMissing;
+
+  /// No description provided for @feeAmountMissing.
+  ///
+  /// In en, this message translates to:
+  /// **'Fee amount missing'**
+  String get feeAmountMissing;
+
+  /// No description provided for @bookingFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Booking failed'**
+  String get bookingFailed;
+
+  /// No description provided for @enter6DigitOtp.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter 6 digit OTP'**
+  String get enter6DigitOtp;
+
+  /// No description provided for @info.
+  ///
+  /// In en, this message translates to:
+  /// **'Info'**
+  String get info;
+
+  /// No description provided for @patientIdNotFoundPleaseLoginAgain.
+  ///
+  /// In en, this message translates to:
+  /// **'Patient ID not found. Please login again.'**
+  String get patientIdNotFoundPleaseLoginAgain;
+
+  /// No description provided for @failedToLoadProfile.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to load profile'**
+  String get failedToLoadProfile;
+
+  /// No description provided for @failedToUpdateProfile.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to update profile'**
+  String get failedToUpdateProfile;
+
+  /// No description provided for @nothingToUpdate.
+  ///
+  /// In en, this message translates to:
+  /// **'Nothing to update'**
+  String get nothingToUpdate;
+
+  /// No description provided for @totalPayable.
+  ///
+  /// In en, this message translates to:
+  /// **'Total Payable'**
+  String get totalPayable;
+
+  /// No description provided for @feeAmount.
+  ///
+  /// In en, this message translates to:
+  /// **'Consultation Fee'**
+  String get feeAmount;
 }
 
 class _AppLocalizationsDelegate

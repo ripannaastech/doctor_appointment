@@ -50,7 +50,7 @@ dependencies:
   shared_preferences: ^2.5.3
   flutter_screenutil:
   flutter_launcher_icons: ^0.14.4
-
+  url_launcher:
 
 
 

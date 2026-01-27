@@ -28,7 +28,9 @@ class Dashboard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final c = Get.put(DashboardController()); // or Get.find<MainController>()
+    final c = Get.isRegistered<DashboardController>()
+        ? Get.find<DashboardController>()
+        : Get.put(DashboardController());
 
     return Obx(() {
       return Scaffold(

@@ -2,79 +2,23 @@ import 'package:doctor_appointment/app/asset_paths.dart';
 import 'package:doctor_appointment/features/notification/presentation/ui/notification_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-
 import '../../../../../../l10n/app_localizations.dart';
+import 'package:get/get.dart';
+import '../controller/home_controller.dart';
 
-import 'dart:convert';
-import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
+class HomeTopBar extends StatelessWidget {
+  HomeTopBar({super.key});
 
-import '../../../../../core/services/shared_preferance/shared_preferance.dart';
-import '../../../../profile/models/user_profile_model.dart';
-
-class HomeTopBar extends StatefulWidget {
-  const HomeTopBar({super.key});
-
-  @override
-  State<HomeTopBar> createState() => _HomeTopBarState();
-}
-
-class _HomeTopBarState extends State<HomeTopBar> {
-  final _prefs = SharedPrefs();
-
-  String _name = '—';
-  bool _loading = true;
-
-  @override
-  void initState() {
-    super.initState();
-    _loadName();
-  }
+  final c = Get.isRegistered<HomeController>()
+      ? Get.find<HomeController>()
+      : Get.put(HomeController());
 
   String timeGreeting(AppLocalizations l10n) {
     final h = DateTime.now().hour;
-
     if (h >= 5 && h < 12) return l10n.goodMorning;
     if (h >= 12 && h < 17) return l10n.goodAfternoon;
     if (h >= 17 && h < 21) return l10n.goodEvening;
     return l10n.goodNight;
-  }
-
-  Future<void> _loadName() async {
-    try {
-      final raw = await _prefs.getString(SharedPrefs.patientProfile);
-
-      if (raw == null || raw.trim().isEmpty) {
-        if (!mounted) return;
-        setState(() {
-          _name = '—';
-          _loading = false;
-        });
-        return;
-      }
-
-      final map = jsonDecode(raw) as Map<String, dynamic>;
-      final profile = UserProfile.fromJson(map);
-
-      final first = profile.firstName?.trim() ?? '';
-      final last = profile.lastName?.trim() ?? '';
-
-      final fullName = [first, last]
-          .where((e) => e.isNotEmpty)
-          .join(' ');
-
-      if (!mounted) return;
-      setState(() {
-        _name = fullName.isNotEmpty ? fullName : '—';
-        _loading = false;
-      });
-    } catch (e) {
-      if (!mounted) return;
-      setState(() {
-        _name = '—';
-        _loading = false;
-      });
-    }
   }
 
   @override
@@ -116,7 +60,7 @@ class _HomeTopBarState extends State<HomeTopBar> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    timeGreeting(l10n), // ✅ dynamic greeting
+                    timeGreeting(l10n),
                     style: TextStyle(
                       fontSize: 12.5.sp,
                       fontWeight: FontWeight.w500,
@@ -124,15 +68,19 @@ class _HomeTopBarState extends State<HomeTopBar> {
                     ),
                   ),
                   SizedBox(height: 2.h),
-                  Text(
-                    _loading ? l10n.loading : _name, // ✅ name from prefs
-                    style: TextStyle(
-                      fontSize: 16.5.sp,
-                      fontWeight: FontWeight.w700,
-                      color: const Color(0xFF141A2A),
-                      height: 1.15,
-                    ),
-                  ),
+
+                  Obx(() {
+                    final text = c.loading.value ? l10n.loading : c.name.value;
+                    return Text(
+                      text,
+                      style: TextStyle(
+                        fontSize: 16.5.sp,
+                        fontWeight: FontWeight.w700,
+                        color: const Color(0xFF141A2A),
+                        height: 1.15,
+                      ),
+                    );
+                  }),
                 ],
               ),
             ),
@@ -169,4 +117,5 @@ class _HomeTopBarState extends State<HomeTopBar> {
     );
   }
 }
+
 

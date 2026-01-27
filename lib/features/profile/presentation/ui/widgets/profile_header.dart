@@ -34,36 +34,32 @@ class ProfileHeader extends StatelessWidget {
         children: [
           SizedBox(height: MediaQuery.of(context).padding.top),
 
-          Row(
-            children: [
-              IconButton(
-                icon: Icon(Icons.arrow_back_ios, color: Colors.white, size: 20.sp),
-                onPressed: () => Get.back(), // ✅ back
-              ),
+    Row(
+    children: [
+    SizedBox(width: 48.w), // balance left side
 
-              Expanded(
-                child: Text(
-                  l10n.profile,
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 18.sp,
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
-              ),
+    Expanded(
+    child: Text(
+    l10n.profile,
+    textAlign: TextAlign.center,
+    style: TextStyle(
+    color: Colors.white,
+    fontSize: 18.sp,
+    fontWeight: FontWeight.w600,
+    ),
+    ),
+    ),
 
-              // ✅ edit toggle button (uses your onToggle)
-              IconButton(
-                onPressed: onToggle,
-                icon: Icon(
-                  isEditing ? Icons.close : Icons.edit,
-                  color: Colors.white,
-                  size: 20.sp,
-                ),
-              ),
-            ],
-          ),
+    IconButton(
+    onPressed: onToggle,
+    icon: Icon(
+    isEditing ? Icons.close : Icons.edit,
+    color: Colors.white,
+    size: 20.sp,
+    ),
+    ),
+    ],
+    ),
 
           SizedBox(height: 16.h),
 

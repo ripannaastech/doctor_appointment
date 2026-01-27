@@ -1,10 +1,15 @@
 import 'dart:convert';
 
 import 'package:get/get.dart';
+import '../../../../../app/app_snackbar.dart';
 import '../../../../../core/services/api_service/api_service.dart';
 import '../../../../../core/services/shared_preferance/shared_preferance.dart';
+import '../../../../../l10n/app_localizations.dart';
 import '../../../data/models/otp_send_response.dart';
 import '../../../data/models/otp_verify_response.dart';
+
+
+
 
 class AuthControllerGetx extends GetxController {
   final _net = NetworkService().client;
@@ -16,122 +21,140 @@ class AuthControllerGetx extends GetxController {
   Rxn<OtpSendRes> otpSendRes = Rxn<OtpSendRes>();
   Rxn<OtpVerifyRes> otpVerifyRes = Rxn<OtpVerifyRes>();
 
-  // You may want to store last phone
+  // Store last phone
   RxString lastPhone = ''.obs;
 
-  String _normalizePhone(String input) {
-    // Your backend returned +88061789374 from input 61789374
-    // If you want, keep input and let backend normalize
-    return input.trim();
+  // ✅ Localization getter (works anywhere because GetMaterialApp provides context)
+  AppLocalizations get l10n => AppLocalizations.of(Get.context!)!;
+
+  String _normalizePhone(String input) => input.trim();
+
+  // ✅ Optional: unified error message
+  String _safeMsg(String? msg) =>
+      (msg == null || msg.trim().isEmpty) ? l10n.somethingWentWrong : msg;
+
+  // ✅ Optional: unify begin/end loading
+  void _setLoading(bool v) => loading.value = v;
+
+  /// True if user has saved login state
+  Future<bool> isLoggedIn() async {
+    final b = await _prefs.getBool(SharedPrefs.isLoggedIn);
+    if (b == true) return true;
+
+    // fallback: token presence
+    final token = await _prefs.getString(SharedPrefs.accessToken);
+    return token != null && token.isNotEmpty;
+  }
+
+  /// Clear login state (logout)
+  Future<void> logout() async {
+    await _prefs.clear();
   }
 
   /// POST /api/v1/auth/erpnext/request-otp?phone=...
   Future<bool> requestOtpErpnext(String phone) async {
-    loading.value = true;
+    _setLoading(true);
     try {
       final p = _normalizePhone(phone);
       lastPhone.value = p;
 
-      // ✅ Query param endpoint
-      final path = '/api/v1/auth/erpnext/request-otp?phone=$p';
+      final path = '/api/v1/auth/erpnext/request-otp?phone=${Uri.encodeQueryComponent(p)}';
 
-      final response = await _net.postRequest(
-        path,
-        body: null, // ✅ no body
-      );
+      final response = await _net.postRequest(path, body: null);
 
-      loading.value = false;
+      _setLoading(false);
 
       if (response.isSuccess && response.statusCode == 200) {
         final data = Map<String, dynamic>.from(response.responseData);
         final res = OtpSendRes.fromJson(data);
         otpSendRes.value = res;
 
-        Get.snackbar('Success', res.message);
+        // ✅ localized snackbar
+        AppSnackbar.success(l10n.success, res.message);
 
-        // optional: store phone formatted from backend
-        await _prefs.setString('last_phone', res.phone);
+        // optional: persist phone returned by backend (formatted)
+        if ((res.phone ?? '').isNotEmpty) {
+          await _prefs.setString(SharedPrefs.lastPhone, res.phone!);
+        } else {
+          await _prefs.setString(SharedPrefs.lastPhone, p);
+        }
 
         return true;
       } else {
-        Get.snackbar('Error', response.errorMessage ?? 'OTP request failed');
+        AppSnackbar.error(l10n.error, _safeMsg(response.errorMessage ?? l10n.otpRequestFailed));
         return false;
       }
-    } catch (e) {
-      loading.value = false;
-      Get.snackbar('Error', 'Something went wrong: $e');
+    } catch (_) {
+      _setLoading(false);
+      AppSnackbar.error(l10n.error, l10n.somethingWentWrong);
       return false;
     }
   }
 
-  /// Resend OTP (ERPNext-only mode)
-  /// Same endpoint as request OTP, just called again from OTP screen.
+  /// Resend OTP (same endpoint)
   Future<bool> resendOtpErpnext(String phone) async {
-    loading.value = true;
+    _setLoading(true);
     try {
-      final p = phone.trim();
+      final p = _normalizePhone(phone);
       lastPhone.value = p;
 
-      final path = '/api/v1/auth/erpnext/request-otp?phone=$p';
+      final path = '/api/v1/auth/erpnext/request-otp?phone=${Uri.encodeQueryComponent(p)}';
 
-      final response = await _net.postRequest(
-        path,
-        body: null, // ✅ no body
-      );
+      final response = await _net.postRequest(path, body: null);
 
-      loading.value = false;
+      _setLoading(false);
 
       if (response.isSuccess && response.statusCode == 200) {
         final data = Map<String, dynamic>.from(response.responseData);
         final res = OtpSendRes.fromJson(data);
         otpSendRes.value = res;
 
-        Get.snackbar('Success', 'OTP resent successfully');
+        AppSnackbar.success(l10n.success, l10n.otpResentSuccessfully);
 
-        // optional: persist phone returned by backend
-        await _prefs.setString('last_phone', res.phone);
+        if ((res.phone ?? '').isNotEmpty) {
+          await _prefs.setString(SharedPrefs.lastPhone, res.phone!);
+        } else {
+          await _prefs.setString(SharedPrefs.lastPhone, p);
+        }
 
         return true;
       } else {
-        Get.snackbar('Error', response.errorMessage ?? 'Resend OTP failed');
+        AppSnackbar.error(l10n.error, _safeMsg(response.errorMessage ?? l10n.resendOtpFailed));
         return false;
       }
-    } catch (e) {
-      loading.value = false;
-      Get.snackbar('Error', 'Something went wrong: $e');
+    } catch (_) {
+      _setLoading(false);
+      AppSnackbar.error(l10n.error, l10n.somethingWentWrong);
       return false;
     }
   }
-
 
   /// POST /api/v1/auth/erpnext/verify-otp?phone=...&otp=...
   Future<bool> verifyOtpErpnext({
     required String phone,
     required String otp,
   }) async {
-    loading.value = true;
+    _setLoading(true);
     try {
       final p = _normalizePhone(phone);
       final o = otp.trim();
 
-      final path = '/api/v1/auth/erpnext/verify-otp?phone=$p&otp=$o';
+      final path =
+          '/api/v1/auth/erpnext/verify-otp?phone=${Uri.encodeQueryComponent(p)}&otp=${Uri.encodeQueryComponent(o)}';
 
-      final response = await _net.postRequest(
-        path,
-        body: null,
-      );
+      final response = await _net.postRequest(path, body: null);
 
-      loading.value = false;
+      _setLoading(false);
 
       if (response.isSuccess && response.statusCode == 200) {
         final data = Map<String, dynamic>.from(response.responseData);
         final res = OtpVerifyRes.fromJson(data);
         otpVerifyRes.value = res;
 
-        Get.snackbar('Success', res.message);
-
-        // ✅ If verified + login successful, save everything
         if (res.success == true) {
+          AppSnackbar.success(l10n.success, res.message);
+
+          // ✅ Save auth
           if ((res.accessToken ?? '').isNotEmpty) {
             await _prefs.setString(SharedPrefs.accessToken, res.accessToken!);
           }
@@ -139,6 +162,7 @@ class AuthControllerGetx extends GetxController {
             await _prefs.setString(SharedPrefs.tokenType, res.tokenType!);
           }
 
+          // ✅ Save patient id/profile
           final pid = res.patient?.patientId;
           if ((pid ?? '').isNotEmpty) {
             await _prefs.setString(SharedPrefs.patientId, pid!);
@@ -152,27 +176,22 @@ class AuthControllerGetx extends GetxController {
           }
 
           await _prefs.setBool(SharedPrefs.isLoggedIn, true);
-        }
-
-        // ✅ Route based on new patient
-        if (res.isNewPatient) {
-          // Get.toNamed(RegisterScreen.route, arguments: {'phone': p});
+          return true;
         } else {
-          // Get.offAllNamed(HomeScreen.route);
+          // server success=false case
+          AppSnackbar.error(l10n.error, res.message);
+          return false;
         }
-
-        return res.success;
       } else {
-        Get.snackbar('Error', response.errorMessage ?? 'OTP verify failed');
+        AppSnackbar.error(l10n.error, _safeMsg(response.errorMessage ?? l10n.otpVerifyFailed));
         return false;
       }
-    } catch (e) {
-      loading.value = false;
-      Get.snackbar('Error', 'Something went wrong: $e');
+    } catch (_) {
+      _setLoading(false);
+      AppSnackbar.error(l10n.error, l10n.somethingWentWrong);
       return false;
     }
   }
-
 
   /// POST /api/v1/auth/erpnext/patient/register?phone=...&patient_name=...
   Future<bool> registerPatientErpnext({
@@ -183,7 +202,7 @@ class AuthControllerGetx extends GetxController {
     String? email,
     String? bloodGroup, // A+, O-, etc
   }) async {
-    loading.value = true;
+    _setLoading(true);
     try {
       final p = _normalizePhone(phone);
 
@@ -193,34 +212,64 @@ class AuthControllerGetx extends GetxController {
         'sex': sex,
         if (dob != null && dob.trim().isNotEmpty) 'dob': dob.trim(),
         if (email != null && email.trim().isNotEmpty) 'email': email.trim(),
-        if (bloodGroup != null && bloodGroup.trim().isNotEmpty) 'blood_group': bloodGroup.trim(),
+        if (bloodGroup != null && bloodGroup.trim().isNotEmpty)
+          'blood_group': bloodGroup.trim(),
       };
 
-      // If your client supports queryParameters, use it.
-      // Otherwise build URL manually:
-      final query = qp.entries.map((e) => '${Uri.encodeQueryComponent(e.key)}=${Uri.encodeQueryComponent(e.value)}').join('&');
+      final query = qp.entries
+          .map((e) =>
+      '${Uri.encodeQueryComponent(e.key)}=${Uri.encodeQueryComponent(e.value)}')
+          .join('&');
+
       final path = '/api/v1/auth/erpnext/patient/register?$query';
 
-      final response = await _net.postRequest(path, body: null);
+      final response = await _net.postRequest(path, body: qp);
 
-      loading.value = false;
+      _setLoading(false);
 
       if (response.isSuccess && response.statusCode == 200) {
-        // backend might return patient doc / token etc
-        Get.snackbar('Success', 'Registration completed');
+        final data = Map<String, dynamic>.from(response.responseData ?? {});
+        final patientMap = Map<String, dynamic>.from(data['patient'] ?? {});
 
-        // optional: persist phone
-        await _prefs.setString('last_phone', p);
+        // ✅ read patient_id
+        final patientId =
+        (patientMap['patient_id'] ?? patientMap['patientId'])?.toString();
+
+        if (patientId == null || patientId.isEmpty) {
+          AppSnackbar.error(l10n.error, l10n.somethingWentWrong);
+          return false;
+        }
+
+        // ✅ save patient id
+        await _prefs.setString(SharedPrefs.patientId, patientId);
+
+        // ✅ save profile (optional but useful for Profile screen)
+        await _prefs.setString(SharedPrefs.patientProfile, jsonEncode(patientMap));
+
+        // ✅ save last phone too
+        await _prefs.setString(SharedPrefs.lastPhone, p);
+
+        // ✅ if your app treats registration as logged in:
+        await _prefs.setBool(SharedPrefs.isLoggedIn, true);
+
+        AppSnackbar.success(
+          l10n.success,
+          data['message']?.toString() ?? l10n.registrationCompleted,
+        );
 
         return true;
       } else {
-        Get.snackbar('Error', response.errorMessage ?? 'Registration failed');
+        AppSnackbar.error(
+          l10n.error,
+          _safeMsg(response.errorMessage ?? l10n.registrationFailed),
+        );
         return false;
       }
-    } catch (e) {
-      loading.value = false;
-      Get.snackbar('Error', 'Something went wrong: $e');
+    } catch (_) {
+      _setLoading(false);
+      AppSnackbar.error(l10n.error, l10n.somethingWentWrong);
       return false;
     }
   }
+
 }

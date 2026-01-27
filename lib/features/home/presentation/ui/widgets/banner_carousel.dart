@@ -1,13 +1,11 @@
+import 'dart:async';
+
 import 'package:doctor_appointment/app/app_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:get/get.dart';
 
 import '../../../../../../l10n/app_localizations.dart';
-
-import 'dart:async';
-import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
-
 import '../../../../../app/asset_paths.dart';
 
 // Example model for banner items
@@ -28,7 +26,8 @@ class _BannerCarouselState extends State<BannerCarousel> {
   final PageController _controller = PageController();
   Timer? _timer;
 
-  int _index = 0;
+  // ✅ reactive index (no setState)
+  final RxInt _index = 0.obs;
 
   @override
   void initState() {
@@ -36,12 +35,28 @@ class _BannerCarouselState extends State<BannerCarousel> {
     _startAutoPlay();
   }
 
+  @override
+  void dispose() {
+    _timer?.cancel();
+    _controller.dispose();
+    _index.close();
+    super.dispose();
+  }
+
   void _startAutoPlay() {
     _timer?.cancel();
+
     _timer = Timer.periodic(const Duration(seconds: 3), (_) {
       if (!mounted) return;
 
-      final next = (_index + 1) % _banners(context).length;
+      final items = _banners(context);
+      if (items.isEmpty) return;
+
+      final next = (_index.value + 1) % items.length;
+
+      // ✅ keep dot + page in sync
+      _index.value = next;
+
       _controller.animateToPage(
         next,
         duration: const Duration(milliseconds: 450),
@@ -50,29 +65,19 @@ class _BannerCarouselState extends State<BannerCarousel> {
     });
   }
 
-  @override
-  void dispose() {
-    _timer?.cancel();
-    _controller.dispose();
-    super.dispose();
-  }
-
   List<BannerItem> _banners(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     return [
       BannerItem(
-        imageUrl:
-        AssetPaths.slider1,
+        imageUrl: AssetPaths.slider1,
         title: l10n.healthBannerText,
       ),
       BannerItem(
-        imageUrl:
-        AssetPaths.slider2,
+        imageUrl: AssetPaths.slider2,
         title: l10n.healthBannerText, // change to your key
       ),
       BannerItem(
-        imageUrl:
-        AssetPaths.slider3,
+        imageUrl: AssetPaths.slider3,
         title: l10n.healthBannerText, // change to your key
       ),
     ];
@@ -92,14 +97,13 @@ class _BannerCarouselState extends State<BannerCarousel> {
             child: PageView.builder(
               controller: _controller,
               itemCount: items.length,
-              onPageChanged: (i) => setState(() => _index = i),
+              onPageChanged: (i) => _index.value = i, // ✅ no setState
               itemBuilder: (_, i) {
                 final b = items[i];
                 return Stack(
                   fit: StackFit.expand,
                   children: [
                     Image.asset(b.imageUrl, fit: BoxFit.cover),
-                    // (optional) dark overlay for readable text
                     Container(color: Colors.black.withOpacity(0.18)),
                     Positioned(
                       left: 16.w,
@@ -129,15 +133,20 @@ class _BannerCarouselState extends State<BannerCarousel> {
           ),
         ),
         SizedBox(height: 12.h),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: List.generate(items.length, (i) {
-            return Padding(
-              padding: EdgeInsets.symmetric(horizontal: 3.w),
-              child: _Dot(active: i == _index),
-            );
-          }),
-        ),
+
+        // ✅ dots react to _index
+        Obx(() {
+          final current = _index.value;
+          return Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: List.generate(items.length, (i) {
+              return Padding(
+                padding: EdgeInsets.symmetric(horizontal: 3.w),
+                child: _Dot(active: i == current),
+              );
+            }),
+          );
+        }),
       ],
     );
   }
@@ -160,4 +169,3 @@ class _Dot extends StatelessWidget {
     );
   }
 }
-

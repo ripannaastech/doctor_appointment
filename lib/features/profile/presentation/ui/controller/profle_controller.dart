@@ -1,9 +1,15 @@
 import 'dart:convert';
 import 'package:get/get.dart';
 
+import '../../../../../app/app_snackbar.dart';
 import '../../../../../core/services/api_service/api_service.dart';
 import '../../../../../core/services/shared_preferance/shared_preferance.dart';
+import '../../../../../l10n/app_localizations.dart';
 import '../../../models/user_profile_model.dart';
+
+import 'dart:convert';
+import 'package:get/get.dart';
+
 
 class ProfileControllerGetx extends GetxController {
   final _net = NetworkService().client;
@@ -17,9 +23,23 @@ class ProfileControllerGetx extends GetxController {
   // Optional: for forms
   RxString errorText = ''.obs;
 
+  // ✅ Localization getter
+  AppLocalizations get l10n => AppLocalizations.of(Get.context!)!;
+
   /// Resolve user_id from prefs (ERPNext patient id)
   Future<String?> _getUserId() async {
     return await _prefs.getString(SharedPrefs.patientId);
+  }
+
+  /// Optional: load cached profile instantly (before API)
+  Future<void> loadCachedProfile() async {
+    try {
+      final cached = await _prefs.getString(SharedPrefs.patientProfile);
+      if (cached != null && cached.isNotEmpty) {
+        final jsonMap = jsonDecode(cached) as Map<String, dynamic>;
+        profile.value = UserProfile.fromJson(jsonMap);
+      }
+    } catch (_) {}
   }
 
   /// GET /api/v1/auth/user/{user_id}
@@ -30,13 +50,12 @@ class ProfileControllerGetx extends GetxController {
       final userId = await _getUserId();
       if (userId == null || userId.isEmpty) {
         loading.value = false;
-        errorText.value = 'Patient ID not found. Please login again.';
-        Get.snackbar('Error', errorText.value);
+        errorText.value = l10n.patientIdNotFoundPleaseLoginAgain;
+        AppSnackbar.error(l10n.error, errorText.value);
         return false;
       }
 
       final path = '/api/v1/auth/user/$userId';
-
       final response = await _net.getRequest(path);
 
       loading.value = false;
@@ -54,20 +73,20 @@ class ProfileControllerGetx extends GetxController {
 
         return true;
       } else {
-        errorText.value = response.errorMessage ?? 'Failed to load profile';
-        Get.snackbar('Error', errorText.value);
+        errorText.value = response.errorMessage ?? l10n.failedToLoadProfile;
+        AppSnackbar.error(l10n.error, errorText.value);
         return false;
       }
-    } catch (e) {
+    } catch (_) {
       loading.value = false;
-      errorText.value = 'Something went wrong: $e';
-      Get.snackbar('Error', errorText.value);
+      errorText.value = l10n.somethingWentWrong;
+      AppSnackbar.error(l10n.error, errorText.value);
       return false;
     }
   }
 
   /// PUT /api/v1/auth/user/{user_id}
-  /// Send only fields that you want to update (recommended)
+  /// Send only fields that you want to update
   Future<bool> updateProfile({
     String? patientName,
     String? firstName,
@@ -77,7 +96,7 @@ class ProfileControllerGetx extends GetxController {
     String? dob, // YYYY-MM-DD
     String? bloodGroup,
     String? territory,
-    String? language, // ✅ added
+    String? language,
   }) async {
     loading.value = true;
     errorText.value = '';
@@ -85,8 +104,8 @@ class ProfileControllerGetx extends GetxController {
       final userId = await _getUserId();
       if (userId == null || userId.isEmpty) {
         loading.value = false;
-        errorText.value = 'Patient ID not found. Please login again.';
-        Get.snackbar('Error', errorText.value);
+        errorText.value = l10n.patientIdNotFoundPleaseLoginAgain;
+        AppSnackbar.error(l10n.error, errorText.value);
         return false;
       }
 
@@ -99,22 +118,22 @@ class ProfileControllerGetx extends GetxController {
         if (dob != null) 'dob': dob.trim(),
         if (bloodGroup != null) 'blood_group': bloodGroup.trim(),
         if (territory != null) 'territory': territory.trim(),
-        if (language != null) 'language': language.trim(), // ✅ added
+        if (language != null) 'language': language.trim(),
       };
 
       if (body.isEmpty) {
         loading.value = false;
-        Get.snackbar('Info', 'Nothing to update');
+        AppSnackbar.info(l10n.info, l10n.nothingToUpdate);
         return false;
       }
 
       final path = '/api/v1/auth/user/$userId';
-
       final response = await _net.putRequest(path, body: body);
 
       loading.value = false;
 
       if (response.isSuccess && (response.statusCode == 200 || response.statusCode == 201)) {
+        // Some backends return updated user object, some return message only
         if (response.responseData is Map<String, dynamic>) {
           final data = Map<String, dynamic>.from(response.responseData);
           final updated = UserProfile.fromJson(data);
@@ -128,30 +147,18 @@ class ProfileControllerGetx extends GetxController {
           await fetchProfile();
         }
 
-        Get.snackbar('Success', 'Profile updated');
+        AppSnackbar.success(l10n.success, l10n.profileUpdated);
         return true;
       } else {
-        errorText.value = response.errorMessage ?? 'Failed to update profile';
-        Get.snackbar('Error', errorText.value);
+        errorText.value = response.errorMessage ?? l10n.failedToUpdateProfile;
+        AppSnackbar.error(l10n.error, errorText.value);
         return false;
       }
-    } catch (e) {
+    } catch (_) {
       loading.value = false;
-      errorText.value = 'Something went wrong: $e';
-      Get.snackbar('Error', errorText.value);
+      errorText.value = l10n.somethingWentWrong;
+      AppSnackbar.error(l10n.error, errorText.value);
       return false;
     }
-  }
-
-
-  /// Optional: load cached profile instantly (before API)
-  Future<void> loadCachedProfile() async {
-    try {
-      final cached = await _prefs.getString(SharedPrefs.patientProfile);
-      if (cached != null && cached.isNotEmpty) {
-        final jsonMap = jsonDecode(cached) as Map<String, dynamic>;
-        profile.value = UserProfile.fromJson(jsonMap);
-      }
-    } catch (_) {}
   }
 }
