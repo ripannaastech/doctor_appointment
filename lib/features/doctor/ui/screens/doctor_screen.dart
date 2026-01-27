@@ -37,7 +37,8 @@ class _DoctorScreenState extends State<DoctorScreen> {
         : Get.put(BookingController());
 
     // Load departments + practitioners first time
-    c.initBookingData();
+    c.fetchDepartments();
+    c.fetchPractitioners();
   }
 
   @override

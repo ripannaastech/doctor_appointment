@@ -268,45 +268,64 @@ class _SelectDoctorScreenState extends State<SelectDoctorScreen> {
             ),
 
             /// ✅ Next button (enabled only if selected)
-            Padding(
-              padding: EdgeInsets.only(bottom: 20.h),
-              child: Obx(() {
-                final enabled = c.selectedPractitioner.value != null;
+          Padding(
+            padding: EdgeInsets.only(bottom: 20.h),
+            child: Obx(() {
+              final enabled = c.selectedPractitioner.value != null;
+              final isLoading = c.loadingDoctorAppointments.value; // ✅ add in controller
 
-                return SizedBox(
-                  width: double.infinity,
-                  height: 52.h,
-                  child: ElevatedButton(
-                    onPressed: !enabled ? null : () {
-                      final p = c.selectedPractitioner.value!;
+              return SizedBox(
+                width: double.infinity,
+                height: 52.h,
+                child: ElevatedButton(
+                  onPressed: (!enabled || isLoading)
+                      ? null
+                      : () async {
+                    final p = c.selectedPractitioner.value!;
 
-                      Navigator.pushNamed(
-                        context,
-                        SelectDateTimeScreen.name,
-                        arguments: p, // ✅ pass model only
+                    final practitionerName = (p.fullName ?? '').trim();
+
+                    if (practitionerName.isNotEmpty) {
+                      final ok = await c.fetchDoctorBookedAppointments(
+                        practitionerName: practitionerName,
                       );
 
-                    },
+                      if (!ok) return;
+                    }
 
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: const Color(0xFF3F6DE0),
-                      disabledBackgroundColor: const Color(0xFFDADDE2),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12.r),
-                      ),
-                    ),
-                    child: Text(
-                      l10n.next,
-                      style: TextStyle(
-                        fontSize: 16.sp,
-                        fontWeight: FontWeight.w600,
-                        color: Colors.white,
-                      ),
+                    Navigator.pushNamed(
+                      context,
+                      SelectDateTimeScreen.name,
+                      arguments: p,
+                    );
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: const Color(0xFF3F6DE0),
+                    disabledBackgroundColor: const Color(0xFFDADDE2),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12.r),
                     ),
                   ),
-                );
-              }),
-            ),
+                  child: isLoading
+                      ? SizedBox(
+                    height: 20.h,
+                    width: 20.h,
+                    child: const CircularProgressIndicator(strokeWidth: 2),
+                  )
+                      : Text(
+                    l10n.next,
+                    style: TextStyle(
+                      fontSize: 16.sp,
+                      fontWeight: FontWeight.w600,
+                      color: Colors.white,
+                    ),
+                  ),
+                ),
+              );
+            }),
+          ),
+
+
           ],
         ),
       ),

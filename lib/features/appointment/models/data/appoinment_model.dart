@@ -16,6 +16,7 @@ class AppointmentSummary {
   final String? notes;
   final String appointmentType; // "Walk-In"
   final String billingItem; // "OPD Consultation"
+  final int docStatus; // ✅ 0=draft, 1=submitted, 2=cancelled
 
   AppointmentSummary({
     required this.name,
@@ -31,7 +32,9 @@ class AppointmentSummary {
     this.notes,
     required this.appointmentType,
     required this.billingItem,
+    required this.docStatus, // ✅
   });
+
 
   factory AppointmentSummary.fromJson(Map<String, dynamic> json) {
     return AppointmentSummary(
@@ -48,6 +51,8 @@ class AppointmentSummary {
       notes: json['notes']?.toString(),
       appointmentType: (json['appointment_type'] ?? '').toString(),
       billingItem: (json['billing_item'] ?? '').toString(),
+      docStatus: _intOrZero(json['docstatus']), // ✅ added
+
     );
   }
 

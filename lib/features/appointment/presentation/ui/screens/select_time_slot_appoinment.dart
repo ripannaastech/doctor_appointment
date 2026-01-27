@@ -12,6 +12,14 @@ import '../controller/booking_controller.dart';
 
 enum PaymentMethod { cash, online }
 
+class PaymentSelection {
+  final PaymentMethod method;
+  final String? phoneNumber;
+  final String? pin;
+
+  const PaymentSelection({required this.method, this.phoneNumber, this.pin});
+}
+
 class SelectDateTimeScreen extends StatefulWidget {
   static const String name = '/SelectDateTimeScreen';
 
@@ -30,7 +38,6 @@ class _SelectDateTimeScreenState extends State<SelectDateTimeScreen> {
   final RxInt selectedTime = (-1).obs;
   late final List<String> times;
 
-
   @override
   void initState() {
     super.initState();
@@ -42,17 +49,12 @@ class _SelectDateTimeScreenState extends State<SelectDateTimeScreen> {
       end: const TimeOfDay(hour: 20, minute: 0), // 8:00 PM
     );
 
-    final practitionerName = (widget.doctor.fullName ?? '').trim();
-    if (practitionerName.isNotEmpty) {
-      c.fetchDoctorBookedAppointments(practitionerName: practitionerName);
-    }
     ever(selectedDate, (_) {
       final practitionerName = (widget.doctor.fullName ?? '').trim();
       if (practitionerName.isNotEmpty) {
         c.fetchDoctorBookedAppointments(practitionerName: practitionerName);
       }
     });
-
   }
 
   List<String> generateContinuousSlots({
@@ -99,7 +101,8 @@ class _SelectDateTimeScreenState extends State<SelectDateTimeScreen> {
 
       // ✅ SUBMIT BUTTON FIXED AT BOTTOM
       bottomNavigationBar: Obx(() {
-        final canPress = selectedTime.value != -1 && !c.bookingAppointment.value;
+        final canPress =
+            selectedTime.value != -1 && !c.loading.value;
 
         return SafeArea(
           child: Padding(
@@ -111,94 +114,115 @@ class _SelectDateTimeScreenState extends State<SelectDateTimeScreen> {
                 onPressed: !canPress
                     ? null
                     : () async {
-                  if (c.bookingAppointment.value) return;
+                        if (c.loading.value) return;
 
-                  try {
-                    final sd = selectedDate.value;
-                    final st = selectedTime.value;
+                        try {
+                          final sd = selectedDate.value;
+                          final st = selectedTime.value;
 
-                    if (sd < 0 || sd >= dateList.length) {
-                      AppSnackbar.error(l10n.error, l10n.somethingWentWrong);
-                      return;
-                    }
-                    if (st < 0 || st >= times.length) {
-                      AppSnackbar.error(l10n.error, l10n.somethingWentWrong);
-                      return;
-                    }
+                          if (sd < 0 || sd >= dateList.length) {
+                            AppSnackbar.error(
+                              l10n.error,
+                              l10n.somethingWentWrong,
+                            );
+                            return;
+                          }
+                          if (st < 0 || st >= times.length) {
+                            AppSnackbar.error(
+                              l10n.error,
+                              l10n.somethingWentWrong,
+                            );
+                            return;
+                          }
 
-                    final selectedD = dateList[sd];
+                          final selectedD = dateList[sd];
 
-                    final appointmentDate =
-                        '${selectedD.year.toString().padLeft(4, '0')}-'
-                        '${selectedD.month.toString().padLeft(2, '0')}-'
-                        '${selectedD.day.toString().padLeft(2, '0')}';
+                          final appointmentDate =
+                              '${selectedD.year.toString().padLeft(4, '0')}-'
+                              '${selectedD.month.toString().padLeft(2, '0')}-'
+                              '${selectedD.day.toString().padLeft(2, '0')}';
 
-                    final appointmentTime =
-                    _extractStartTimeHHmmss(times[st]);
+                          final appointmentTime = _extractStartTimeHHmmss(
+                            times[st],
+                          );
 
-                    final practitionerName =
-                    (widget.doctor.fullName ?? '').trim();
-                    final department =
-                    (widget.doctor.department ?? '').trim();
-                    final feeAmount =
-                    (widget.doctor.inpatientVisitCharge ?? 0);
+                          final practitionerName =
+                              (widget.doctor.fullName ?? '').trim();
+                          final department = (widget.doctor.department ?? '')
+                              .trim();
+                          final feeAmount =
+                              (widget.doctor.inpatientVisitCharge ?? 0);
 
-                    if (practitionerName.isEmpty || department.isEmpty) {
-                      AppSnackbar.error(
-                          l10n.error, l10n.doctorInfoMissing);
-                      return;
-                    }
+                          if (practitionerName.isEmpty || department.isEmpty) {
+                            AppSnackbar.error(
+                              l10n.error,
+                              l10n.doctorInfoMissing,
+                            );
+                            return;
+                          }
 
-                    if (feeAmount <= 0) {
-                      AppSnackbar.error(
-                          l10n.error, l10n.feeAmountMissing);
-                      return;
-                    }
+                          if (feeAmount <= 0) {
+                            AppSnackbar.error(
+                              l10n.error,
+                              l10n.feeAmountMissing,
+                            );
+                            return;
+                          }
 
-                    final method = await _showPaymentDialog(l10n, feeAmount: feeAmount);
-                    if (method == null) return;
+                          final selection = await _showPaymentDialog(
+                            l10n,
+                            feeAmount: feeAmount,
+                          );
+                          if (selection == null) return;
 
-                    final appointmentId = await c.bookAppointment(
-                      practitioner: practitionerName,
-                      department: department,
-                      appointmentDate: appointmentDate,
-                      appointmentTime: appointmentTime,
-                      feeAmount: feeAmount,
-                      notes: null,
-                    );
+                          final appointmentId = await c.bookAppointment(
+                            practitioner: practitionerName,
+                            department: department,
+                            appointmentDate: appointmentDate,
+                            appointmentTime: appointmentTime,
+                            feeAmount: feeAmount,
+                            notes: null,
+                          );
 
-                    if (appointmentId == null || appointmentId.isEmpty) {
-                      AppSnackbar.error(l10n.error, l10n.bookingFailed);
-                      return;
-                    }
+                          if (appointmentId == null || appointmentId.isEmpty) {
+                            AppSnackbar.error(l10n.error, l10n.bookingFailed);
+                            return;
+                          }
 
-                    final paymentOk = await c.payAppointment(
-                      appointmentId: appointmentId,
-                      paymentMethod: method == PaymentMethod.cash
-                          ? 'cash'
-                          : 'online',
-                    );
+                          final paymentOk = await c.payAppointment(
+                            appointmentId: appointmentId,
+                            paymentMethod: selection.method == PaymentMethod.cash ? 'cash' : 'online',
+                            phoneNumber: selection.method == PaymentMethod.online
+                                ? selection.phoneNumber
+                                : null,
+                            pin: selection.method == PaymentMethod.online
+                                ? selection.pin
+                                : null,
+                          );
 
-                    if (!paymentOk) return;
+                          if (!paymentOk) return;
 
-                    if (!context.mounted) return;
+                          if (!context.mounted) return;
 
-                    Navigator.pushReplacementNamed(
-                      context,
-                      AppointmentConfirmedScreen.name,
-                      arguments: {
-                        'doctor': practitionerName,
-                        'department': department,
-                        'date': appointmentDate,
-                        'time': appointmentTime,
-                        'fee': feeAmount,
+                          Navigator.pushReplacementNamed(
+                            context,
+                            AppointmentConfirmedScreen.name,
+                            arguments: {
+                              'doctor': practitionerName,
+                              'department': department,
+                              'date': appointmentDate,
+                              'time': appointmentTime,
+                              'fee': feeAmount,
+                            },
+                          );
+
+                        } catch (e) {
+                          AppSnackbar.error(
+                            l10n.error,
+                            '${l10n.somethingWentWrong}: $e',
+                          );
+                        }
                       },
-                    );
-                  } catch (e) {
-                    AppSnackbar.error(
-                        l10n.error, '${l10n.somethingWentWrong}: $e');
-                  }
-                },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: const Color(0xFF3F6DE0),
                   disabledBackgroundColor: const Color(0xFFDADDE2),
@@ -206,23 +230,23 @@ class _SelectDateTimeScreenState extends State<SelectDateTimeScreen> {
                     borderRadius: BorderRadius.circular(12.r),
                   ),
                 ),
-                child: c.bookingAppointment.value
+                child: c.loading.value
                     ? const SizedBox(
-                  width: 22,
-                  height: 22,
-                  child: CircularProgressIndicator(
-                    strokeWidth: 2,
-                    color: Colors.white,
-                  ),
-                )
+                        width: 22,
+                        height: 22,
+                        child: CircularProgressIndicator(
+                          strokeWidth: 2,
+                          color: Colors.white,
+                        ),
+                      )
                     : Text(
-                  l10n.confirmBooking,
-                  style: TextStyle(
-                    fontSize: 16.sp,
-                    fontWeight: FontWeight.w600,
-                    color: Colors.white,
-                  ),
-                ),
+                        l10n.confirmBooking,
+                        style: TextStyle(
+                          fontSize: 16.sp,
+                          fontWeight: FontWeight.w600,
+                          color: Colors.white,
+                        ),
+                      ),
               ),
             ),
           ),
@@ -260,7 +284,9 @@ class _SelectDateTimeScreenState extends State<SelectDateTimeScreen> {
                         width: 56.w,
                         height: 64.h,
                         decoration: BoxDecoration(
-                          color: isSelected ? const Color(0xFF3F6DE0) : Colors.white,
+                          color: isSelected
+                              ? const Color(0xFF3F6DE0)
+                              : Colors.white,
                           borderRadius: BorderRadius.circular(12.r),
                           border: Border.all(
                             color: isSelected
@@ -315,7 +341,8 @@ class _SelectDateTimeScreenState extends State<SelectDateTimeScreen> {
                     '${d.day.toString().padLeft(2, '0')}';
 
                 // ✅ booked set for this date
-                final booked = c.bookedSlotsByDate[selectedDateKey] ?? <String>{};
+                final booked =
+                    c.bookedSlotsByDate[selectedDateKey] ?? <String>{};
 
                 return SingleChildScrollView(
                   padding: EdgeInsets.only(bottom: 12.h),
@@ -332,7 +359,9 @@ class _SelectDateTimeScreenState extends State<SelectDateTimeScreen> {
                       final isBooked = booked.contains(slotStart);
 
                       return GestureDetector(
-                        onTap: isBooked ? null : () => selectedTime.value = index,
+                        onTap: isBooked
+                            ? null
+                            : () => selectedTime.value = index,
                         child: Opacity(
                           opacity: isBooked ? 0.45 : 1,
                           child: Container(
@@ -344,18 +373,22 @@ class _SelectDateTimeScreenState extends State<SelectDateTimeScreen> {
                             decoration: BoxDecoration(
                               color: isBooked
                                   ? const Color(0xFFF3F4F6)
-                                  : (isSelected ? const Color(0xFF3F6DE0) : Colors.white),
+                                  : (isSelected
+                                        ? const Color(0xFF3F6DE0)
+                                        : Colors.white),
                               borderRadius: BorderRadius.circular(12.r),
                               border: Border.all(
                                 color: isBooked
                                     ? const Color(0xFFE5E7EB)
                                     : (isSelected
-                                    ? Colors.transparent
-                                    : const Color(0xFFE6E8EC)),
+                                          ? Colors.transparent
+                                          : const Color(0xFFE6E8EC)),
                               ),
                             ),
                             child: Text(
-                              isBooked ? '${times[index]} (Booked)' : times[index],
+                              isBooked
+                                  ? '${times[index]} (Booked)'
+                                  : times[index],
                               textAlign: TextAlign.center,
                               maxLines: 1,
                               overflow: TextOverflow.ellipsis,
@@ -364,7 +397,9 @@ class _SelectDateTimeScreenState extends State<SelectDateTimeScreen> {
                                 fontWeight: FontWeight.w600,
                                 color: isBooked
                                     ? const Color(0xFF9CA3AF)
-                                    : (isSelected ? Colors.white : Colors.black),
+                                    : (isSelected
+                                          ? Colors.white
+                                          : Colors.black),
                               ),
                             ),
                           ),
@@ -380,7 +415,6 @@ class _SelectDateTimeScreenState extends State<SelectDateTimeScreen> {
       ),
     );
   }
-
 
   String _weekdayLabel(AppLocalizations l10n, int weekday) {
     switch (weekday) {
@@ -401,12 +435,12 @@ class _SelectDateTimeScreenState extends State<SelectDateTimeScreen> {
     }
   }
 
-  Future<PaymentMethod?> _showPaymentDialog(
-      AppLocalizations l10n, {
-        required double feeAmount,
-        String currency = '\$',
-      }) {
-    return showDialog<PaymentMethod>(
+  Future<PaymentSelection?> _showPaymentDialog(
+    AppLocalizations l10n, {
+    required double feeAmount,
+    String currency = '\$',
+  }) {
+    return showDialog<PaymentSelection>(
       context: context,
       barrierDismissible: true,
       builder: (ctx) {
@@ -417,7 +451,6 @@ class _SelectDateTimeScreenState extends State<SelectDateTimeScreen> {
           contentPadding: EdgeInsets.fromLTRB(20.w, 20.h, 20.w, 16.h),
           titlePadding: EdgeInsets.fromLTRB(20.w, 20.h, 20.w, 0),
 
-          /// 🔹 CENTERED TITLE
           title: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
@@ -437,10 +470,7 @@ class _SelectDateTimeScreenState extends State<SelectDateTimeScreen> {
               Text(
                 l10n.selectPaymentMethod,
                 textAlign: TextAlign.center,
-                style: TextStyle(
-                  fontSize: 16.sp,
-                  fontWeight: FontWeight.w700,
-                ),
+                style: TextStyle(fontSize: 16.sp, fontWeight: FontWeight.w700),
               ),
               6.verticalSpace,
               Text(
@@ -455,7 +485,6 @@ class _SelectDateTimeScreenState extends State<SelectDateTimeScreen> {
             ],
           ),
 
-          /// 🔹 CENTERED CONTENT
           content: Column(
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.center,
@@ -470,10 +499,8 @@ class _SelectDateTimeScreenState extends State<SelectDateTimeScreen> {
                   height: 1.4,
                 ),
               ),
-
               16.verticalSpace,
 
-              /// 💳 TOTAL FEE BOX (CENTERED)
               Container(
                 width: double.infinity,
                 padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 12.h),
@@ -506,26 +533,41 @@ class _SelectDateTimeScreenState extends State<SelectDateTimeScreen> {
 
               20.verticalSpace,
 
-              /// PAYMENT OPTIONS (CENTERED TILES)
               _paymentOptionTile(
                 title: l10n.cashPayment,
                 subtitle: l10n.cashPaymentDesc,
                 icon: Icons.account_balance_wallet_outlined,
-                onTap: () => Navigator.pop(ctx, PaymentMethod.cash),
+                onTap: () => Navigator.pop(
+                  ctx,
+                  const PaymentSelection(method: PaymentMethod.cash),
+                ),
               ),
 
               12.verticalSpace,
-
               _paymentOptionTile(
                 title: l10n.onlinePayment,
                 subtitle: l10n.onlinePaymentDesc,
                 icon: Icons.credit_card_outlined,
-                onTap: () => Navigator.pop(ctx, PaymentMethod.online),
+                onTap: () async {
+                  final evc = await _showEvcDialog(l10n);
+                  if (!mounted) return;
+
+                  if (evc == null) return;
+
+                  Navigator.pop(
+                    ctx,
+                    PaymentSelection(
+                      method: PaymentMethod.online,
+                      phoneNumber: evc.$1,
+                      pin: evc.$2,
+                    ),
+                  );
+                },
               ),
+
             ],
           ),
 
-          /// 🔹 CENTERED ACTION
           actionsPadding: EdgeInsets.fromLTRB(16.w, 0, 16.w, 14.h),
           actions: [
             SizedBox(
@@ -555,8 +597,148 @@ class _SelectDateTimeScreenState extends State<SelectDateTimeScreen> {
     );
   }
 
+  Future<(String, String)?> _showEvcDialog(AppLocalizations l10n) {
+    final phoneCtrl = TextEditingController();
+    final pinCtrl = TextEditingController();
 
+    return showDialog<(String, String)?>(
+      context: context,
+      barrierDismissible: true,
+      builder: (ctx) {
+        return AlertDialog(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16.r),
+          ),
+          contentPadding: EdgeInsets.fromLTRB(20.w, 20.h, 20.w, 16.h),
+          titlePadding: EdgeInsets.fromLTRB(20.w, 20.h, 20.w, 0),
 
+          title: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Container(
+                width: 44.w,
+                height: 44.w,
+                decoration: BoxDecoration(
+                  color: const Color(0xFF3F6DE0).withOpacity(0.12),
+                  borderRadius: BorderRadius.circular(14.r),
+                ),
+                child: const Icon(Icons.phone_iphone, color: Color(0xFF3F6DE0)),
+              ),
+              12.verticalSpace,
+              Text(
+                l10n.onlinePayment,
+                textAlign: TextAlign.center,
+                style: TextStyle(fontSize: 16.sp, fontWeight: FontWeight.w700),
+              ),
+              6.verticalSpace,
+              Text(
+                l10n.enterPhoneAndPin,
+                textAlign: TextAlign.center,
+                style: TextStyle(fontSize: 13.sp, color: Colors.grey.shade600),
+              ),
+            ],
+          ),
+
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              16.verticalSpace,
+
+              TextField(
+                controller: phoneCtrl,
+                keyboardType: TextInputType.phone,
+                textAlign: TextAlign.center,
+                decoration: InputDecoration(
+                  hintText: l10n.phoneNumber,
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12.r),
+                  ),
+                ),
+              ),
+
+              12.verticalSpace,
+
+              TextField(
+                controller: pinCtrl,
+                keyboardType: TextInputType.number,
+                obscureText: true,
+                textAlign: TextAlign.center,
+                decoration: InputDecoration(
+                  hintText: l10n.pin,
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12.r),
+                  ),
+                ),
+              ),
+            ],
+          ),
+
+          actionsPadding: EdgeInsets.fromLTRB(16.w, 0, 16.w, 14.h),
+          actions: [
+            SizedBox(
+              width: double.infinity,
+              height: 46.h,
+              child: ElevatedButton(
+                onPressed: () {
+                  final phone = phoneCtrl.text.trim();
+                  final pin = pinCtrl.text.trim();
+
+                  if (phone.isEmpty || pin.isEmpty) {
+                    AppSnackbar.error(l10n.error, l10n.pleaseFillAllFields);
+                    return;
+                  }
+
+                  Navigator.pop(ctx, (phone, pin));
+                },
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: const Color(0xFF3F6DE0),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12.r),
+                  ),
+                ),
+                child: Text(
+                  l10n.confirm,
+                  style: TextStyle(
+                    fontSize: 14.sp,
+                    fontWeight: FontWeight.w700,
+                    color: Colors.white,
+                  ),
+                ),
+              ),
+            ),
+            10.verticalSpace,
+            SizedBox(
+              width: double.infinity,
+              height: 46.h,
+              child: OutlinedButton(
+                onPressed: () => Navigator.pop(ctx, null),
+                style: OutlinedButton.styleFrom(
+                  side: const BorderSide(color: Color(0xFFE6E8EC)),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12.r),
+                  ),
+                ),
+                child: Text(
+                  l10n.cancel,
+                  style: TextStyle(
+                    fontSize: 14.sp,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+              ),
+            ),
+          ],
+        );
+      },
+    ).then((result) {
+      // ✅ Delay dispose until after the pop animation/frame
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        phoneCtrl.dispose();
+        pinCtrl.dispose();
+      });
+      return result;
+    });
+  }
 
   Widget _paymentOptionTile({
     required String title,
@@ -663,4 +845,3 @@ class _SelectDateTimeScreenState extends State<SelectDateTimeScreen> {
     );
   }
 }
-

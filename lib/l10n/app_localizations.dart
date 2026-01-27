@@ -1129,6 +1129,24 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Consultation Fee'**
   String get feeAmount;
+
+  /// No description provided for @enterPhoneAndPin.
+  ///
+  /// In en, this message translates to:
+  /// **'Please enter your phone number and PIN'**
+  String get enterPhoneAndPin;
+
+  /// No description provided for @pin.
+  ///
+  /// In en, this message translates to:
+  /// **'PIN'**
+  String get pin;
+
+  /// No description provided for @pleaseFillAllFields.
+  ///
+  /// In en, this message translates to:
+  /// **'Please fill in all required fields'**
+  String get pleaseFillAllFields;
 }
 
 class _AppLocalizationsDelegate

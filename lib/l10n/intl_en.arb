@@ -172,5 +172,8 @@
   "failedToUpdateProfile": "Failed to update profile",
   "nothingToUpdate": "Nothing to update",
   "totalPayable": "Total Payable",
-  "feeAmount": "Consultation Fee"
+  "feeAmount": "Consultation Fee",
+  "enterPhoneAndPin": "Please enter your phone number and PIN",
+  "pin": "PIN",
+  "pleaseFillAllFields": "Please fill in all required fields"
 }

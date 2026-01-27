@@ -1,14 +1,8 @@
 import 'package:get/get.dart';
-
 import '../../../../../app/app_snackbar.dart';
 import '../../../../../core/services/api_service/api_service.dart';
 import '../../../../../core/services/shared_preferance/shared_preferance.dart';
-
 import 'dart:async';
-import 'dart:convert';
-
-import 'package:get/get.dart';
-
 import '../../../models/data/appoinment_model.dart';
 import '../../../models/data/department_model.dart';
 import '../../../models/data/practitioner_model.dart';
@@ -357,7 +351,7 @@ class BookingController extends GetxController {
     String? notes,
     String? patientIdOverride,
   }) async {
-    bookingAppointment.value = true;
+    loading.value = true;
     errorText.value = '';
 
     try {
@@ -405,7 +399,7 @@ class BookingController extends GetxController {
       AppSnackbar.error('Error', errorText.value);
       return null;
     } finally {
-      bookingAppointment.value = false;
+      loading.value = false;
     }
   }
 
@@ -414,24 +408,68 @@ class BookingController extends GetxController {
   Future<bool> payAppointment({
     required String appointmentId,
     required String paymentMethod, // "cash" or "online"
+    String? phoneNumber,
+    String? pin,
   }) async {
     loading.value = true;
     errorText.value = '';
 
     try {
-      final path = '/api/v1/payments/erpnext/pay-appointment/$appointmentId';
-      final query = {'payment_method': paymentMethod};
+      final method = paymentMethod.trim().toLowerCase();
 
-      final response = await _net.postRequest(path, query: query,body: query);
+      // ✅ CASH -> ERPNext payment endpoint
+      if (method == 'cash') {
+        final path = '/api/v1/payments/erpnext/pay-appointment/$appointmentId';
+        final query = {'payment_method': 'cash'};
 
-      if (response.isSuccess && (response.statusCode == 200 || response.statusCode == 201)) {
-        await fetchAllAppointments();
-        return true;
-      } else {
-        errorText.value = _extractError(response) ?? 'Payment failed';
-        AppSnackbar.error('Error', errorText.value);
-        return false;
+        final response = await _net.postRequest(path, query: query, body: query);
+
+        if (response.isSuccess &&
+            (response.statusCode == 200 || response.statusCode == 201)) {
+          await fetchAllAppointments();
+          return true;
+        } else {
+          errorText.value = _extractError(response) ?? 'Cash payment failed';
+          AppSnackbar.error('Error', errorText.value);
+          return false;
+        }
       }
+
+      // ✅ ONLINE -> EVC endpoint (needs phone + pin)
+      if (method == 'online') {
+        final phone = (phoneNumber ?? '').trim();
+        final p = (pin ?? '').trim();
+
+        if (phone.isEmpty || p.isEmpty) {
+          errorText.value = 'Phone number and PIN are required for online payment';
+          AppSnackbar.error('Error', errorText.value);
+          return false;
+        }
+
+        final path = '/api/v1/payments/mobile/evc/pay-appointment/$appointmentId';
+        final query = {
+          'phone_number': phone,
+          'pin': p,
+        };
+
+        // some servers accept GET, but safest is POST (your client uses postRequest)
+        final response = await _net.postRequest(path, query: query, body: {});
+
+        if (response.isSuccess &&
+            (response.statusCode == 200 || response.statusCode == 201)) {
+          await fetchAllAppointments();
+          return true;
+        } else {
+          errorText.value = _extractError(response) ?? 'Online payment failed';
+          AppSnackbar.error('Error', errorText.value);
+          return false;
+        }
+      }
+
+      // ✅ unknown method
+      errorText.value = 'Invalid payment method: $paymentMethod';
+      AppSnackbar.error('Error', errorText.value);
+      return false;
     } catch (e) {
       errorText.value = 'Something went wrong: $e';
       AppSnackbar.error('Error', errorText.value);
@@ -440,6 +478,7 @@ class BookingController extends GetxController {
       loading.value = false;
     }
   }
+
 
   // -------------------------
   // UI handlers

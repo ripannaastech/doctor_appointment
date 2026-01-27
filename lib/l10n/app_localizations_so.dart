@@ -531,4 +531,14 @@ class AppLocalizationsSo extends AppLocalizations {
 
   @override
   String get feeAmount => 'Qiimaha La-tashiga';
+
+  @override
+  String get enterPhoneAndPin => 'Fadlan geli lambarka taleefanka iyo PIN-ka';
+
+  @override
+  String get pin => 'PIN';
+
+  @override
+  String get pleaseFillAllFields =>
+      'Fadlan buuxi dhammaan meelaha loo baahan yahay';
 }

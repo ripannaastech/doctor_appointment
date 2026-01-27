@@ -177,5 +177,8 @@
   "failedToUpdateProfile": "Cusboonaysiinta profile-ka way fashilantay",
   "nothingToUpdate": "Wax la cusboonaysiinayo ma jiraan",
   "feeAmount": "Qiimaha La-tashiga",
-  "totalPayable": "Wadarta Lacagta La Bixinayo"
+  "totalPayable": "Wadarta Lacagta La Bixinayo",
+  "enterPhoneAndPin": "Fadlan geli lambarka taleefanka iyo PIN-ka",
+  "pin": "PIN",
+  "pleaseFillAllFields": "Fadlan buuxi dhammaan meelaha loo baahan yahay"
 }

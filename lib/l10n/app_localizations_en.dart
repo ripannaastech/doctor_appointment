@@ -530,4 +530,13 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get feeAmount => 'Consultation Fee';
+
+  @override
+  String get enterPhoneAndPin => 'Please enter your phone number and PIN';
+
+  @override
+  String get pin => 'PIN';
+
+  @override
+  String get pleaseFillAllFields => 'Please fill in all required fields';
 }

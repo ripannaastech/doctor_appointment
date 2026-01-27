@@ -356,6 +356,7 @@ import 'package:intl/intl.dart';
 
 class MyAppointmentScreen extends StatefulWidget {
   static const String name = '/myAppointment';
+
   const MyAppointmentScreen({super.key});
 
   @override
@@ -391,34 +392,33 @@ class _MyAppointmentScreenState extends State<MyAppointmentScreen> {
             height: statusBarHeight + 90.h,
             decoration: BoxDecoration(
               color: const Color(0xFF3F6DE0),
-              borderRadius: BorderRadius.vertical(bottom: Radius.circular(24.r)),
+              borderRadius:
+              BorderRadius.vertical(bottom: Radius.circular(24.r)),
             ),
             child: Column(
               children: [
                 SizedBox(height: statusBarHeight),
-        SizedBox(
-          height: 56.h,
-          child: Row(
-            children: [
-              SizedBox(width: 48.w),
-
-              Expanded(
-                child: Text(
-                  l10n.myAppointment,
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                    fontSize: 18.sp,
-                    color: Colors.white,
-                    fontWeight: FontWeight.w600,
-                    letterSpacing: 0.2,
+                SizedBox(
+                  height: 56.h,
+                  child: Row(
+                    children: [
+                      SizedBox(width: 48.w),
+                      Expanded(
+                        child: Text(
+                          l10n.myAppointment,
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            fontSize: 18.sp,
+                            color: Colors.white,
+                            fontWeight: FontWeight.w600,
+                            letterSpacing: 0.2,
+                          ),
+                        ),
+                      ),
+                      SizedBox(width: 48.w),
+                    ],
                   ),
-                ),
-              ),
-
-              SizedBox(width: 48.w),
-            ],
-          ),
-        )
+                )
               ],
             ),
           ),
@@ -437,6 +437,10 @@ class _MyAppointmentScreenState extends State<MyAppointmentScreen> {
                     }
 
                     final all = c.appointments.toList();
+
+                    // ✅ docstatus based tabs:
+                    // Upcoming = future (or same minute) AND NOT cancelled (docstatus != 2)
+                    // Past = past OR cancelled (docstatus == 2)
                     final upcoming = _filterUpcoming(all);
                     final past = _filterPast(all);
 
@@ -446,7 +450,10 @@ class _MyAppointmentScreenState extends State<MyAppointmentScreen> {
                       return Center(
                         child: Text(
                           isUpcoming.value ? l10n.noUpcoming : l10n.noPast,
-                          style: TextStyle(fontSize: 14.sp, color: Colors.black54),
+                          style: TextStyle(
+                            fontSize: 14.sp,
+                            color: Colors.black54,
+                          ),
                         ),
                       );
                     }
@@ -465,7 +472,6 @@ class _MyAppointmentScreenState extends State<MyAppointmentScreen> {
                     );
                   }),
                 ),
-
                 Positioned(
                   top: -28.h,
                   left: 20.w,
@@ -480,6 +486,9 @@ class _MyAppointmentScreenState extends State<MyAppointmentScreen> {
     );
   }
 
+  // -------------------------
+  // Tabs
+  // -------------------------
   Widget _tabSwitcher(AppLocalizations l10n) {
     return Container(
       margin: EdgeInsets.only(top: 12.h),
@@ -536,19 +545,29 @@ class _MyAppointmentScreenState extends State<MyAppointmentScreen> {
     );
   }
 
-
+  // -------------------------
+  // Card
+  // -------------------------
   Widget _appointmentCard({
     required AppointmentSummary appointment,
     required AppLocalizations l10n,
     required bool showActions,
   }) {
-    final statusColor = _statusColor(appointment.status);
+    final statusColor = getStatusColor(
+      docStatus: appointment.docStatus,
+      status: appointment.status,
+    );
+
+    final displayStatusText = _displayStatus(appointment);
 
     final dateText = _formatDatePretty(appointment.appointmentDate);
     final timeText = _formatTimePretty(appointment.appointmentTime);
     final locationText = appointment.department.isNotEmpty
         ? appointment.department
         : l10n.department;
+
+    // ✅ If cancelled at doc-level, never allow cancel action
+    final canCancel = showActions && appointment.docStatus != 2;
 
     return Container(
       margin: EdgeInsets.only(bottom: 16.h),
@@ -614,7 +633,7 @@ class _MyAppointmentScreenState extends State<MyAppointmentScreen> {
                   borderRadius: BorderRadius.circular(20.r),
                 ),
                 child: Text(
-                  appointment.status,
+                  displayStatusText, // ✅ docstatus-based label
                   style: TextStyle(
                     fontSize: 12.sp,
                     color: statusColor,
@@ -641,24 +660,28 @@ class _MyAppointmentScreenState extends State<MyAppointmentScreen> {
                     l10n.viewDetails,
                     const Color(0xFFEFF4FF),
                     const Color(0xFF3F6DE0),
-                    onTap: () => _showAppointmentDetailsDialog(appointment, l10n),
-
+                    onTap: () =>
+                        _showAppointmentDetailsDialog(appointment, l10n),
                   ),
                 ),
                 SizedBox(width: 12.w),
+
+                // ✅ Cancel button only if NOT cancelled
                 Expanded(
                   child: _actionButton(
                     l10n.cancel,
-                    const Color(0xFFFEF2F2),
-                    const Color(0xFFEF4444),
+                    canCancel ? const Color(0xFFFEF2F2) : const Color(0xFFF3F4F6),
+                    canCancel ? const Color(0xFFEF4444) : const Color(0xFF9CA3AF),
                     onTap: () async {
+                      if (!canCancel) return;
+
                       final ok = await confirmCancel(l10n);
                       if (!ok) return;
 
                       final success = await c.cancelAppointment(appointment.name);
                       if (success) {
-                        AppSnackbar.success('Success',  l10n.appointmentCanceled );
-
+                        AppSnackbar.success('Success', l10n.appointmentCanceled);
+                        await c.fetchAllAppointments();
                       }
                     },
                   ),
@@ -700,7 +723,9 @@ class _MyAppointmentScreenState extends State<MyAppointmentScreen> {
     );
   }
 
-
+  // -------------------------
+  // Details Dialog
+  // -------------------------
   void _showAppointmentDetailsDialog(
       AppointmentSummary a,
       AppLocalizations l10n,
@@ -710,7 +735,7 @@ class _MyAppointmentScreenState extends State<MyAppointmentScreen> {
 
     showDialog(
       context: context,
-      builder: (_) => AlertDialog(
+      builder: (dialogCtx) => AlertDialog(
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(14.r),
         ),
@@ -734,11 +759,13 @@ class _MyAppointmentScreenState extends State<MyAppointmentScreen> {
             10.verticalSpace,
             _dRow(l10n.time, timeText),
             10.verticalSpace,
-            _dRow(l10n.status, a.status),
+            _dRow(l10n.status, _displayStatus(a)), // ✅ docstatus label
             10.verticalSpace,
             _dRow(l10n.appointmentType, a.appointmentType),
             10.verticalSpace,
             _dRow(l10n.billingItem, a.billingItem),
+            10.verticalSpace,
+            _dRow('DocStatus', a.docStatus.toString()), // ✅ show docstatus
             if ((a.notes ?? '').trim().isNotEmpty) ...[
               10.verticalSpace,
               _dRow(l10n.notes, a.notes!.trim()),
@@ -747,7 +774,7 @@ class _MyAppointmentScreenState extends State<MyAppointmentScreen> {
         ),
         actions: [
           TextButton(
-            onPressed: () => Navigator.pop(context),
+            onPressed: () => Navigator.pop(dialogCtx),
             child: Text(l10n.close),
           ),
         ],
@@ -784,32 +811,56 @@ class _MyAppointmentScreenState extends State<MyAppointmentScreen> {
     );
   }
 
-
+  // -------------------------
+  // Filters (docstatus-based)
+  // -------------------------
   List<AppointmentSummary> _filterUpcoming(List<AppointmentSummary> all) {
     final now = DateTime.now();
-    return all.where((a) {
-      final dt = _parseAppointmentDateTime(a.appointmentDate, a.appointmentTime);
+    return all
+        .where((a) {
+      // ✅ upcoming should NOT include cancelled
+      if (a.docStatus == 2) return false;
+
+      final dt =
+      _parseAppointmentDateTime(a.appointmentDate, a.appointmentTime);
       if (dt == null) return false;
+
       return dt.isAfter(now) || _isSameMinute(dt, now);
-    }).toList()
+    })
+        .toList()
       ..sort((a, b) {
-        final da = _parseAppointmentDateTime(a.appointmentDate, a.appointmentTime) ?? DateTime(1970);
-        final db = _parseAppointmentDateTime(b.appointmentDate, b.appointmentTime) ?? DateTime(1970);
+        final da =
+            _parseAppointmentDateTime(a.appointmentDate, a.appointmentTime) ??
+                DateTime(1970);
+        final db =
+            _parseAppointmentDateTime(b.appointmentDate, b.appointmentTime) ??
+                DateTime(1970);
         return da.compareTo(db);
       });
   }
 
   List<AppointmentSummary> _filterPast(List<AppointmentSummary> all) {
     final now = DateTime.now();
-    return all.where((a) {
-      final dt = _parseAppointmentDateTime(a.appointmentDate, a.appointmentTime);
+    return all
+        .where((a) {
+      final dt =
+      _parseAppointmentDateTime(a.appointmentDate, a.appointmentTime);
       if (dt == null) return false;
+
+      // ✅ cancelled should always appear in Past tab
+      if (a.docStatus == 2) return true;
+
       return dt.isBefore(now) && !_isSameMinute(dt, now);
-    }).toList()
+    })
+        .toList()
       ..sort((a, b) {
-        final da = _parseAppointmentDateTime(a.appointmentDate, a.appointmentTime) ?? DateTime(1970);
-        final db = _parseAppointmentDateTime(b.appointmentDate, b.appointmentTime) ?? DateTime(1970);
-        return db.compareTo(da); // latest past first
+        final da =
+            _parseAppointmentDateTime(a.appointmentDate, a.appointmentTime) ??
+                DateTime(1970);
+        final db =
+            _parseAppointmentDateTime(b.appointmentDate, b.appointmentTime) ??
+                DateTime(1970);
+        return db.compareTo(da); // latest first
       });
   }
 
@@ -854,118 +905,133 @@ class _MyAppointmentScreenState extends State<MyAppointmentScreen> {
     }
   }
 
-  Color _statusColor(String status) {
+  // ✅ docstatus-based display label
+  String _displayStatus(AppointmentSummary a) {
+    if (a.docStatus == 2) return 'Cancelled';
+    if (a.status.trim().isNotEmpty) return a.status.trim();
+    if (a.docStatus == 0) return 'Draft';
+    if (a.docStatus == 1) return 'Submitted';
+    return 'Unknown';
+  }
+
+  // ✅ docstatus first, then status string
+  Color getStatusColor({
+    required int docStatus,
+    required String status,
+  }) {
+    if (docStatus == 2) return const Color(0xFFEF4444);
+
     switch (status.toLowerCase()) {
       case 'scheduled':
       case 'confirmed':
         return const Color(0xFF10B981);
       case 'pending':
         return const Color(0xFFF59E0B);
+      case 'completed':
+        return const Color(0xFF6B7280);
       case 'cancelled':
       case 'canceled':
         return const Color(0xFFEF4444);
-      case 'completed':
-        return const Color(0xFF6B7280);
       default:
         return const Color(0xFF6B7280);
     }
   }
 
+  // -------------------------
+  // Cancel Confirm (fixed)
+  // -------------------------
   Future<bool> confirmCancel(AppLocalizations l10n) async {
-    final result = await Get.dialog<bool>(
-      Dialog(
-        insetPadding: const EdgeInsets.symmetric(horizontal: 20),
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(18)),
-        child: Padding(
-          padding: const EdgeInsets.fromLTRB(18, 18, 18, 14),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              // Icon
-              Container(
-                height: 54,
-                width: 54,
-                decoration: BoxDecoration(
-                  color: const Color(0xFFFFF3E0), // soft warm
-                  shape: BoxShape.circle,
-                ),
-                child: const Icon(
-                  Icons.event_busy_rounded,
-                  size: 28,
-                  color: Color(0xFFEF6C00),
-                ),
-              ),
-
-              const SizedBox(height: 14),
-
-              // Title
-              Text(
-                l10n.cancelAppointmentTitle,
-                textAlign: TextAlign.center,
-                style: const TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.w800,
-                  color: Color(0xFF141A2A),
-                  height: 1.2,
-                ),
-              ),
-
-              const SizedBox(height: 8),
-
-              // Body
-              Text(
-                l10n.cancelAppointmentBody,
-                textAlign: TextAlign.center,
-                style: const TextStyle(
-                  fontSize: 13.5,
-                  fontWeight: FontWeight.w500,
-                  color: Color(0xFF6B7280),
-                  height: 1.35,
-                ),
-              ),
-
-              const SizedBox(height: 16),
-
-              // Buttons
-              Row(
-                children: [
-                  Expanded(
-                    child: OutlinedButton(
-                      onPressed: () => Navigator.pop(context, false),
-                      style: OutlinedButton.styleFrom(
-                        foregroundColor: const Color(0xFF141A2A),
-                        side: const BorderSide(color: Color(0xFFE5E7EB)),
-                        padding: const EdgeInsets.symmetric(vertical: 12),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                      ),
-                      child: Text(l10n.no),
-                    ),
+    final result = await showDialog<bool>(
+      context: context,
+      barrierDismissible: true,
+      builder: (dialogCtx) {
+        return Dialog(
+          insetPadding: const EdgeInsets.symmetric(horizontal: 20),
+          shape:
+          RoundedRectangleBorder(borderRadius: BorderRadius.circular(18)),
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(18, 18, 18, 14),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Container(
+                  height: 54,
+                  width: 54,
+                  decoration: const BoxDecoration(
+                    color: Color(0xFFFFF3E0),
+                    shape: BoxShape.circle,
                   ),
-                  const SizedBox(width: 10),
-                  Expanded(
-                    child: ElevatedButton(
-                      onPressed: () => Navigator.pop(context, true),
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: const Color(0xFFEF4444), // red
-                        foregroundColor: Colors.white,
-                        elevation: 0,
-                        padding: const EdgeInsets.symmetric(vertical: 12),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                      ),
-                      child: Text(l10n.yesCancel),
-                    ),
+                  child: const Icon(
+                    Icons.event_busy_rounded,
+                    size: 28,
+                    color: Color(0xFFEF6C00),
                   ),
-                ],
-              ),
-            ],
+                ),
+                const SizedBox(height: 14),
+                Text(
+                  l10n.cancelAppointmentTitle,
+                  textAlign: TextAlign.center,
+                  style: const TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.w800,
+                    color: Color(0xFF141A2A),
+                    height: 1.2,
+                  ),
+                ),
+                const SizedBox(height: 8),
+                Text(
+                  l10n.cancelAppointmentBody,
+                  textAlign: TextAlign.center,
+                  style: const TextStyle(
+                    fontSize: 13.5,
+                    fontWeight: FontWeight.w500,
+                    color: Color(0xFF6B7280),
+                    height: 1.35,
+                  ),
+                ),
+                const SizedBox(height: 16),
+                Row(
+                  children: [
+                    Expanded(
+                      child: OutlinedButton(
+                        onPressed: () => Navigator.pop(dialogCtx, false),
+                        style: OutlinedButton.styleFrom(
+                          foregroundColor: const Color(0xFF141A2A),
+                          side:
+                          const BorderSide(color: Color(0xFFE5E7EB)),
+                          padding:
+                          const EdgeInsets.symmetric(vertical: 12),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                        ),
+                        child: Text(l10n.no),
+                      ),
+                    ),
+                    const SizedBox(width: 10),
+                    Expanded(
+                      child: ElevatedButton(
+                        onPressed: () => Navigator.pop(dialogCtx, true),
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: const Color(0xFFEF4444),
+                          foregroundColor: Colors.white,
+                          elevation: 0,
+                          padding:
+                          const EdgeInsets.symmetric(vertical: 12),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                        ),
+                        child: Text(l10n.yesCancel),
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
           ),
-        ),
-      ),
-      barrierDismissible: true, // tap outside = close
+        );
+      },
     );
 
     return result ?? false;
