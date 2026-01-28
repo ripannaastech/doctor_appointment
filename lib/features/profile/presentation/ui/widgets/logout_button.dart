@@ -37,22 +37,7 @@ class LogoutButton extends StatelessWidget {
 
     if (ok != true) return;
 
-    await SharedPrefs().clear();
-
-    if (Get.isRegistered<ProfileControllerGetx>()) {
-      Get.delete<ProfileControllerGetx>(force: true);
-    }
-
-    if (Get.isRegistered<ProfileControllerGetx>()) {
-      Get.delete<DashboardController>(force: true);
-    }
-
-    if (Get.isRegistered<HomeController>()) {
-      Get.delete<HomeController>(force: true);
-    }
-    if (Get.isRegistered<AuthControllerGetx>()) {
-      Get.delete<AuthControllerGetx>(force: true);
-    }
+    await SharedPrefs.clearAll();
 
     Navigator.pushReplacementNamed(context,SplashScreen.name); // or AuthScreen.name
   }

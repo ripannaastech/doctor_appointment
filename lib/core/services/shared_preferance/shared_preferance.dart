@@ -1,5 +1,12 @@
 import 'dart:convert';
+import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import '../../../features/appointment/presentation/ui/controller/booking_controller.dart';
+import '../../../features/auth/presentation/ui/controller/auth_controller.dart';
+import '../../../features/dashboard/presentation/ui/controller/dashboard_controller.dart';
+import '../../../features/home/presentation/ui/controller/home_controller.dart';
+import '../../../features/lab_test/presentation/ui/controller/lab_report_controller.dart';
+import '../../../features/profile/presentation/ui/controller/profle_controller.dart';
 import '../session/session.dart';
 class SharedPrefs {
   static const _kAccess = 'token';
@@ -110,10 +117,28 @@ class SharedPrefs {
     return s == null ? null : jsonDecode(s);
   }
 
-  Future<void> clear() async {
+  static Future<void> clearAll() async {
+    // 🧹 SharedPreferences
     final p = await SharedPreferences.getInstance();
     await p.clear();
-    Session.clear();                   // <- clear cache
+
+    // 🧹 Session cache
+    Session.clear();
+
+    // 🧹 Delete GetX controllers
+    _deleteIfExists<AuthControllerGetx>();
+    _deleteIfExists<ProfileControllerGetx>();
+    _deleteIfExists<BookingController>();
+    _deleteIfExists<DashboardController>();
+    _deleteIfExists<HomeController>();
+    _deleteIfExists<LabReportController>();
+
+  }
+
+  static void _deleteIfExists<T>({bool force = false}) {
+    if (Get.isRegistered<T>()) {
+      Get.delete<T>(force: force);
+    }
   }
 
   Future<void> setBool(String key, bool value) async {

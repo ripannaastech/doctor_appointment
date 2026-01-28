@@ -47,7 +47,7 @@ class AuthControllerGetx extends GetxController {
 
   /// Clear login state (logout)
   Future<void> logout() async {
-    await _prefs.clear();
+    await SharedPrefs.clearAll();
   }
 
   /// POST /api/v1/auth/erpnext/request-otp?phone=...

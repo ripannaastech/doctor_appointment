@@ -19,6 +19,5 @@ class ControllerBinding extends Bindings {
     Get.lazyPut<DashboardController>(() => DashboardController(), fenix: true);
     Get.lazyPut<HomeController>(() => HomeController(), fenix: true);
     Get.lazyPut<LabReportController>(() => LabReportController(), fenix: true);
-    Get.lazyPut<LabReportController>(() => LabReportController(), fenix: true);
   }
 }
