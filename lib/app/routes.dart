@@ -6,7 +6,7 @@ import 'package:doctor_appointment/features/dashboard/presentation/ui/screens/da
 import 'package:doctor_appointment/features/home/presentation/ui/screens/home_screen.dart';
 import 'package:doctor_appointment/features/lab_test/presentation/ui/screens/lab_report.dart';
 import 'package:doctor_appointment/features/language/presentation/ui/screens/language_select_screen.dart';
-import 'package:doctor_appointment/features/notification/presentation/ui/notification_screen.dart';
+import 'package:doctor_appointment/features/notification/presentation/ui/screens/notification_screen.dart';
 import 'package:doctor_appointment/features/profile/presentation/ui/screens/profile_screen.dart';
 import 'package:flutter/material.dart';
 import '../features/appointment/models/data/practitioner_model.dart';
@@ -32,6 +32,9 @@ Route<dynamic> onGenerateRoute(RouteSettings settings) {
 
     case RegisterScreen.name:
       return MaterialPageRoute(builder: (_) => const RegisterScreen());
+
+    case NotificationsScreen.name:
+      return MaterialPageRoute(builder: (_) => const NotificationsScreen());
 
     case LabReportScreen.name:
       return MaterialPageRoute(builder: (_) => const LabReportScreen());

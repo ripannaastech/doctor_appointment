@@ -5,6 +5,7 @@ import 'package:doctor_appointment/features/home/presentation/ui/controller/home
 import 'package:doctor_appointment/features/lab_test/presentation/ui/controller/lab_report_controller.dart';
 import 'package:doctor_appointment/features/profile/presentation/ui/controller/profle_controller.dart';
 import 'package:get/get.dart';
+import '../features/notification/presentation/ui/controller/notification_controller.dart';
 import 'controllers/language_controller.dart';
 
 
@@ -19,5 +20,10 @@ class ControllerBinding extends Bindings {
     Get.lazyPut<DashboardController>(() => DashboardController(), fenix: true);
     Get.lazyPut<HomeController>(() => HomeController(), fenix: true);
     Get.lazyPut<LabReportController>(() => LabReportController(), fenix: true);
+    Get.lazyPut<NotificationsController>(
+          () => NotificationsController(),
+      fenix: true, // optional but recommended
+    );
+
   }
 }

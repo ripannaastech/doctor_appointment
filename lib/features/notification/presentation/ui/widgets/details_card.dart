@@ -3,6 +3,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../../../../../../l10n/app_localizations.dart';
 import '../../../data/models/appoinment_model.dart';
+import '../../../data/models/notification_item_model.dart';
 import 'details_row.dart';
 
 class DetailsCard extends StatelessWidget {

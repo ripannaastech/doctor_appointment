@@ -1,5 +1,5 @@
 import 'package:doctor_appointment/app/asset_paths.dart';
-import 'package:doctor_appointment/features/notification/presentation/ui/notification_screen.dart';
+import 'package:doctor_appointment/features/notification/presentation/ui/screens/notification_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../../../../../../l10n/app_localizations.dart';

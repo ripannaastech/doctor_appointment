@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:doctor_appointment/features/notification/presentation/ui/controller/notification_controller.dart';
 import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../../features/appointment/presentation/ui/controller/booking_controller.dart';
@@ -21,6 +22,7 @@ class SharedPrefs {
   static const patientProfile = 'patient_profile_json';
   static const isLoggedIn = 'is_logged_in';
   static const lastPhone = 'last_phone';
+  static const String _kLastShownNotifId = 'last_shown_notif_id';
 
   Future<void> saveToken(String token) async {
     final p = await SharedPreferences.getInstance();
@@ -132,6 +134,7 @@ class SharedPrefs {
     _deleteIfExists<DashboardController>();
     _deleteIfExists<HomeController>();
     _deleteIfExists<LabReportController>();
+    _deleteIfExists<NotificationsController>();
 
   }
 

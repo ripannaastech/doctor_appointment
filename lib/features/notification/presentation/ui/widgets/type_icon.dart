@@ -20,16 +20,28 @@ class TypeIcon extends StatelessWidget {
         icon = Icons.calendar_month_rounded;
         break;
 
-      case NotificationType.pharmacyNeeded:
-        bg = const Color(0xFFFFF1E3);
-        fg = const Color(0xFFFF8A1E);
-        icon = Icons.local_pharmacy_rounded;
+      case NotificationType.doctorsAvailableToday:
+        bg = const Color(0xFFE9FBEE);
+        fg = const Color(0xFF2DBE60);
+        icon = Icons.person_search_rounded; // modern & clear
         break;
 
-      case NotificationType.appointmentCancelled:
-        bg = const Color(0xFFEAF1FF);
-        fg = const Color(0xFF2F63F3);
-        icon = Icons.calendar_month_rounded;
+      case NotificationType.departmentInfo:
+        bg = const Color(0xFFF2ECFF);
+        fg = const Color(0xFF9B6CFF);
+        icon = Icons.apartment_rounded;
+        break;
+
+      case NotificationType.announcement:
+        bg = const Color(0xFFFFEFE3);
+        fg = const Color(0xFFFF8A1E);
+        icon = Icons.campaign_rounded;
+        break;
+
+      case NotificationType.unknown:
+        bg = const Color(0xFFF3F4F6);
+        fg = const Color(0xFF6B7280);
+        icon = Icons.notifications_rounded;
         break;
     }
 

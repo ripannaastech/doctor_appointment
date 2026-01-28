@@ -5,6 +5,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
+import '../../../../../core/services/notification/notification_permission.dart';
 import '../../../../profile/presentation/ui/controller/profle_controller.dart';
 import '../widgets/appoinment_card.dart';
 import '../widgets/banner_carousel.dart';
@@ -26,13 +27,17 @@ class _HomeScreenState extends State<HomeScreen> {
   final pc = Get.isRegistered<ProfileControllerGetx>()
       ? Get.find<ProfileControllerGetx>()
       : Get.put(ProfileControllerGetx());
-
   @override
   void initState() {
     super.initState();
-    pc.loadCachedProfile(); // instant
-    pc.fetchProfile();      // refresh from server
+
+    () async {
+      await NotificationPermission.request(); // ✅ ask permission
+      pc.loadCachedProfile(); // instant
+      pc.fetchProfile();      // refresh from server
+    }();
   }
+
 
   void _openHelpSheet() {
     showModalBottomSheet(
@@ -48,7 +53,6 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      // backgroundColor: const Color(0xFFF6F7FB),
       body: SafeArea(
         child: Column(
           children: [

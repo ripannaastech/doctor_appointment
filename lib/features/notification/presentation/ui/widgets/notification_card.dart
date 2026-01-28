@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 
+import '../../../data/models/appoinment_model.dart';
 import '../../../data/models/notification_item_model.dart';
 import 'details_card.dart';
 
@@ -15,13 +16,11 @@ class NotificationCard extends StatefulWidget {
 }
 
 class _NotificationCardState extends State<NotificationCard> {
-
   final RxBool expanded = false.obs;
 
   @override
   void dispose() {
     expanded.close();
-
     super.dispose();
   }
 
@@ -31,6 +30,7 @@ class _NotificationCardState extends State<NotificationCard> {
 
     return Obx(() {
       final isExpanded = expanded.value;
+      final AppointmentDetails? det = it.details; // ✅ keep inside Obx (safest)
 
       return Container(
         decoration: BoxDecoration(
@@ -48,9 +48,7 @@ class _NotificationCardState extends State<NotificationCard> {
           children: [
             InkWell(
               borderRadius: BorderRadius.circular(16.r),
-              onTap: it.details == null
-                  ? null
-                  : () => expanded.value = !expanded.value,
+              onTap: det == null ? null : () => expanded.value = !expanded.value, // ✅ use det
               child: Padding(
                 padding: EdgeInsets.fromLTRB(14.w, 14.h, 14.w, 12.h),
                 child: Row(
@@ -74,7 +72,7 @@ class _NotificationCardState extends State<NotificationCard> {
                                   ),
                                 ),
                               ),
-                              if (it.details != null)
+                              if (det != null) // ✅ use det
                                 Icon(
                                   isExpanded
                                       ? Icons.keyboard_arrow_up_rounded
@@ -111,11 +109,11 @@ class _NotificationCardState extends State<NotificationCard> {
               ),
             ),
 
-            if (isExpanded && it.details != null) ...[
+            if (isExpanded && det != null) ...[ // ✅ use det
               const Divider(height: 1, color: Color(0xFFEEF0F6)),
               Padding(
                 padding: EdgeInsets.fromLTRB(14.w, 12.h, 14.w, 14.h),
-                child: DetailsCard(details: it.details!),
+                child: DetailsCard(details: det), // ✅ det is non-null here
               ),
             ],
           ],

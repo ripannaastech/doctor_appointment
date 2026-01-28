@@ -5,16 +5,18 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class QuickCard extends StatelessWidget {
-  final Widget iconWidget; // 👈 flexible
+  final Widget iconWidget;
   final String title;
-  final Color bg;
+  final Gradient? gradient;   // 👈 card background gradient
+  final Color? bg;            // 👈 fallback solid color
   final VoidCallback? onTap;
 
   const QuickCard({
     super.key,
     required this.iconWidget,
     required this.title,
-    required this.bg,
+    this.gradient,
+    this.bg,
     this.onTap,
   });
 
@@ -30,11 +32,12 @@ class QuickCard extends StatelessWidget {
           height: 112.h,
           padding: EdgeInsets.fromLTRB(14.w, 16.h, 14.w, 14.h),
           decoration: BoxDecoration(
-            color: Colors.white,
             borderRadius: BorderRadius.circular(16.r),
+            color: gradient == null ? (bg ?? Colors.white) : null,
+            gradient: gradient,
             boxShadow: [
               BoxShadow(
-                color: Colors.black.withOpacity(0.06),
+                color: Colors.black.withOpacity(0.08),
                 blurRadius: 18.r,
                 offset: Offset(0, 10.h),
               ),
@@ -43,12 +46,12 @@ class QuickCard extends StatelessWidget {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              /// Icon / Image / SVG background
+              /// Icon holder (keep subtle)
               Container(
                 height: 40.w,
                 width: 40.w,
                 decoration: BoxDecoration(
-                  color: bg,
+                  color: Colors.white.withOpacity(.95),
                   borderRadius: BorderRadius.circular(10.r),
                 ),
                 alignment: Alignment.center,
@@ -63,9 +66,9 @@ class QuickCard extends StatelessWidget {
                 textAlign: TextAlign.center,
                 style: TextStyle(
                   fontSize: 12.5.sp,
-                  fontWeight: FontWeight.w400,
+                  fontWeight: FontWeight.w500,
                   height: 1.15,
-                  color: const Color(0xFF141A2A),
+                  color: Colors.white, // 👈 important for gradient
                 ),
               ),
             ],

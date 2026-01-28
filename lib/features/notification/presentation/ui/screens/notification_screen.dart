@@ -4,9 +4,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 
-import '../../../../../l10n/app_localizations.dart';
-import '../../data/models/appoinment_model.dart';
-import '../../data/models/notification_item_model.dart';
+import '../../../../../../l10n/app_localizations.dart';
+import '../../../data/models/notification_item_model.dart';
+import '../controller/notification_controller.dart';
 
 class NotificationsScreen extends StatefulWidget {
   const NotificationsScreen({super.key});
@@ -17,49 +17,14 @@ class NotificationsScreen extends StatefulWidget {
 }
 
 class _NotificationsScreenState extends State<NotificationsScreen> {
-
-  final RxInt tabIndex = 0.obs;
-
-  // replace with your real list
-  final items = <NotificationItem>[
-    NotificationItem(
-      type: NotificationType.appointmentConfirmed,
-      title: 'Appointment Confirmed',
-      message: 'Your appointment with Dr. Fatima Ahmed on Jan 5 has been confirmed',
-      timeAgo: '1 days ago',
-      isUnread: true,
-      details: AppointmentDetails(
-        doctor: 'Dr. Fatima Ahmed',
-        date: 'Jan 5, 2026',
-        time: '2:30 PM',
-        location: 'Building B, Room 205',
-      ),
-    ),
-    NotificationItem(
-      type: NotificationType.pharmacyNeeded,
-      title: 'Pharmacy Needed',
-      message: 'Your Lisinopril prescription has 2 refills remaining',
-      timeAgo: '1 day ago',
-      isUnread: false,
-    ),
-    NotificationItem(
-      type: NotificationType.appointmentCancelled,
-      title: 'Appointment Cancelled',
-      message: 'Your appointment scheduled for Dec 30 has been cancelled by the doctor',
-      timeAgo: '1 week ago',
-      isUnread: true,
-      details: AppointmentDetails(
-        doctor: 'Dr. Ahmed Hassan',
-        date: 'Dec 30, 2025',
-        reason: 'Doctor unavailable',
-      ),
-    ),
-  ];
+  late final NotificationsController c;
 
   @override
-  void dispose() {
-    tabIndex.close();
-    super.dispose();
+  void initState() {
+    super.initState();
+    c = Get.isRegistered<NotificationsController>()
+        ? Get.find<NotificationsController>()
+        : Get.put(NotificationsController());
   }
 
   @override
@@ -71,7 +36,6 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
       backgroundColor: const Color(0xFFF8F9FA),
       body: Column(
         children: [
-
           Container(
             height: statusBarHeight + 90.h,
             decoration: BoxDecoration(
@@ -107,14 +71,20 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
                           ),
                         ),
                       ),
-                      SizedBox(width: 48.w),
+                      // keep same spacing, and add refresh on tap if you want
+                      SizedBox(
+                        width: 48.w,
+                        child: IconButton(
+                          onPressed: () => c.fetchNotifications(),
+                          icon: const Icon(Icons.refresh, color: Colors.white, size: 20),
+                        ),
+                      ),
                     ],
                   ),
                 ),
               ],
             ),
           ),
-
 
           Expanded(
             child: Stack(
@@ -126,9 +96,26 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
                     top: MediaQuery.of(context).padding.top + 20.h,
                   ),
                   child: Obx(() {
-                    final filtered = tabIndex.value == 0
-                        ? items
-                        : items.where((e) => e.isUnread).toList();
+                    // loading state (minimal, doesn’t change design)
+                    if (c.loading.value && c.items.isEmpty) {
+                      return const Center(child: CircularProgressIndicator());
+                    }
+
+                    // error state (minimal)
+                    if (c.errorText.value.isNotEmpty && c.items.isEmpty) {
+                      return Center(
+                        child: Padding(
+                          padding: EdgeInsets.symmetric(horizontal: 20.w),
+                          child: Text(
+                            c.errorText.value,
+                            textAlign: TextAlign.center,
+                            style: TextStyle(fontSize: 14.sp, color: const Color(0xFF6B7280)),
+                          ),
+                        ),
+                      );
+                    }
+
+                    final filtered = c.filtered;
 
                     return ListView.separated(
                       padding: EdgeInsets.fromLTRB(20.w, 12.h, 20.w, 20.h),
@@ -145,11 +132,10 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
                   left: 20.w,
                   right: 20.w,
                   child: Obx(() {
-                    final unreadCount = items.where((e) => e.isUnread).length;
-
                     return _notificationTabSwitcher(
-                      allText: '${l10n.all}(${items.length})',
-                      unreadText: '${l10n.unread}($unreadCount)',
+                      l10n: l10n,
+                      allCount: c.items.length,
+                      unreadCount: c.unreadCount,
                     );
                   }),
                 ),
@@ -162,8 +148,9 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
   }
 
   Widget _notificationTabSwitcher({
-    required String allText,
-    required String unreadText,
+    required AppLocalizations l10n,
+    required int allCount,
+    required int unreadCount,
   }) {
     return Container(
       margin: EdgeInsets.only(top: 12.h),
@@ -182,11 +169,11 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
       child: Obx(() {
         return Row(
           children: [
-            _tabButton(allText, tabIndex.value == 0, () {
-              tabIndex.value = 0;
+            _tabButton('${l10n.all}($allCount)', c.tabIndex.value == 0, () {
+              c.tabIndex.value = 0;
             }),
-            _tabButton(unreadText, tabIndex.value == 1, () {
-              tabIndex.value = 1;
+            _tabButton('${l10n.unread}($unreadCount)', c.tabIndex.value == 1, () {
+              c.tabIndex.value = 1;
             }),
           ],
         );

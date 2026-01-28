@@ -10,6 +10,7 @@ import 'package:pin_code_fields/pin_code_fields.dart';
 import '../../../../../app/app_snackbar.dart';
 import '../../../../../l10n/app_localizations.dart';
 import '../../../../dashboard/presentation/ui/screens/dashboard.dart';
+import '../../../../notification/presentation/ui/controller/notification_controller.dart';
 import 'complete_profile_screen.dart';
 
 import 'dart:async';
@@ -196,8 +197,12 @@ class _OtpScreenState extends State<OtpScreen> {
                         arguments: {'phone': phone},
                       );
                     } else {
-                      Get.offAllNamed(Dashboard.name);
-                    }
+
+                      Navigator.pushNamedAndRemoveUntil(
+                        context,
+                        Dashboard.name,
+                            (route) => false,
+                      );                    }
                   },
                   child: c.loading.value
                       ? const SizedBox(

@@ -4,14 +4,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
-
 import '../../../../../../l10n/app_localizations.dart';
+import '../../../../../app/app_colors.dart';
 import '../../../../../app/asset_paths.dart';
 import '../../../../appointment/presentation/ui/screens/book_appoinment.dart';
-
-import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
-
 import '../../../../dashboard/presentation/ui/controller/dashboard_controller.dart';
 
 class QuickActionsGrid extends StatelessWidget {
@@ -29,6 +25,7 @@ class QuickActionsGrid extends StatelessWidget {
               child: QuickCard(
                 title: l10n.bookAppointment,
                 bg: const Color(0xFFEAF1FF),
+                gradient: AppColors.cardGradient,
                 iconWidget: Icon(
                   Icons.calendar_month_rounded,
                   size: 20.sp,
@@ -48,6 +45,8 @@ class QuickActionsGrid extends StatelessWidget {
                 child: QuickCard(
                   title: l10n.myAppointments,
                   bg: const Color(0xFFE9FBEE),
+                  gradient: AppColors.cardGradient,
+
                   iconWidget: Icon(
                     Icons.description_rounded,
                     size: 20.sp,
@@ -64,6 +63,8 @@ class QuickActionsGrid extends StatelessWidget {
             Expanded(
               child: QuickCard(
                 title: l10n.myResults,
+                gradient: AppColors.cardGradient,
+
                 bg: const Color(0xFFF2ECFF),
                 iconWidget: Icon(
                   Icons.assignment_rounded,
@@ -79,10 +80,11 @@ class QuickActionsGrid extends StatelessWidget {
             Expanded(
               child: QuickCard(
                 title: l10n.doctor,
+                gradient: AppColors.cardGradient,
+
                 onTap: () {
                   Get.find<DashboardController>().changeTab(2); // 👈 2nd tab (Appointments)
                 },
-                bg: const Color(0xFFFFEFE3),
                 iconWidget: SvgPicture.asset(
                   AssetPaths.doctor, // your image path
                   width: 20.w,

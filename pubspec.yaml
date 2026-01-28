@@ -51,6 +51,9 @@ dependencies:
   flutter_screenutil:
   flutter_launcher_icons: ^0.14.4
   url_launcher:
+  flutter_local_notifications:
+  permission_handler:
+  workmanager:
 
 
 

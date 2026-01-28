@@ -6,6 +6,7 @@ import 'package:get/get.dart';
 
 import '../../../../../app/asset_paths.dart';
 import '../../../../../l10n/app_localizations.dart';
+import '../../../../notification/presentation/ui/controller/notification_controller.dart';
 import '../widgets/info_row_widget.dart';
 
 class AppointmentConfirmedScreen extends StatelessWidget {

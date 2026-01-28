@@ -34,7 +34,7 @@ class SelectDateTimeScreen extends StatefulWidget {
 class _SelectDateTimeScreenState extends State<SelectDateTimeScreen> {
   late final BookingController c;
 
-  final RxInt selectedDate = 2.obs;
+  final RxInt selectedDate = 1.obs;
   final RxInt selectedTime = (-1).obs;
   late final List<String> times;
 
@@ -45,8 +45,8 @@ class _SelectDateTimeScreenState extends State<SelectDateTimeScreen> {
         ? Get.find<BookingController>()
         : Get.put(BookingController());
     times = generateContinuousSlots(
-      start: const TimeOfDay(hour: 9, minute: 0),
-      end: const TimeOfDay(hour: 20, minute: 0), // 8:00 PM
+      start: const TimeOfDay(hour: 7, minute: 0),
+      end: const TimeOfDay(hour: 15, minute: 0), // 8:00 PM
     );
 
     ever(selectedDate, (_) {
@@ -266,57 +266,57 @@ class _SelectDateTimeScreenState extends State<SelectDateTimeScreen> {
 
             /// DATE ROW (FIXED)
             Obx(() {
-              return Row(
-                children: List.generate(dateList.length, (index) {
-                  final d = dateList[index];
-                  final isSelected = selectedDate.value == index;
+              return SingleChildScrollView(
+                scrollDirection: Axis.horizontal,
+                physics: const BouncingScrollPhysics(),
+                child: Row(
+                  children: List.generate(dateList.length, (index) {
+                    final d = dateList[index];
+                    final isSelected = selectedDate.value == index;
 
-                  return Padding(
-                    padding: EdgeInsets.only(right: 10.w),
-                    child: GestureDetector(
-                      onTap: () {
-                        selectedDate.value = index;
-                        selectedTime.value = -1;
-                      },
-                      child: Container(
-                        width: 56.w,
-                        height: 64.h,
-                        decoration: BoxDecoration(
-                          color: isSelected
-                              ? const Color(0xFF3F6DE0)
-                              : Colors.white,
-                          borderRadius: BorderRadius.circular(12.r),
-                          border: Border.all(
-                            color: isSelected
-                                ? Colors.transparent
-                                : const Color(0xFFE6E8EC),
+                    return Padding(
+                      padding: EdgeInsets.only(right: 10.w),
+                      child: GestureDetector(
+                        onTap: () {
+                          selectedDate.value = index;
+                          selectedTime.value = -1;
+                        },
+                        child: Container(
+                          width: 56.w,
+                          height: 64.h,
+                          decoration: BoxDecoration(
+                            color: isSelected ? const Color(0xFF3F6DE0) : Colors.white,
+                            borderRadius: BorderRadius.circular(12.r),
+                            border: Border.all(
+                              color: isSelected ? Colors.transparent : const Color(0xFFE6E8EC),
+                            ),
+                          ),
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Text(
+                                d.day.toString(),
+                                style: TextStyle(
+                                  fontSize: 16.sp,
+                                  fontWeight: FontWeight.w600,
+                                  color: isSelected ? Colors.white : Colors.black,
+                                ),
+                              ),
+                              4.verticalSpace,
+                              Text(
+                                _weekdayLabel(l10n, d.weekday),
+                                style: TextStyle(
+                                  fontSize: 13.sp,
+                                  color: isSelected ? Colors.white : Colors.grey,
+                                ),
+                              ),
+                            ],
                           ),
                         ),
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Text(
-                              d.day.toString(),
-                              style: TextStyle(
-                                fontSize: 16.sp,
-                                fontWeight: FontWeight.w600,
-                                color: isSelected ? Colors.white : Colors.black,
-                              ),
-                            ),
-                            4.verticalSpace,
-                            Text(
-                              _weekdayLabel(l10n, d.weekday),
-                              style: TextStyle(
-                                fontSize: 13.sp,
-                                color: isSelected ? Colors.white : Colors.grey,
-                              ),
-                            ),
-                          ],
-                        ),
                       ),
-                    ),
-                  );
-                }),
+                    );
+                  }),
+                ),
               );
             }),
 
@@ -529,17 +529,17 @@ class _SelectDateTimeScreenState extends State<SelectDateTimeScreen> {
                 ),
               ),
 
-              20.verticalSpace,
-
-              _paymentOptionTile(
-                title: l10n.cashPayment,
-                subtitle: l10n.cashPaymentDesc,
-                icon: Icons.account_balance_wallet_outlined,
-                onTap: () => Navigator.pop(
-                  ctx,
-                  const PaymentSelection(method: PaymentMethod.cash),
-                ),
-              ),
+              // 20.verticalSpace,
+              //
+              // _paymentOptionTile(
+              //   title: l10n.cashPayment,
+              //   subtitle: l10n.cashPaymentDesc,
+              //   icon: Icons.account_balance_wallet_outlined,
+              //   onTap: () => Navigator.pop(
+              //     ctx,
+              //     const PaymentSelection(method: PaymentMethod.cash),
+              //   ),
+              // ),
 
               12.verticalSpace,
               _paymentOptionTile(
