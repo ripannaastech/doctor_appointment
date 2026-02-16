@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../../../../../../l10n/app_localizations.dart';
 import 'package:get/get.dart';
+import '../../../../dashboard/presentation/ui/controller/dashboard_controller.dart';
 import '../controller/home_controller.dart';
 
 class HomeTopBar extends StatelessWidget {
@@ -30,23 +31,25 @@ class HomeTopBar extends StatelessWidget {
       child: Row(
         children: [
           /// Profile Image
-          Container(
-            height: 44.w,
-            width: 44.w,
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black.withOpacity(0.05),
-                  blurRadius: 12.r,
-                  offset: Offset(0, 6.h),
-                ),
-              ],
-            ),
-            clipBehavior: Clip.antiAlias,
-            child: Image.asset(
-              AssetPaths.profilePicture,
-              fit: BoxFit.cover,
+          GestureDetector(
+            onTap: () {
+              Get.find<DashboardController>().changeTab(3);
+            },
+            child: Container(
+              height: 44.w,
+              width: 44.w,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withOpacity(0.05),
+                    blurRadius: 12.r,
+                    offset: Offset(0, 6.h),
+                  ),
+                ],
+              ),
+              clipBehavior: Clip.antiAlias,
+              child: Image.asset(AssetPaths.profilePicture, fit: BoxFit.cover),
             ),
           ),
 
@@ -56,32 +59,37 @@ class HomeTopBar extends StatelessWidget {
           Expanded(
             child: Padding(
               padding: EdgeInsets.only(top: 2.h),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    timeGreeting(l10n),
-                    style: TextStyle(
-                      fontSize: 12.5.sp,
-                      fontWeight: FontWeight.w500,
-                      color: const Color(0xFF7B8194),
-                    ),
-                  ),
-                  SizedBox(height: 2.h),
-
-                  Obx(() {
-                    final text = c.loading.value ? l10n.loading : c.name.value;
-                    return Text(
-                      text,
+              child: GestureDetector(
+                onTap: () {
+                  Get.find<DashboardController>().changeTab(3);
+                },
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      timeGreeting(l10n),
                       style: TextStyle(
-                        fontSize: 16.5.sp,
-                        fontWeight: FontWeight.w700,
-                        color: const Color(0xFF141A2A),
-                        height: 1.15,
+                        fontSize: 12.5.sp,
+                        fontWeight: FontWeight.w500,
+                        color: const Color(0xFF7B8194),
                       ),
-                    );
-                  }),
-                ],
+                    ),
+                    SizedBox(height: 2.h),
+
+                    Obx(() {
+                      final text = c.loading.value ? l10n.loading : c.name.value;
+                      return Text(
+                        text,
+                        style: TextStyle(
+                          fontSize: 16.5.sp,
+                          fontWeight: FontWeight.w700,
+                          color: const Color(0xFF141A2A),
+                          height: 1.15,
+                        ),
+                      );
+                    }),
+                  ],
+                ),
               ),
             ),
           ),
@@ -117,5 +125,3 @@ class HomeTopBar extends StatelessWidget {
     );
   }
 }
-
-

@@ -5,6 +5,7 @@ import '../../../../../core/services/shared_preferance/shared_preferance.dart';
 import 'dart:async';
 import '../../../models/data/appoinment_model.dart';
 import '../../../models/data/department_model.dart';
+import '../../../models/data/doctor_slot_model.dart';
 import '../../../models/data/practitioner_model.dart';
 
 
@@ -14,11 +15,16 @@ class BookingController extends GetxController {
   final _net = NetworkService().client;
   final _prefs = SharedPrefs();
 
+  final RxInt selectedDate = 1.obs;
+  final RxInt selectedTime = (-1).obs;
   // -------------------------
   // Loading + error
   // -------------------------
   final RxBool loadingDepartments = false.obs;
   final RxBool loadingPractitioners = false.obs;
+
+  final loadingDoctorAppointments = false.obs;
+  final loadingAvailability = false.obs;
 
   RxBool loading = false.obs;
 
@@ -52,7 +58,10 @@ class BookingController extends GetxController {
 
 
 
+  /// yyyy-MM-dd -> booked HH:mm:ss set
+  final bookedSlotsByDate = <String, Set<String>>{}.obs;
 
+  /// yyyy-MM-dd -> list of slots from API
 
 
   @override
@@ -187,10 +196,6 @@ class BookingController extends GetxController {
   }
 // inside BookingController
 
-  final RxBool loadingDoctorAppointments = false.obs;
-
-  /// date -> set of booked times (HH:mm:ss)
-  final RxMap<String, Set<String>> bookedSlotsByDate = <String, Set<String>>{}.obs;
 
   /// GET /api/v1/appointments/erpnext/all?practitioner=...&offset=0
   Future<bool> fetchDoctorBookedAppointments({
@@ -259,6 +264,51 @@ class BookingController extends GetxController {
     return '$h:$m:$s';
   }
 
+  final availabilitySlotsByDate = <String, List<DoctorSlot>>{}.obs;
+
+  Future<bool> fetchDoctorAvailability({
+    required String practitionerName,
+    required String date, // yyyy-MM-dd
+  }) async {
+    loadingAvailability.value = true;
+    errorText.value = '';
+
+    try {
+      final p = practitionerName.trim();
+      if (p.isEmpty) return false;
+
+      final path =
+          '/api/v1/doctors/erpnext/practitioner/${Uri.encodeComponent(p)}/availability?date=$date';
+
+      final response = await _net.getRequest(path);
+
+      if (response.isSuccess && response.statusCode == 200) {
+        final body = Map<String, dynamic>.from(response.responseData);
+
+        final slots = (body['slots'] as List? ?? [])
+            .map((e) => DoctorSlot.fromJson(Map<String, dynamic>.from(e)))
+            .toList();
+
+        availabilitySlotsByDate[date] = slots;
+        availabilitySlotsByDate.refresh();
+        return true;
+      } else {
+        errorText.value = _extractError(response) ?? 'Failed to load availability';
+        return false;
+      }
+    } catch (e) {
+      errorText.value = 'Something went wrong: $e';
+      return false;
+    } finally {
+      loadingAvailability.value = false;
+    }
+  }
+
+
+  bool isSlotBooked(String date, String hhmmss) {
+    final set = bookedSlotsByDate[date];
+    return set != null && set.contains(_normalizeHHmmss(hhmmss));
+  }
   // -------------------------
   // Appointments (ERPNext)
   // -------------------------

@@ -7,6 +7,7 @@ import 'package:get/get.dart';
 
 import '../../../../../app/app_snackbar.dart';
 import '../../../../../l10n/app_localizations.dart';
+import '../../../models/data/doctor_slot_model.dart';
 import '../../../models/data/practitioner_model.dart';
 import '../controller/booking_controller.dart';
 
@@ -15,9 +16,8 @@ enum PaymentMethod { cash, online }
 class PaymentSelection {
   final PaymentMethod method;
   final String? phoneNumber;
-  final String? pin;
 
-  const PaymentSelection({required this.method, this.phoneNumber, this.pin});
+  const PaymentSelection({required this.method, this.phoneNumber});
 }
 
 class SelectDateTimeScreen extends StatefulWidget {
@@ -34,56 +34,70 @@ class SelectDateTimeScreen extends StatefulWidget {
 class _SelectDateTimeScreenState extends State<SelectDateTimeScreen> {
   late final BookingController c;
 
-  final RxInt selectedDate = 1.obs;
+  final RxInt selectedDate = 0.obs; // TODAY
   final RxInt selectedTime = (-1).obs;
-  late final List<String> times;
+  final RxList<DoctorSlot> times = <DoctorSlot>[].obs;
 
   @override
   void initState() {
     super.initState();
+
     c = Get.isRegistered<BookingController>()
         ? Get.find<BookingController>()
         : Get.put(BookingController());
-    times = generateContinuousSlots(
-      start: const TimeOfDay(hour: 7, minute: 0),
-      end: const TimeOfDay(hour: 15, minute: 0), // 8:00 PM
-    );
 
-    ever(selectedDate, (_) {
-      final practitionerName = (widget.doctor.fullName ?? '').trim();
-      if (practitionerName.isNotEmpty) {
-        c.fetchDoctorBookedAppointments(practitionerName: practitionerName);
-      }
+    // initial load for selectedDate default
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _loadForSelectedDate(selectedDate.value);
+    });
+
+    ever<int>(selectedDate, (idx) {
+      selectedTime.value = -1;
+      _loadForSelectedDate(idx);
     });
   }
 
-  List<String> generateContinuousSlots({
-    required TimeOfDay start,
-    required TimeOfDay end,
-    int gapMinutes = 30,
+  Future<void> _loadForSelectedDate(int idx) async {
+    final practitionerName = (widget.doctor.fullName ?? '').trim();
+    if (practitionerName.isEmpty) return;
+
+    final base = DateTime.now();
+    final dateList = List.generate(5, (i) => base.add(Duration(days: i)));
+
+    if (idx < 0 || idx >= dateList.length) return;
+
+    final d = dateList[idx];
+    final dateKey =
+        '${d.year.toString().padLeft(4, '0')}-'
+        '${d.month.toString().padLeft(2, '0')}-'
+        '${d.day.toString().padLeft(2, '0')}';
+
+    // fetch availability + booked
+    await c.fetchDoctorAvailability(practitionerName: practitionerName, date: dateKey);
+    await c.fetchDoctorBookedAppointments(practitionerName: practitionerName);
+
+    times.assignAll(c.availabilitySlotsByDate[dateKey] ?? <DoctorSlot>[]);
+  }
+
+  bool _isSameDate(DateTime a, DateTime b) =>
+      a.year == b.year && a.month == b.month && a.day == b.day;
+
+  bool _isPastTimeSlot({
+    required DateTime selectedDay,
+    required String slotHHmmss,
   }) {
-    final slots = <String>[];
+    // only disable past slots for today
+    final now = DateTime.now();
+    if (!_isSameDate(selectedDay, now)) return false;
 
-    DateTime current = DateTime(2026, 1, 1, start.hour, start.minute);
-    final endTime = DateTime(2026, 1, 1, end.hour, end.minute);
+    final parts = slotHHmmss.split(':');
+    final h = int.tryParse(parts[0]) ?? 0;
+    final m = int.tryParse(parts[1]) ?? 0;
 
-    while (current.isBefore(endTime)) {
-      final next = current.add(Duration(minutes: gapMinutes));
-      if (next.isAfter(endTime)) break;
-
-      slots.add('${_formatTime(current)} to ${_formatTime(next)}');
-      current = next;
-    }
-
-    return slots;
+    final slotTime = DateTime(now.year, now.month, now.day, h, m);
+    return slotTime.isBefore(now); // if already passed, disable
   }
 
-  String _formatTime(DateTime dt) {
-    final hour12 = dt.hour % 12 == 0 ? 12 : dt.hour % 12;
-    final minute = dt.minute.toString().padLeft(2, '0');
-    final period = dt.hour >= 12 ? 'PM' : 'AM';
-    return '${hour12.toString().padLeft(2, '0')}:$minute $period';
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -142,9 +156,8 @@ class _SelectDateTimeScreenState extends State<SelectDateTimeScreen> {
                               '${selectedD.month.toString().padLeft(2, '0')}-'
                               '${selectedD.day.toString().padLeft(2, '0')}';
 
-                          final appointmentTime = _extractStartTimeHHmmss(
-                            times[st],
-                          );
+                          final appointmentTime = _normalizeHHmmss(times[st].time);
+
 
                           final practitionerName =
                               (widget.doctor.fullName ?? '').trim();
@@ -194,9 +207,6 @@ class _SelectDateTimeScreenState extends State<SelectDateTimeScreen> {
                             paymentMethod: selection.method == PaymentMethod.cash ? 'cash' : 'online',
                             phoneNumber: selection.method == PaymentMethod.online
                                 ? selection.phoneNumber
-                                : null,
-                            pin: selection.method == PaymentMethod.online
-                                ? selection.pin
                                 : null,
                           );
 
@@ -348,63 +358,67 @@ class _SelectDateTimeScreenState extends State<SelectDateTimeScreen> {
                     spacing: 12.w,
                     runSpacing: 12.h,
                     children: List.generate(times.length, (index) {
-                      final isSelected = selectedTime.value == index;
+                    final isSelected = selectedTime.value == index;
 
+                    final slot = times[index];
+                    final slotStart = _normalizeHHmmss(slot.time);
 
-                      final slotStart = _extractStartTimeHHmmss(times[index]);
+                    final isBooked = booked.contains(slotStart);
+                    final apiNotAvailable = !slot.available || slot.disabled;
 
+                    final isPast = _isPastTimeSlot(
+                      selectedDay: d,
+                      slotHHmmss: slotStart,
+                    );
 
-                      final isBooked = booked.contains(slotStart);
+                    final isDisabled = isBooked || apiNotAvailable || isPast;
 
-                      return GestureDetector(
-                        onTap: isBooked
-                            ? null
-                            : () => selectedTime.value = index,
-                        child: Opacity(
-                          opacity: isBooked ? 0.45 : 1,
-                          child: Container(
-                            width: itemWidth,
-                            padding: EdgeInsets.symmetric(
-                              horizontal: 12.w,
-                              vertical: 12.h,
+                    final label = slot.displayTime.isNotEmpty ? slot.displayTime : slotStart;
+
+                    return GestureDetector(
+                      onTap: isDisabled ? null : () => selectedTime.value = index,
+                      child: Opacity(
+                        opacity: isDisabled ? 0.45 : 1,
+                        child: Container(
+                          width: itemWidth,
+                          padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 12.h),
+                          decoration: BoxDecoration(
+                            color: isDisabled
+                                ? const Color(0xFFF3F4F6)
+                                : (isSelected ? const Color(0xFF3F6DE0) : Colors.white),
+                            borderRadius: BorderRadius.circular(12.r),
+                            border: Border.all(
+                              color: isDisabled
+                                  ? const Color(0xFFE5E7EB)
+                                  : (isSelected ? Colors.transparent : const Color(0xFFE6E8EC)),
                             ),
-                            decoration: BoxDecoration(
-                              color: isBooked
-                                  ? const Color(0xFFF3F4F6)
-                                  : (isSelected
-                                        ? const Color(0xFF3F6DE0)
-                                        : Colors.white),
-                              borderRadius: BorderRadius.circular(12.r),
-                              border: Border.all(
-                                color: isBooked
-                                    ? const Color(0xFFE5E7EB)
-                                    : (isSelected
-                                          ? Colors.transparent
-                                          : const Color(0xFFE6E8EC)),
-                              ),
-                            ),
-                            child: Text(
-                              isBooked
-                                  ? '${times[index]} (Booked)'
-                                  : times[index],
-                              textAlign: TextAlign.center,
-                              maxLines: 1,
-                              overflow: TextOverflow.ellipsis,
-                              style: TextStyle(
-                                fontSize: 12.5.sp,
-                                fontWeight: FontWeight.w600,
-                                color: isBooked
-                                    ? const Color(0xFF9CA3AF)
-                                    : (isSelected
-                                          ? Colors.white
-                                          : Colors.black),
-                              ),
+                          ),
+                          child: Text(
+                            isBooked
+                                ? '$label (Booked)'
+                                : isPast
+                                ? '$label (Passed)'
+                                : (apiNotAvailable && (slot.reason?.isNotEmpty ?? false)
+                                ? '$label (${slot.reason})'
+                                : label),
+                            textAlign: TextAlign.center,
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            style: TextStyle(
+                              fontSize: 12.5.sp,
+                              fontWeight: FontWeight.w600,
+                              color: isDisabled
+                                  ? const Color(0xFF9CA3AF)
+                                  : (isSelected ? Colors.white : Colors.black),
                             ),
                           ),
                         ),
-                      );
-                    }),
-                  ),
+                      ),
+                    );
+                  }),
+
+
+                ),
                 );
               }),
             ),
@@ -529,17 +543,6 @@ class _SelectDateTimeScreenState extends State<SelectDateTimeScreen> {
                 ),
               ),
 
-              // 20.verticalSpace,
-              //
-              // _paymentOptionTile(
-              //   title: l10n.cashPayment,
-              //   subtitle: l10n.cashPaymentDesc,
-              //   icon: Icons.account_balance_wallet_outlined,
-              //   onTap: () => Navigator.pop(
-              //     ctx,
-              //     const PaymentSelection(method: PaymentMethod.cash),
-              //   ),
-              // ),
 
               12.verticalSpace,
               _paymentOptionTile(
@@ -556,12 +559,12 @@ class _SelectDateTimeScreenState extends State<SelectDateTimeScreen> {
                     ctx,
                     PaymentSelection(
                       method: PaymentMethod.online,
-                      phoneNumber: evc.$1,
-                      pin: evc.$2,
+                      phoneNumber: evc, // ← direct string
                     ),
                   );
                 },
               ),
+
 
             ],
           ),
@@ -595,11 +598,10 @@ class _SelectDateTimeScreenState extends State<SelectDateTimeScreen> {
     );
   }
 
-  Future<(String, String)?> _showEvcDialog(AppLocalizations l10n) {
+  Future<String?> _showEvcDialog(AppLocalizations l10n) {
     final phoneCtrl = TextEditingController();
-    final pinCtrl = TextEditingController();
 
-    return showDialog<(String, String)?>(
+    return showDialog<String?>(
       context: context,
       barrierDismissible: true,
       builder: (ctx) {
@@ -641,28 +643,12 @@ class _SelectDateTimeScreenState extends State<SelectDateTimeScreen> {
             mainAxisSize: MainAxisSize.min,
             children: [
               16.verticalSpace,
-
               TextField(
                 controller: phoneCtrl,
                 keyboardType: TextInputType.phone,
                 textAlign: TextAlign.center,
                 decoration: InputDecoration(
                   hintText: l10n.phoneNumber,
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(12.r),
-                  ),
-                ),
-              ),
-
-              12.verticalSpace,
-
-              TextField(
-                controller: pinCtrl,
-                keyboardType: TextInputType.number,
-                obscureText: true,
-                textAlign: TextAlign.center,
-                decoration: InputDecoration(
-                  hintText: l10n.pin,
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(12.r),
                   ),
@@ -679,14 +665,13 @@ class _SelectDateTimeScreenState extends State<SelectDateTimeScreen> {
               child: ElevatedButton(
                 onPressed: () {
                   final phone = phoneCtrl.text.trim();
-                  final pin = pinCtrl.text.trim();
 
-                  if (phone.isEmpty || pin.isEmpty) {
+                  if (phone.isEmpty) {
                     AppSnackbar.error(l10n.error, l10n.pleaseFillAllFields);
                     return;
                   }
 
-                  Navigator.pop(ctx, (phone, pin));
+                  Navigator.pop(ctx, phone);
                 },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: const Color(0xFF3F6DE0),
@@ -729,10 +714,8 @@ class _SelectDateTimeScreenState extends State<SelectDateTimeScreen> {
         );
       },
     ).then((result) {
-
       WidgetsBinding.instance.addPostFrameCallback((_) {
         phoneCtrl.dispose();
-        pinCtrl.dispose();
       });
       return result;
     });
@@ -795,22 +778,14 @@ class _SelectDateTimeScreenState extends State<SelectDateTimeScreen> {
   }
 
   /// "09:00 AM to 10:00 AM" -> "09:00:00"
-  String _extractStartTimeHHmmss(String slot) {
-    final start = slot.split('to').first.trim();
-    final parts = start.split(' ');
-    final hm = parts[0];
-    final ampm = parts.length > 1 ? parts[1].toUpperCase() : 'AM';
-
-    final hmp = hm.split(':');
-    int hour = int.tryParse(hmp[0]) ?? 0;
-    final minute = int.tryParse(hmp[1]) ?? 0;
-
-    if (ampm == 'PM' && hour != 12) hour += 12;
-    if (ampm == 'AM' && hour == 12) hour = 0;
-
-    final hh = hour.toString().padLeft(2, '0');
-    final mm = minute.toString().padLeft(2, '0');
-    return '$hh:$mm:00';
+  String _normalizeHHmmss(String t) {
+    // handles "8:00:00" -> "08:00:00"
+    final parts = t.split(':');
+    if (parts.length < 2) return t;
+    final h = (int.tryParse(parts[0]) ?? 0).toString().padLeft(2, '0');
+    final m = (int.tryParse(parts[1]) ?? 0).toString().padLeft(2, '0');
+    final s = (parts.length > 2 ? (int.tryParse(parts[2]) ?? 0).toString().padLeft(2, '0') : '00');
+    return '$h:$m:$s';
   }
 
   AppBar _appBar(AppLocalizations l10n) {

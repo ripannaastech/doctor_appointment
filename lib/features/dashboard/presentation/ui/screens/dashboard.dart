@@ -28,12 +28,23 @@ class Dashboard extends StatelessWidget {
         : Get.put(DashboardController());
 
     return Obx(() {
-      return Scaffold(
-        body: IndexedStack(
-          index: c.currentIndex.value,
-          children: c.screens,
+      return PopScope(
+        canPop: c.currentIndex.value == 0, // allow exit only on Home
+        onPopInvokedWithResult: (didPop, result) {
+          if (didPop) return;
+
+          // If not on Home, go Home instead of closing app
+          if (c.currentIndex.value != 0) {
+            c.changeTab(0);
+          }
+        },
+        child: Scaffold(
+          body: IndexedStack(
+            index: c.currentIndex.value,
+            children: c.screens,
+          ),
+          bottomNavigationBar: _bottomNavBar(context, c),
         ),
-        bottomNavigationBar: _bottomNavBar(context, c),
       );
     });
   }

@@ -22,74 +22,83 @@ class QuickActionsGrid extends StatelessWidget {
         Row(
           children: [
             Expanded(
-              child: QuickCard(
-                title: l10n.bookAppointment,
-                bg: const Color(0xFFEAF1FF),
-                gradient: AppColors.cardGradient,
-                iconWidget: Icon(
-                  Icons.calendar_month_rounded,
-                  size: 20.sp,
-                  color: const Color(0xFF2F63F3),
+              child: SizedBox(
+                height: 110.h, // 👈 bigger card
+                child: QuickCard(
+                  title: l10n.bookAppointment,
+                  bg: const Color(0xFFEAF1FF),
+                  gradient: AppColors.cardGradient,
+                  iconWidget: Icon(
+                    Icons.calendar_month_rounded,
+                    size: 28.sp, // 👈 bigger icon
+                    color: const Color(0xFF2F63F3),
+                  ),
+                  onTap: () {
+                    Navigator.pushNamed(context, SelectDoctorScreen.name);
+                  },
                 ),
-                onTap: () {
-                  Navigator.pushNamed(context, SelectDoctorScreen.name);
-                },
               ),
             ),
-            SizedBox(width: 14.w),
+            SizedBox(width: 16.w),
             Expanded(
-              child: GestureDetector(
-                onTap: () {
-                  Get.find<DashboardController>().changeTab(1); // 👈 2nd tab (Appointments)
-                },
-                child: QuickCard(
-                  title: l10n.myAppointments,
-                  bg: const Color(0xFFE9FBEE),
-                  gradient: AppColors.cardGradient,
-
-                  iconWidget: Icon(
-                    Icons.description_rounded,
-                    size: 20.sp,
-                    color: const Color(0xFF2DBE60),
+              child: SizedBox(
+                height: 110.h,
+                child: GestureDetector(
+                  onTap: () {
+                    Get.find<DashboardController>().changeTab(1);
+                  },
+                  child: QuickCard(
+                    title: l10n.myAppointments,
+                    bg: const Color(0xFFE9FBEE),
+                    gradient: AppColors.cardGradient,
+                    iconWidget: Icon(
+                      Icons.description_rounded,
+                      size: 28.sp,
+                      color: const Color(0xFF2DBE60),
+                    ),
                   ),
                 ),
               ),
             ),
           ],
         ),
-        SizedBox(height: 14.h),
+        SizedBox(height: 16.h),
         Row(
           children: [
             Expanded(
-              child: QuickCard(
-                title: l10n.myResults,
-                gradient: AppColors.cardGradient,
-
-                bg: const Color(0xFFF2ECFF),
-                iconWidget: Icon(
-                  Icons.assignment_rounded,
-                  size: 20.sp,
-                  color: const Color(0xFF9B6CFF),
+              child: SizedBox(
+                height: 110.h,
+                child: QuickCard(
+                  title: l10n.myResults,
+                  gradient: AppColors.cardGradient,
+                  bg: const Color(0xFFF2ECFF),
+                  iconWidget: Icon(
+                    Icons.assignment_rounded,
+                    size: 28.sp,
+                    color: const Color(0xFF9B6CFF),
+                  ),
+                  onTap: () {
+                    Navigator.pushNamed(context, LabReportScreen.name);
+                  },
                 ),
-                onTap: () {
-                  Navigator.pushNamed(context, LabReportScreen.name);
-                },
               ),
             ),
-            SizedBox(width: 14.w),
+            SizedBox(width: 16.w),
             Expanded(
-              child: QuickCard(
-                title: l10n.doctor,
-                gradient: AppColors.cardGradient,
-
-                onTap: () {
-                  Get.find<DashboardController>().changeTab(2); // 👈 2nd tab (Appointments)
-                },
-                iconWidget: SvgPicture.asset(
-                  AssetPaths.doctor, // your image path
-                  width: 20.w,
-                  height: 20.w,
-                  fit: BoxFit.contain,
+              child: SizedBox(
+                height: 110.h,
+                child: QuickCard(
+                  title: l10n.doctor,
+                  gradient: AppColors.cardGradient,
+                  onTap: () {
+                    Get.find<DashboardController>().changeTab(2);
+                  },
+                  iconWidget: SvgPicture.asset(
+                    AssetPaths.doctor,
+                    width: 28.w,
+                    height: 28.w,
+                    fit: BoxFit.contain,
+                  ),
                 ),
               ),
             ),

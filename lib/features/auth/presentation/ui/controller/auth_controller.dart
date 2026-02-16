@@ -151,7 +151,7 @@ class AuthControllerGetx extends GetxController {
         otpVerifyRes.value = res;
 
         if (res.success == true) {
-          AppSnackbar.success(l10n.success, res.message);
+          // AppSnackbar.success(l10n.success, res.message);
 
 
           if ((res.accessToken ?? '').isNotEmpty) {

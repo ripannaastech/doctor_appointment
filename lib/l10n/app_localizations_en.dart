@@ -532,7 +532,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get feeAmount => 'Consultation Fee';
 
   @override
-  String get enterPhoneAndPin => 'Please enter your phone number and PIN';
+  String get enterPhoneAndPin => 'Please enter your phone number';
 
   @override
   String get pin => 'PIN';

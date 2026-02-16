@@ -1133,7 +1133,7 @@ abstract class AppLocalizations {
   /// No description provided for @enterPhoneAndPin.
   ///
   /// In en, this message translates to:
-  /// **'Please enter your phone number and PIN'**
+  /// **'Please enter your phone number'**
   String get enterPhoneAndPin;
 
   /// No description provided for @pin.
