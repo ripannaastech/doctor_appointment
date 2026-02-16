@@ -618,4 +618,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get education => 'Education';
+
+  @override
+  String get patient => 'Patient';
 }

@@ -620,4 +620,7 @@ class AppLocalizationsSo extends AppLocalizations {
 
   @override
   String get education => 'Waxbarasho';
+
+  @override
+  String get patient => 'Bukaan';
 }

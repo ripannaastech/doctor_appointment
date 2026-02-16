@@ -128,8 +128,11 @@ class _LabReportScreenState extends State<LabReportScreen> {
 
                 return RefreshIndicator(
                   onRefresh: c.refreshLabTests,
-                  child: ListView.builder(
+                  child: ListView.separated(
+                    // Added padding so cards don't touch screen edges
                     itemCount: c.labTests.length,
+                    // Using separated for cleaner spacing logic
+                    separatorBuilder: (context, index) => 12.verticalSpace,
                     itemBuilder: (context, index) {
                       final t = c.labTests[index];
 
@@ -137,68 +140,114 @@ class _LabReportScreenState extends State<LabReportScreen> {
                           ? t.labTestName!
                           : (t.template ?? l10n.test);
 
-                      final subtitleParts = <String>[];
-                      if ((t.resultDate ?? '').isNotEmpty) {
-                        subtitleParts.add(t.resultDate!);
-                      }
-                      if ((t.status ?? '').isNotEmpty) {
-                        subtitleParts.add(t.status!);
-                      }
-                      final subtitle =
-                      subtitleParts.isEmpty ? "—" : subtitleParts.join(" • ");
+                      // Status-based coloring for better UX
+                      final bool isCompleted = t.status?.toLowerCase() == 'completed';
+                      final Color statusColor = isCompleted ? const Color(0xFF10B981) : const Color(0xFFF59E0B);
 
-                      return InkWell(
-                        borderRadius: BorderRadius.circular(12.r),
-                        onTap: () {
-                          Get.to(
-                                () => LabReportDetailsScreen(labTestId: t.name),
-                          );
-                        },
-                        child: Container(
-                          margin: EdgeInsets.only(bottom: 12.h),
-                          padding: EdgeInsets.all(16.w),
-                          decoration: BoxDecoration(
-                            color: Colors.white,
-                            borderRadius: BorderRadius.circular(12.r),
-                            border: Border.all(color: const Color(0xFFE6E8EC)),
-                          ),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                title,
-                                style: TextStyle(
-                                  fontSize: 15.sp,
-                                  fontWeight: FontWeight.w600,
-                                  color: Colors.black,
+                      return Container(
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(16.r),
+                          border: Border.all(color: const Color(0xFFF1F2F4)),
+                        ),
+                        child: InkWell(
+                          borderRadius: BorderRadius.circular(16.r),
+                          onTap: () => Get.to(() => LabReportDetailsScreen(labTestId: t.name)),
+                          child: Padding(
+                            padding: EdgeInsets.all(16.w),
+                            child: Row(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                // 1. Status Indicator (Visual cue)
+                                Container(
+                                  width: 4.w,
+                                  height: 40.h,
+                                  decoration: BoxDecoration(
+                                    color: statusColor,
+                                    borderRadius: BorderRadius.circular(2.r),
+                                  ),
                                 ),
-                              ),
-                              6.verticalSpace,
-                              Text(
-                                subtitle,
-                                style: TextStyle(
-                                  fontSize: 13.sp,
-                                  color: Colors.grey.withOpacity(.6),
+                                12.horizontalSpace,
+
+                                // 2. Content
+                                Expanded(
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        title,
+                                        maxLines: 1,
+                                        overflow: TextOverflow.ellipsis,
+                                        style: TextStyle(
+                                          fontSize: 16.sp,
+                                          fontWeight: FontWeight.w700,
+                                          color: const Color(0xFF111827),
+                                          letterSpacing: -0.3,
+                                        ),
+                                      ),
+                                      4.verticalSpace,
+
+                                      // Icon-text pairs for better scannability
+                                      Row(
+                                        children: [
+                                          Icon(Icons.calendar_today_outlined, size: 12.sp, color: const Color(0xFF6B7280)),
+                                          4.horizontalSpace,
+                                          Text(
+                                            t.resultDate ?? 'Pending',
+                                            style: TextStyle(fontSize: 13.sp, color: const Color(0xFF6B7280)),
+                                          ),
+                                          8.horizontalSpace,
+                                          Icon(Icons.circle, size: 4.sp, color: const Color(0xFFD1D5DB)),
+                                          8.horizontalSpace,
+                                          Text(
+                                            t.status ?? '',
+                                            style: TextStyle(
+                                              fontSize: 13.sp,
+                                              fontWeight: FontWeight.w600,
+                                              color: statusColor,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+
+                                      if ((t.department ?? '').isNotEmpty) ...[
+                                        12.verticalSpace,
+                                        Container(
+                                          padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 4.h),
+                                          decoration: BoxDecoration(
+                                            color: const Color(0xFFEEF2FF),
+                                            borderRadius: BorderRadius.circular(100),
+                                          ),
+                                          child: Text(
+                                            t.department!,
+                                            style: TextStyle(
+                                              fontSize: 11.sp,
+                                              fontWeight: FontWeight.w600,
+                                              color: const Color(0xFF4F46E5),
+                                            ),
+                                          ),
+                                        ),
+                                      ],
+                                    ],
+                                  ),
                                 ),
-                              ),
-                              if ((t.department ?? '').isNotEmpty) ...[
-                                8.verticalSpace,
-                                Text(
-                                  t.department!,
-                                  style: TextStyle(
-                                    fontSize: 12.sp,
-                                    color: Colors.grey.withOpacity(.7),
+
+                                // 3. Trailing Icon
+                                Padding(
+                                  padding: EdgeInsets.only(top: 10.h),
+                                  child: Icon(
+                                    Icons.chevron_right_rounded,
+                                    color: const Color(0xFFD1D5DB),
+                                    size: 20.r,
                                   ),
                                 ),
                               ],
-                            ],
+                            ),
                           ),
                         ),
                       );
                     },
                   ),
-                );
-              }),
+                );              }),
             ),
           ],
         ),

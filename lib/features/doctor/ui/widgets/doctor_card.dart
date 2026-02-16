@@ -293,22 +293,6 @@ class DoctorCard extends StatelessWidget {
                 : _avatarPlaceholder(),
           ),
         ),
-        Positioned(
-          right: 0,
-          bottom: 0,
-          child: Container(
-            padding: EdgeInsets.all(2.w),
-            decoration: const BoxDecoration(
-              color: Colors.white,
-              shape: BoxShape.circle,
-            ),
-            child: Icon(
-              Icons.check_circle,
-              color: Colors.green,
-              size: 18.sp,
-            ),
-          ),
-        ),
       ],
     );
   }

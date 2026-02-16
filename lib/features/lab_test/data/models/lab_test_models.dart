@@ -42,20 +42,53 @@ class LabTestSummary {
   }
 }
 
+class LabTestTemplateItem {
+  final int idx;
+  final String? labTestName;
+  final String? uom;
+  final String? normalRange;
+
+  LabTestTemplateItem({
+    required this.idx,
+    this.labTestName,
+    this.uom,
+    this.normalRange,
+  });
+
+  factory LabTestTemplateItem.fromJson(Map<String, dynamic> json) {
+    int idx = 0;
+    final rawIdx = json['idx'];
+    if (rawIdx is int) idx = rawIdx;
+    else idx = int.tryParse((rawIdx ?? '').toString()) ?? 0;
+
+    return LabTestTemplateItem(
+      idx: idx,
+      labTestName: json['lab_test_name']?.toString() ??
+          json['test_name']?.toString() ??
+          json['parameter']?.toString(),
+      uom: json['lab_test_uom']?.toString() ??
+          json['uom']?.toString() ??
+          json['unit']?.toString(),
+      normalRange: json['normal_range']?.toString() ??
+          json['reference_range']?.toString() ??
+          json['range']?.toString(),
+    );
+  }
+}
+
 class NormalTestItem {
   final String name;
+  final int idx;
+
   final String? labTestName;
   final String? uom;
   final String? normalRange;
   final int? requireResultValue;
-
-  // NOTE: ERPNext Lab Test may store result in fields like:
-  // result_value / result / value (depends on customization)
-  // so we keep it flexible:
   final String? resultValue;
 
   NormalTestItem({
     required this.name,
+    required this.idx,
     this.labTestName,
     this.uom,
     this.normalRange,
@@ -63,14 +96,38 @@ class NormalTestItem {
     this.resultValue,
   });
 
+  NormalTestItem copyWith({
+    String? labTestName,
+    String? uom,
+    String? normalRange,
+    String? resultValue,
+    int? requireResultValue,
+  }) {
+    return NormalTestItem(
+      name: name,
+      idx: idx,
+      labTestName: labTestName ?? this.labTestName,
+      uom: uom ?? this.uom,
+      normalRange: normalRange ?? this.normalRange,
+      requireResultValue: requireResultValue ?? this.requireResultValue,
+      resultValue: resultValue ?? this.resultValue,
+    );
+  }
+
   factory NormalTestItem.fromJson(Map<String, dynamic> json) {
     String? rv;
     if (json['result_value'] != null) rv = json['result_value'].toString();
     if (rv == null && json['result'] != null) rv = json['result'].toString();
     if (rv == null && json['value'] != null) rv = json['value'].toString();
 
+    int idx = 0;
+    final rawIdx = json['idx'];
+    if (rawIdx is int) idx = rawIdx;
+    else idx = int.tryParse((rawIdx ?? '').toString()) ?? 0;
+
     return NormalTestItem(
       name: (json['name'] ?? '').toString(),
+      idx: idx,
       labTestName: json['lab_test_name']?.toString(),
       uom: json['lab_test_uom']?.toString(),
       normalRange: json['normal_range']?.toString(),
@@ -97,6 +154,7 @@ class LabTestDetail {
   final String? department;
   final String? company;
   final String? resultDate;
+  final String? template; // ✅ important
   final List<NormalTestItem> normalItems;
 
   LabTestDetail({
@@ -110,6 +168,7 @@ class LabTestDetail {
     this.department,
     this.company,
     this.resultDate,
+    this.template,
     required this.normalItems,
   });
 
@@ -118,7 +177,8 @@ class LabTestDetail {
     final items = itemsRaw
         .whereType<Map>()
         .map((e) => NormalTestItem.fromJson(Map<String, dynamic>.from(e)))
-        .toList();
+        .toList()
+      ..sort((a, b) => a.idx.compareTo(b.idx));
 
     return LabTestDetail(
       name: (json['name'] ?? '').toString(),
@@ -131,6 +191,7 @@ class LabTestDetail {
       department: json['department']?.toString(),
       company: json['company']?.toString(),
       resultDate: json['result_date']?.toString(),
+      template: json['template']?.toString(), // ✅
       normalItems: items,
     );
   }

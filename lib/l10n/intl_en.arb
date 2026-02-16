@@ -211,5 +211,7 @@
   "inpatientVisitCharge": "Inpatient Visit Charge",
   "languages": "Languages",
   "bio": "Bio",
-  "education": "Education"
+  "education": "Education",
+  "patient": "Patient"
+
 }

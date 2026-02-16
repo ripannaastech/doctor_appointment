@@ -1297,6 +1297,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Education'**
   String get education;
+
+  /// No description provided for @patient.
+  ///
+  /// In en, this message translates to:
+  /// **'Patient'**
+  String get patient;
 }
 
 class _AppLocalizationsDelegate
