@@ -88,6 +88,28 @@ class BookingController extends GetxController {
     return await _prefs.getString(SharedPrefs.patientId);
   }
 
+  final RxMap<String, bool> bookingLoadingByKey = <String, bool>{}.obs;
+
+  String doctorKey(Practitioner p) {
+    // Prefer a stable id if you have one:
+    // return (p.id ?? p.practitionerId ?? '').toString();
+
+    // If no id exists, fallback to name (must be unique enough)
+    return (p.fullName ?? '').trim();
+  }
+
+  bool isBookingLoading(Practitioner p) {
+    final key = doctorKey(p);
+    if (key.isEmpty) return false;
+    return bookingLoadingByKey[key] ?? false;
+  }
+
+  void setBookingLoading(Practitioner p, bool v) {
+    final key = doctorKey(p);
+    if (key.isEmpty) return;
+    bookingLoadingByKey[key] = v;
+  }
+
   // -------------------------
   // Departments
   // -------------------------

@@ -533,7 +533,7 @@ class AppLocalizationsSo extends AppLocalizations {
   String get feeAmount => 'Qiimaha La-tashiga';
 
   @override
-  String get enterPhoneAndPin => 'Fadlan geli lambarka taleefanka iyo PIN-ka';
+  String get enterPhoneAndPin => 'Please enter your phone number';
 
   @override
   String get pin => 'PIN';
@@ -541,4 +541,83 @@ class AppLocalizationsSo extends AppLocalizations {
   @override
   String get pleaseFillAllFields =>
       'Fadlan buuxi dhammaan meelaha loo baahan yahay';
+
+  @override
+  String get unknownDoctor => 'Dhakhtar lama helin';
+
+  @override
+  String get experienceNA => 'Khibrad lama helin';
+
+  @override
+  String get hospitalNA => 'Isbitaal lama helin';
+
+  @override
+  String get na => 'Lama helin';
+
+  @override
+  String yearsExperience(int years) {
+    return '$years sano oo khibrad ah';
+  }
+
+  @override
+  String moneyAmount(String amount) {
+    return '\$$amount';
+  }
+
+  @override
+  String get details => 'Faahfaahin';
+
+  @override
+  String get contact => 'Xiriir';
+
+  @override
+  String get clinicInfo => 'Macluumaadka Rugta';
+
+  @override
+  String get fees => 'Qiimaha';
+
+  @override
+  String get designation => 'Darajo';
+
+  @override
+  String get degree => 'Shahaado';
+
+  @override
+  String get specialization => 'Takhasus';
+
+  @override
+  String get experience => 'Khibrad';
+
+  @override
+  String get mobile => 'Mobil';
+
+  @override
+  String get phoneResidence => 'Telefoon (Guri)';
+
+  @override
+  String get phoneOffice => 'Telefoon (Xafiis)';
+
+  @override
+  String get doctorHall => 'Hoolka Dhakhtarka';
+
+  @override
+  String get doctorRoom => 'Qolka Dhakhtarka';
+
+  @override
+  String get availableDays => 'Maalmaha La Heli Karo';
+
+  @override
+  String get opConsultingCharge => 'Qiimaha La-tashiga';
+
+  @override
+  String get inpatientVisitCharge => 'Qiimaha Booqashada Isbitaalka';
+
+  @override
+  String get languages => 'Luuqadaha';
+
+  @override
+  String get bio => 'Warbixin Kooban';
+
+  @override
+  String get education => 'Waxbarasho';
 }

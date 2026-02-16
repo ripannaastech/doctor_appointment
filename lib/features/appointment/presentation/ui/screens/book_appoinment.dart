@@ -1,4 +1,3 @@
-
 import 'package:doctor_appointment/app/app_colors.dart';
 import 'package:doctor_appointment/app/asset_paths.dart';
 import 'package:doctor_appointment/features/appointment/presentation/ui/screens/select_time_slot_appoinment.dart';
@@ -10,7 +9,10 @@ import '../../../../../l10n/app_localizations.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 
+import '../../../../doctor/ui/widgets/doctor_card.dart';
+import '../../../../doctor/ui/widgets/doctor_details_sheet.dart';
 import '../controller/booking_controller.dart';
+
 class SelectDateTimeArgs {
   final Map<String, dynamic> doctorJson;
   final String department;
@@ -43,6 +45,7 @@ class SelectDateTimeArgs {
 
 class SelectDoctorScreen extends StatefulWidget {
   const SelectDoctorScreen({super.key});
+
   static const String name = '/selectDoctor';
 
   @override
@@ -80,7 +83,11 @@ class _SelectDoctorScreenState extends State<SelectDoctorScreen> {
           backgroundColor: const Color(0xFF3F6DE0),
           elevation: 0,
           leading: IconButton(
-            icon: const Icon(Icons.arrow_back_ios, color: Colors.white, size: 24),
+            icon: const Icon(
+              Icons.arrow_back_ios,
+              color: Colors.white,
+              size: 24,
+            ),
             onPressed: () => Navigator.pop(context),
           ),
           title: Text(
@@ -113,7 +120,6 @@ class _SelectDoctorScreenState extends State<SelectDoctorScreen> {
             ),
             12.verticalSpace,
 
-
             Container(
               height: 48.h,
               padding: EdgeInsets.symmetric(horizontal: 14.w),
@@ -135,7 +141,10 @@ class _SelectDoctorScreenState extends State<SelectDoctorScreen> {
                       onChanged: c.setSearchQuery,
                       decoration: InputDecoration(
                         hintText: l10n.searchDoctor,
-                        hintStyle: TextStyle(fontSize: 14.sp, color: Colors.grey),
+                        hintStyle: TextStyle(
+                          fontSize: 14.sp,
+                          color: Colors.grey,
+                        ),
                         border: InputBorder.none,
                         isCollapsed: true,
                       ),
@@ -175,14 +184,11 @@ class _SelectDoctorScreenState extends State<SelectDoctorScreen> {
 
             16.verticalSpace,
 
-
             Expanded(
               child: Obx(() {
                 if (c.loadingPractitioners.value) {
                   return const Center(child: CircularProgressIndicator());
                 }
-
-
 
                 if (c.practitioners.isEmpty) {
                   return Center(
@@ -198,131 +204,90 @@ class _SelectDoctorScreenState extends State<SelectDoctorScreen> {
                   itemBuilder: (context, index) {
                     final p = c.practitioners[index];
 
-                    final name = (p.fullName ?? l10n.doctor).toString();
-                    final dept = (p.department ?? '').toString();
-                    final specialty = dept.isNotEmpty ? dept : l10n.department;
+                    return Obx(() {
+                      final isSelected =
+                          c.selectedPractitionerIndex.value == index;
 
-
-                    return  Obx(() {
-                      final isSelected = c.selectedPractitionerIndex.value == index;
-
-                      return InkWell(
-                        borderRadius: BorderRadius.circular(12.r),
+                      return DoctorCard(
+                        doctor: p,
+                        isSelected: isSelected,
+                        showBookButton: false,
                         onTap: () {
                           c.selectedPractitionerIndex.value = index;
                           c.selectedPractitioner.value = p;
                         },
-                        child: Container(
-                          margin: EdgeInsets.only(bottom: 12.h),
-                          padding: EdgeInsets.all(16.w),
-                          decoration: BoxDecoration(
-                            color: isSelected ? const Color(0xFFEFF4FF) : Colors.white,
-                            borderRadius: BorderRadius.circular(12.r),
-                            border: Border.all(
-                              color: isSelected
-                                  ? AppColors.themeColor
-                                  : const Color(0xFFE6E8EC),
-                              width: isSelected ? 1.5 : 1,
-                            ),
-                            boxShadow: isSelected
-                                ? [
-                              BoxShadow(
-                                color: AppColors.themeColor.withOpacity(0.15),
-                                blurRadius: 8.r,
-                                offset: Offset(0, 4.h),
-                              ),
-                            ]
-                                : [],
-                          ),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                name,
-                                style: TextStyle(
-                                  fontSize: 15.sp,
-                                  fontWeight: FontWeight.w600,
-                                  color: Colors.black,
-                                ),
-                              ),
-                              6.verticalSpace,
-                              Text(
-                                specialty,
-                                style: TextStyle(
-                                  fontSize: 13.sp,
-                                  color: Colors.grey.withOpacity(.5),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
+                        onViewProfile: () {
+                          DoctorDetailsSheet.show(
+                            context,
+                            doctor: p,
+                            l10n: l10n,
+                          );
+                        },
                       );
                     });
-
                   },
                 );
               }),
             ),
 
+            Padding(
+              padding: EdgeInsets.only(bottom: 20.h),
+              child: Obx(() {
+                final enabled = c.selectedPractitioner.value != null;
+                final isLoading = c.loadingDoctorAppointments.value;
 
-          Padding(
-            padding: EdgeInsets.only(bottom: 20.h),
-            child: Obx(() {
-              final enabled = c.selectedPractitioner.value != null;
-              final isLoading = c.loadingDoctorAppointments.value;
+                return SizedBox(
+                  width: double.infinity,
+                  height: 52.h,
+                  child: ElevatedButton(
+                    onPressed: (!enabled || isLoading)
+                        ? null
+                        : () async {
+                            final p = c.selectedPractitioner.value!;
 
-              return SizedBox(
-                width: double.infinity,
-                height: 52.h,
-                child: ElevatedButton(
-                  onPressed: (!enabled || isLoading)
-                      ? null
-                      : () async {
-                    final p = c.selectedPractitioner.value!;
+                            final practitionerName = (p.fullName ?? '').trim();
 
-                    final practitionerName = (p.fullName ?? '').trim();
+                            if (practitionerName.isNotEmpty) {
+                              final ok = await c.fetchDoctorBookedAppointments(
+                                practitionerName: practitionerName,
+                              );
 
-                    if (practitionerName.isNotEmpty) {
-                      final ok = await c.fetchDoctorBookedAppointments(
-                        practitionerName: practitionerName,
-                      );
+                              if (!ok) return;
+                            }
 
-                      if (!ok) return;
-                    }
-
-                    Navigator.pushNamed(
-                      context,
-                      SelectDateTimeScreen.name,
-                      arguments: p,
-                    );
-                  },
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color(0xFF3F6DE0),
-                    disabledBackgroundColor: const Color(0xFFDADDE2),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12.r),
+                            Navigator.pushNamed(
+                              context,
+                              SelectDateTimeScreen.name,
+                              arguments: p,
+                            );
+                          },
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: const Color(0xFF3F6DE0),
+                      disabledBackgroundColor: const Color(0xFFDADDE2),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12.r),
+                      ),
                     ),
+                    child: isLoading
+                        ? SizedBox(
+                            height: 20.h,
+                            width: 20.h,
+                            child: const CircularProgressIndicator(
+                              strokeWidth: 2,
+                            ),
+                          )
+                        : Text(
+                            l10n.next,
+                            style: TextStyle(
+                              fontSize: 16.sp,
+                              fontWeight: FontWeight.w600,
+                              color: Colors.white,
+                            ),
+                          ),
                   ),
-                  child: isLoading
-                      ? SizedBox(
-                    height: 20.h,
-                    width: 20.h,
-                    child: const CircularProgressIndicator(strokeWidth: 2),
-                  )
-                      : Text(
-                    l10n.next,
-                    style: TextStyle(
-                      fontSize: 16.sp,
-                      fontWeight: FontWeight.w600,
-                      color: Colors.white,
-                    ),
-                  ),
-                ),
-              );
-            }),
-          ),
-
-
+                );
+              }),
+            ),
           ],
         ),
       ),
@@ -369,7 +334,10 @@ class _SelectDoctorScreenState extends State<SelectDoctorScreen> {
                   children: [
                     Text(
                       l10n.selectDepartment,
-                      style: TextStyle(fontSize: 16.sp, fontWeight: FontWeight.w600),
+                      style: TextStyle(
+                        fontSize: 16.sp,
+                        fontWeight: FontWeight.w600,
+                      ),
                     ),
                     12.verticalSpace,
 
@@ -397,13 +365,18 @@ class _SelectDoctorScreenState extends State<SelectDoctorScreen> {
                             ),
                           ),
                           Obx(() {
-                            if (localSearch.value.isEmpty) return const SizedBox.shrink();
+                            if (localSearch.value.isEmpty)
+                              return const SizedBox.shrink();
                             return GestureDetector(
                               onTap: () {
                                 searchCtrl.clear();
                                 localSearch.value = '';
                               },
-                              child: const Icon(Icons.close, size: 18, color: Colors.grey),
+                              child: const Icon(
+                                Icons.close,
+                                size: 18,
+                                color: Colors.grey,
+                              ),
                             );
                           }),
                         ],
@@ -419,7 +392,10 @@ class _SelectDoctorScreenState extends State<SelectDoctorScreen> {
                             contentPadding: EdgeInsets.zero,
                             title: Text(l10n.allDepartments),
                             trailing: c.selectedDepartment.value.isEmpty
-                                ? const Icon(Icons.check, color: Color(0xFF3F6DE0))
+                                ? const Icon(
+                                    Icons.check,
+                                    color: Color(0xFF3F6DE0),
+                                  )
                                 : null,
                             onTap: () {
                               c.setDepartment('');
@@ -434,20 +410,28 @@ class _SelectDoctorScreenState extends State<SelectDoctorScreen> {
                               child: Center(
                                 child: Text(
                                   l10n.noDepartmentsFound,
-                                  style: TextStyle(fontSize: 14.sp, color: Colors.black54),
+                                  style: TextStyle(
+                                    fontSize: 14.sp,
+                                    color: Colors.black54,
+                                  ),
                                 ),
                               ),
                             ),
 
                           ...filteredDepartments.map((d) {
-                            final depName = (d.department ?? d.name ?? '').toString();
-                            final selected = c.selectedDepartment.value == depName;
+                            final depName = (d.department ?? d.name ?? '')
+                                .toString();
+                            final selected =
+                                c.selectedDepartment.value == depName;
 
                             return ListTile(
                               contentPadding: EdgeInsets.zero,
                               title: Text(depName),
                               trailing: selected
-                                  ? const Icon(Icons.check, color: Color(0xFF3F6DE0))
+                                  ? const Icon(
+                                      Icons.check,
+                                      color: Color(0xFF3F6DE0),
+                                    )
                                   : null,
                               onTap: () {
                                 c.setDepartment(depName);
@@ -468,4 +452,3 @@ class _SelectDoctorScreenState extends State<SelectDoctorScreen> {
     );
   }
 }
-

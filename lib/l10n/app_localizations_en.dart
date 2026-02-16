@@ -539,4 +539,83 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get pleaseFillAllFields => 'Please fill in all required fields';
+
+  @override
+  String get unknownDoctor => 'Unknown Doctor';
+
+  @override
+  String get experienceNA => 'Experience N/A';
+
+  @override
+  String get hospitalNA => 'Hospital N/A';
+
+  @override
+  String get na => 'N/A';
+
+  @override
+  String yearsExperience(int years) {
+    return '$years Years Experience';
+  }
+
+  @override
+  String moneyAmount(String amount) {
+    return '\$$amount';
+  }
+
+  @override
+  String get details => 'Details';
+
+  @override
+  String get contact => 'Contact';
+
+  @override
+  String get clinicInfo => 'Clinic Info';
+
+  @override
+  String get fees => 'Fees';
+
+  @override
+  String get designation => 'Designation';
+
+  @override
+  String get degree => 'Degree';
+
+  @override
+  String get specialization => 'Specialization';
+
+  @override
+  String get experience => 'Experience';
+
+  @override
+  String get mobile => 'Mobile';
+
+  @override
+  String get phoneResidence => 'Phone (Residence)';
+
+  @override
+  String get phoneOffice => 'Phone (Office)';
+
+  @override
+  String get doctorHall => 'Doctor Hall';
+
+  @override
+  String get doctorRoom => 'Doctor Room';
+
+  @override
+  String get availableDays => 'Available Days';
+
+  @override
+  String get opConsultingCharge => 'OP Consulting Charge';
+
+  @override
+  String get inpatientVisitCharge => 'Inpatient Visit Charge';
+
+  @override
+  String get languages => 'Languages';
+
+  @override
+  String get bio => 'Bio';
+
+  @override
+  String get education => 'Education';
 }

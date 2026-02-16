@@ -1,6 +1,4 @@
-import 'package:doctor_appointment/app/app_colors.dart';
 import 'package:doctor_appointment/app/asset_paths.dart';
-import 'package:doctor_appointment/features/appointment/presentation/ui/screens/select_time_slot_appoinment.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
@@ -8,13 +6,13 @@ import 'package:get/get.dart';
 
 import '../../../../../l10n/app_localizations.dart';
 
-import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:get/get.dart';
 
 import '../../../appointment/models/data/practitioner_model.dart';
 import '../../../appointment/presentation/ui/controller/booking_controller.dart';
+import '../../../appointment/presentation/ui/screens/select_time_slot_appoinment.dart';
+import '../widgets/doctor_card.dart';
+import '../widgets/doctor_details_sheet.dart';
 
 
 class DoctorScreen extends StatefulWidget {
@@ -156,8 +154,6 @@ class _DoctorScreenState extends State<DoctorScreen> {
                   return const Center(child: CircularProgressIndicator());
                 }
 
-
-
                 if (c.practitioners.isEmpty) {
                   return Center(
                     child: Text(
@@ -177,50 +173,21 @@ class _DoctorScreenState extends State<DoctorScreen> {
                     itemBuilder: (context, index) {
                       final p = c.practitioners[index];
 
-                      final name =
-                      (p.fullName  ?? l10n.doctor)
-                          .toString();
+                      // ✅ only this tile listens to bookingLoadingByKey changes
+                      return Obx(() {
+                        final isLoading = c.isBookingLoading(p);
 
-                      final dept = (p.department ?? '').toString();
-                      final specialty = dept.isNotEmpty ? dept : l10n.department;
-
-                      return InkWell(
-                        borderRadius: BorderRadius.circular(12.r),
-                        onTap: () {
-                          showDoctorDetailsDialogFromMap(context, p.toJson(), l10n);
-                        },
-
-                        child: Container(
-                          margin: EdgeInsets.only(bottom: 12.h),
-                          padding: EdgeInsets.all(16.w),
-                          decoration: BoxDecoration(
-                            color: Colors.white,
-                            borderRadius: BorderRadius.circular(12.r),
-                            border: Border.all(color: const Color(0xFFE6E8EC)),
+                        return DoctorCard(
+                          doctor: p,
+                          onViewProfile: () => DoctorDetailsSheet.show(
+                            context,
+                            doctor: p,
+                            l10n: l10n,
                           ),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                name,
-                                style: TextStyle(
-                                  fontSize: 15.sp,
-                                  fontWeight: FontWeight.w600,
-                                  color: Colors.black,
-                                ),
-                              ),
-                              6.verticalSpace,
-                              Text(
-                                specialty,
-                                style: TextStyle(
-                                  fontSize: 13.sp,
-                                  color: Colors.grey.withOpacity(.5),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      );
+                          isBookingLoading: isLoading,
+                          onBook: isLoading ? null : () async => _goToBooking(context, c, p),
+                        );
+                      });
                     },
                   ),
                 );
@@ -231,78 +198,43 @@ class _DoctorScreenState extends State<DoctorScreen> {
       ),
     );
   }
-  Widget _infoRow(String label, String value) {
-    return Padding(
-      padding: EdgeInsets.only(bottom: 8.h),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          SizedBox(
-            width: 120.w,
-            child: Text(
-              '$label:',
-              style: TextStyle(
-                fontSize: 13.sp,
-                fontWeight: FontWeight.w600,
-                color: Colors.black,
-              ),
-            ),
-          ),
-          Expanded(
-            child: Text(
-              value,
-              style: TextStyle(
-                fontSize: 13.sp,
-                color: Colors.grey.shade700,
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
 
-  void showDoctorDetailsDialogFromMap(
+
+
+  Future<void> _goToBooking(
       BuildContext context,
-      Map<String, dynamic> d,
-      AppLocalizations l10n,
-      ) {
-    String val(dynamic v) {
-      final s = (v ?? '').toString().trim();
-      return s.isEmpty || s == 'null' ? 'N/A' : s;
+      BookingController c,
+      Practitioner p,
+      ) async {
+    // selection (keep if you need it elsewhere)
+    c.selectedPractitioner.value = p;
+    final idx = c.practitioners.indexOf(p);
+    if (idx != -1) c.selectedPractitionerIndex.value = idx;
+
+    // ✅ per-card loading start
+    c.setBookingLoading(p, true);
+
+    try {
+      final practitionerName = (p.fullName ?? '').trim();
+
+      if (practitionerName.isNotEmpty) {
+        final ok = await c.fetchDoctorBookedAppointments(
+          practitionerName: practitionerName,
+        );
+        if (!ok) return;
+      }
+
+      Navigator.pushNamed(
+        context,
+        SelectDateTimeScreen.name,
+        arguments: p,
+      );
+    } finally {
+      // ✅ per-card loading end
+      c.setBookingLoading(p, false);
     }
-
-    final name = val(d['full_name'] ?? d['practitionerName'] ?? d['name'] ?? l10n.doctor);
-
-    Get.dialog(
-      AlertDialog(
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16.r)),
-        title: Text(
-          name,
-          style: TextStyle(fontSize: 18.sp, fontWeight: FontWeight.w600),
-        ),
-        content: SingleChildScrollView(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              _infoRow(l10n.department, val(d['department'])),
-              _infoRow('Designation', val(d['designation'])),
-              _infoRow('Doctor Hall', val(d['doctor_hall'])),
-              _infoRow('Doctor Room', val(d['doctor_room'])),
-              _infoRow('Mobile', val(d['mobile'])),
-              _infoRow('Phone (Residence)', val(d['phone_residence'])),
-              _infoRow('Phone (Office)', val(d['phone_office'])),
-              _infoRow('Status', val(d['status'])),
-            ],
-          ),
-        ),
-        actions: [
-          TextButton(onPressed: () => Get.back(), child: const Text('Close')),
-        ],
-      ),
-    );
   }
+
 
 
 

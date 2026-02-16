@@ -1,22 +1,19 @@
 import 'dart:async';
-
-import 'package:doctor_appointment/app/app_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 
-import '../../../../../../l10n/app_localizations.dart';
-import '../../../../../app/asset_paths.dart';
-
-// Example model for banner items
-class BannerItem {
-  final String imageUrl;
-  final String title;
-  const BannerItem({required this.imageUrl, required this.title});
-}
+import '../../../../../app/app_colors.dart';
+import '../controller/home_controller.dart';
+import '../model/home_slider_model.dart';
 
 class BannerCarousel extends StatefulWidget {
-  const BannerCarousel({super.key});
+  const BannerCarousel({
+    super.key,
+    this.onTapSlider, // optional
+  });
+
+  final void Function(String linkUrl)? onTapSlider;
 
   @override
   State<BannerCarousel> createState() => _BannerCarouselState();
@@ -26,19 +23,45 @@ class _BannerCarouselState extends State<BannerCarousel> {
   final PageController _controller = PageController();
   Timer? _timer;
 
-
   final RxInt _index = 0.obs;
+
+  late final HomeController c;
+  Worker? _slidersWorker;
 
   @override
   void initState() {
     super.initState();
+
+    // ✅ Use your HomeController (where loadSliders() lives)
+    c = Get.isRegistered<HomeController>()
+        ? Get.find<HomeController>()
+        : Get.put(HomeController());
+
+    // ✅ ensure sliders are loaded (only if not already)
+    if (c.sliders.isEmpty && !c.sliderLoading.value) {
+      c.loadSliders();
+    }
+
     _startAutoPlay();
+
+    // ✅ when sliders load, reset to first page safely
+    _slidersWorker = ever<List<HomeSliderModel>>(c.sliders, (items) {
+      if (!mounted) return;
+      if (items.isEmpty) return;
+
+      _index.value = 0;
+
+      if (_controller.hasClients) {
+        _controller.jumpToPage(0);
+      }
+    });
   }
 
   @override
   void dispose() {
     _timer?.cancel();
     _controller.dispose();
+    _slidersWorker?.dispose();
     _index.close();
     super.dispose();
   }
@@ -49,111 +72,161 @@ class _BannerCarouselState extends State<BannerCarousel> {
     _timer = Timer.periodic(const Duration(seconds: 3), (_) {
       if (!mounted) return;
 
-      final items = _banners(context);
+      final items = c.sliders;
       if (items.isEmpty) return;
 
       final next = (_index.value + 1) % items.length;
-
-
       _index.value = next;
 
-      _controller.animateToPage(
-        next,
-        duration: const Duration(milliseconds: 450),
-        curve: Curves.easeInOut,
-      );
+      if (_controller.hasClients) {
+        _controller.animateToPage(
+          next,
+          duration: const Duration(milliseconds: 450),
+          curve: Curves.easeInOut,
+        );
+      }
     });
-  }
-
-  List<BannerItem> _banners(BuildContext context) {
-    final l10n = AppLocalizations.of(context)!;
-    return [
-      BannerItem(
-        imageUrl: AssetPaths.slider1,
-        title: l10n.healthBannerText,
-      ),
-      BannerItem(
-        imageUrl: AssetPaths.slider2,
-        title: l10n.healthBannerText, // change to your key
-      ),
-      BannerItem(
-        imageUrl: AssetPaths.slider3,
-        title: l10n.healthBannerText, // change to your key
-      ),
-    ];
   }
 
   @override
   Widget build(BuildContext context) {
-    final items = _banners(context);
+    return Obx(() {
+      final items = c.sliders;
+      final isLoading = c.sliderLoading.value;
 
-    return Column(
-      children: [
-        ClipRRect(
+      // Loading skeleton
+      if (isLoading && items.isEmpty) {
+        return ClipRRect(
           borderRadius: BorderRadius.circular(16.r),
-          child: SizedBox(
+          child: Container(
             height: 148.h,
             width: double.infinity,
-            child: PageView.builder(
-              controller: _controller,
-              itemCount: items.length,
-              onPageChanged: (i) => _index.value = i,
-              itemBuilder: (_, i) {
-                final b = items[i];
-                return Stack(
-                  fit: StackFit.expand,
-                  children: [
-                    Image.asset(b.imageUrl, fit: BoxFit.cover),
-                    Container(color: Colors.black.withOpacity(0.18)),
-                    Positioned(
-                      left: 16.w,
-                      right: 16.w,
-                      bottom: 16.h,
-                      child: Text(
-                        b.title,
-                        maxLines: 2,
-                        overflow: TextOverflow.ellipsis,
-                        style: TextStyle(
-                          fontSize: 16.sp,
-                          fontWeight: FontWeight.w700,
-                          color: Colors.white,
-                          shadows: [
-                            Shadow(
-                              color: Colors.black45,
-                              blurRadius: 16.r,
+            color: const Color(0xFFF0F2F7),
+          ),
+        );
+      }
+
+      // Empty state
+      if (items.isEmpty) return const SizedBox.shrink();
+
+      return Column(
+        children: [
+          ClipRRect(
+            borderRadius: BorderRadius.circular(16.r),
+            child: SizedBox(
+              height: 148.h,
+              width: double.infinity,
+              child: PageView.builder(
+                controller: _controller,
+                itemCount: items.length,
+                onPageChanged: (i) => _index.value = i,
+                itemBuilder: (_, i) {
+                  final s = items[i];
+                  final subtitle = (s.subtitle ?? '').trim();
+                  final link = (s.linkUrl ?? '').trim();
+                  final img = (s.image ?? '').trim();
+                  final title = (s.title ?? '').trim();
+
+                  return InkWell(
+                    onTap: (link.isEmpty || widget.onTapSlider == null)
+                        ? null
+                        : () => widget.onTapSlider?.call(link),
+                    child: Stack(
+                      fit: StackFit.expand,
+                      children: [
+                        Image.network(
+                          img,
+                          fit: BoxFit.cover,
+                          errorBuilder: (_, __, ___) => Container(
+                            color: const Color(0xFFF0F2F7),
+                            alignment: Alignment.center,
+                            child: Icon(
+                              Icons.image_not_supported_outlined,
+                              size: 28.sp,
+                              color: Colors.black38,
                             ),
-                          ],
+                          ),
                         ),
-                      ),
+
+                        // overlay
+                        Container(color: Colors.black.withOpacity(0.25)),
+
+                        Positioned(
+                          left: 16.w,
+                          right: 16.w,
+                          bottom: 16.h,
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                title,
+                                maxLines: 2,
+                                overflow: TextOverflow.ellipsis,
+                                style: TextStyle(
+                                  fontSize: 16.sp,
+                                  fontWeight: FontWeight.w800,
+                                  color: Colors.white,
+                                  shadows: [
+                                    Shadow(
+                                      color: Colors.black45,
+                                      blurRadius: 16.r,
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              if (subtitle.isNotEmpty) ...[
+                                SizedBox(height: 4.h),
+                                Text(
+                                  subtitle,
+                                  maxLines: 2,
+                                  overflow: TextOverflow.ellipsis,
+                                  style: TextStyle(
+                                    fontSize: 12.sp,
+                                    fontWeight: FontWeight.w500,
+                                    color: Colors.white.withOpacity(0.95),
+                                    shadows: [
+                                      Shadow(
+                                        color: Colors.black45,
+                                        blurRadius: 16.r,
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ],
+                            ],
+                          ),
+                        ),
+                      ],
                     ),
-                  ],
-                );
-              },
+                  );
+                },
+              ),
             ),
           ),
-        ),
-        SizedBox(height: 12.h),
 
+          SizedBox(height: 12.h),
 
-        Obx(() {
-          final current = _index.value;
-          return Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: List.generate(items.length, (i) {
-              return Padding(
-                padding: EdgeInsets.symmetric(horizontal: 3.w),
-                child: _Dot(active: i == current),
-              );
-            }),
-          );
-        }),
-      ],
-    );
+          Obx(() {
+            final current = _index.value;
+            return Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: List.generate(items.length, (i) {
+                return Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 3.w),
+                  child: _Dot(active: i == current),
+                );
+              }),
+            );
+          }),
+        ],
+      );
+    });
   }
 }
 
 class _Dot extends StatelessWidget {
   final bool active;
+
   const _Dot({required this.active});
 
   @override

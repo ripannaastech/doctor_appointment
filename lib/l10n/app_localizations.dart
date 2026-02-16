@@ -1147,6 +1147,156 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Please fill in all required fields'**
   String get pleaseFillAllFields;
+
+  /// No description provided for @unknownDoctor.
+  ///
+  /// In en, this message translates to:
+  /// **'Unknown Doctor'**
+  String get unknownDoctor;
+
+  /// No description provided for @experienceNA.
+  ///
+  /// In en, this message translates to:
+  /// **'Experience N/A'**
+  String get experienceNA;
+
+  /// No description provided for @hospitalNA.
+  ///
+  /// In en, this message translates to:
+  /// **'Hospital N/A'**
+  String get hospitalNA;
+
+  /// No description provided for @na.
+  ///
+  /// In en, this message translates to:
+  /// **'N/A'**
+  String get na;
+
+  /// No description provided for @yearsExperience.
+  ///
+  /// In en, this message translates to:
+  /// **'{years} Years Experience'**
+  String yearsExperience(int years);
+
+  /// No description provided for @moneyAmount.
+  ///
+  /// In en, this message translates to:
+  /// **'\${amount}'**
+  String moneyAmount(String amount);
+
+  /// No description provided for @details.
+  ///
+  /// In en, this message translates to:
+  /// **'Details'**
+  String get details;
+
+  /// No description provided for @contact.
+  ///
+  /// In en, this message translates to:
+  /// **'Contact'**
+  String get contact;
+
+  /// No description provided for @clinicInfo.
+  ///
+  /// In en, this message translates to:
+  /// **'Clinic Info'**
+  String get clinicInfo;
+
+  /// No description provided for @fees.
+  ///
+  /// In en, this message translates to:
+  /// **'Fees'**
+  String get fees;
+
+  /// No description provided for @designation.
+  ///
+  /// In en, this message translates to:
+  /// **'Designation'**
+  String get designation;
+
+  /// No description provided for @degree.
+  ///
+  /// In en, this message translates to:
+  /// **'Degree'**
+  String get degree;
+
+  /// No description provided for @specialization.
+  ///
+  /// In en, this message translates to:
+  /// **'Specialization'**
+  String get specialization;
+
+  /// No description provided for @experience.
+  ///
+  /// In en, this message translates to:
+  /// **'Experience'**
+  String get experience;
+
+  /// No description provided for @mobile.
+  ///
+  /// In en, this message translates to:
+  /// **'Mobile'**
+  String get mobile;
+
+  /// No description provided for @phoneResidence.
+  ///
+  /// In en, this message translates to:
+  /// **'Phone (Residence)'**
+  String get phoneResidence;
+
+  /// No description provided for @phoneOffice.
+  ///
+  /// In en, this message translates to:
+  /// **'Phone (Office)'**
+  String get phoneOffice;
+
+  /// No description provided for @doctorHall.
+  ///
+  /// In en, this message translates to:
+  /// **'Doctor Hall'**
+  String get doctorHall;
+
+  /// No description provided for @doctorRoom.
+  ///
+  /// In en, this message translates to:
+  /// **'Doctor Room'**
+  String get doctorRoom;
+
+  /// No description provided for @availableDays.
+  ///
+  /// In en, this message translates to:
+  /// **'Available Days'**
+  String get availableDays;
+
+  /// No description provided for @opConsultingCharge.
+  ///
+  /// In en, this message translates to:
+  /// **'OP Consulting Charge'**
+  String get opConsultingCharge;
+
+  /// No description provided for @inpatientVisitCharge.
+  ///
+  /// In en, this message translates to:
+  /// **'Inpatient Visit Charge'**
+  String get inpatientVisitCharge;
+
+  /// No description provided for @languages.
+  ///
+  /// In en, this message translates to:
+  /// **'Languages'**
+  String get languages;
+
+  /// No description provided for @bio.
+  ///
+  /// In en, this message translates to:
+  /// **'Bio'**
+  String get bio;
+
+  /// No description provided for @education.
+  ///
+  /// In en, this message translates to:
+  /// **'Education'**
+  String get education;
 }
 
 class _AppLocalizationsDelegate

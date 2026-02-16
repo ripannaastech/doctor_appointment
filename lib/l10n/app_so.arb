@@ -178,7 +178,43 @@
   "nothingToUpdate": "Wax la cusboonaysiinayo ma jiraan",
   "feeAmount": "Qiimaha La-tashiga",
   "totalPayable": "Wadarta Lacagta La Bixinayo",
-  "enterPhoneAndPin": "Fadlan geli lambarka taleefanka iyo PIN-ka",
+  "enterPhone": "Fadlan geli lambarkaaga taleefanka",
   "pin": "PIN",
-  "pleaseFillAllFields": "Fadlan buuxi dhammaan meelaha loo baahan yahay"
+  "pleaseFillAllFields": "Fadlan buuxi dhammaan meelaha loo baahan yahay",
+  "unknownDoctor": "Dhakhtar lama helin",
+  "experienceNA": "Khibrad lama helin",
+  "hospitalNA": "Isbitaal lama helin",
+  "na": "Lama helin",
+  "yearsExperience": "{years} sano oo khibrad ah",
+  "@yearsExperience": {
+    "placeholders": {
+      "years": { "type": "int" }
+    }
+  },
+  "moneyAmount": "${amount}",
+  "@moneyAmount": {
+    "placeholders": {
+      "amount": { "type": "String" }
+    }
+  },
+
+  "details": "Faahfaahin",
+  "contact": "Xiriir",
+  "clinicInfo": "Macluumaadka Rugta",
+  "fees": "Qiimaha",
+  "designation": "Darajo",
+  "degree": "Shahaado",
+  "specialization": "Takhasus",
+  "experience": "Khibrad",
+  "mobile": "Mobil",
+  "phoneResidence": "Telefoon (Guri)",
+  "phoneOffice": "Telefoon (Xafiis)",
+  "doctorHall": "Hoolka Dhakhtarka",
+  "doctorRoom": "Qolka Dhakhtarka",
+  "availableDays": "Maalmaha La Heli Karo",
+  "opConsultingCharge": "Qiimaha La-tashiga",
+  "inpatientVisitCharge": "Qiimaha Booqashada Isbitaalka",
+  "languages": "Luuqadaha",
+  "bio": "Warbixin Kooban",
+  "education": "Waxbarasho"
 }

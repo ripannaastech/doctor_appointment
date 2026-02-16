@@ -175,5 +175,41 @@
   "feeAmount": "Consultation Fee",
   "enterPhoneAndPin": "Please enter your phone number",
   "pin": "PIN",
-  "pleaseFillAllFields": "Please fill in all required fields"
+  "pleaseFillAllFields": "Please fill in all required fields",
+  "unknownDoctor": "Unknown Doctor",
+  "experienceNA": "Experience N/A",
+  "hospitalNA": "Hospital N/A",
+  "na": "N/A",
+  "yearsExperience": "{years} Years Experience",
+  "@yearsExperience": {
+    "placeholders": {
+      "years": { "type": "int" }
+    }
+  },
+  "moneyAmount": "${amount}",
+  "@moneyAmount": {
+    "placeholders": {
+      "amount": { "type": "String" }
+    }
+  },
+
+  "details": "Details",
+  "contact": "Contact",
+  "clinicInfo": "Clinic Info",
+  "fees": "Fees",
+  "designation": "Designation",
+  "degree": "Degree",
+  "specialization": "Specialization",
+  "experience": "Experience",
+  "mobile": "Mobile",
+  "phoneResidence": "Phone (Residence)",
+  "phoneOffice": "Phone (Office)",
+  "doctorHall": "Doctor Hall",
+  "doctorRoom": "Doctor Room",
+  "availableDays": "Available Days",
+  "opConsultingCharge": "OP Consulting Charge",
+  "inpatientVisitCharge": "Inpatient Visit Charge",
+  "languages": "Languages",
+  "bio": "Bio",
+  "education": "Education"
 }
