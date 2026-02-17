@@ -1,12 +1,18 @@
-/* ---------------------------- NOTIFICATIONS ---------------------------- */
-import 'package:doctor_appointment/features/notification/presentation/ui/widgets/notification_card.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 
 import '../../../../../../l10n/app_localizations.dart';
+import '../../../data/models/appoinment_model.dart';
 import '../../../data/models/notification_item_model.dart';
+import '../../models/advertisement_item_model.dart';
+import '../../models/feed_item.dart';
 import '../controller/notification_controller.dart';
+
+
+import '../widgets/details_card.dart';
+import '../widgets/type_icon.dart';
+
 
 class NotificationsScreen extends StatefulWidget {
   const NotificationsScreen({super.key});
@@ -71,11 +77,10 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
                           ),
                         ),
                       ),
-                      // keep same spacing, and add refresh on tap if you want
                       SizedBox(
                         width: 48.w,
                         child: IconButton(
-                          onPressed: () => c.fetchNotifications(),
+                          onPressed: () => c.fetchAll(),
                           icon: const Icon(Icons.refresh, color: Colors.white, size: 20),
                         ),
                       ),
@@ -90,19 +95,16 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
             child: Stack(
               clipBehavior: Clip.none,
               children: [
-                /// List content pushed down
                 Padding(
                   padding: EdgeInsets.only(
                     top: MediaQuery.of(context).padding.top + 20.h,
                   ),
                   child: Obx(() {
-                    // loading state (minimal, doesn’t change design)
-                    if (c.loading.value && c.items.isEmpty) {
+                    if (c.loading.value && c.feedItems.isEmpty) {
                       return const Center(child: CircularProgressIndicator());
                     }
 
-                    // error state (minimal)
-                    if (c.errorText.value.isNotEmpty && c.items.isEmpty) {
+                    if (c.errorText.value.isNotEmpty && c.feedItems.isEmpty) {
                       return Center(
                         child: Padding(
                           padding: EdgeInsets.symmetric(horizontal: 20.w),
@@ -117,16 +119,24 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
 
                     final filtered = c.filtered;
 
+                    if (filtered.isEmpty) {
+                      return Center(
+                        child: Text(
+                          'No notifications',
+                          style: TextStyle(fontSize: 14.sp, color: const Color(0xFF6B7280)),
+                        ),
+                      );
+                    }
+
                     return ListView.separated(
                       padding: EdgeInsets.fromLTRB(20.w, 12.h, 20.w, 20.h),
-                      itemBuilder: (_, i) => NotificationCard(item: filtered[i]),
+                      itemBuilder: (_, i) => FeedCard(item: filtered[i]),
                       separatorBuilder: (_, __) => SizedBox(height: 14.h),
                       itemCount: filtered.length,
                     );
                   }),
                 ),
 
-                /// Floating Tabs (same style as appointment)
                 Positioned(
                   top: -28.h,
                   left: 20.w,
@@ -134,7 +144,7 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
                   child: Obx(() {
                     return _notificationTabSwitcher(
                       l10n: l10n,
-                      allCount: c.items.length,
+                      allCount: c.feedItems.length,
                       unreadCount: c.unreadCount,
                     );
                   }),
@@ -207,3 +217,293 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
     );
   }
 }
+
+class FeedCard extends StatefulWidget {
+  final FeedItem item;
+  const FeedCard({super.key, required this.item});
+
+  @override
+  State<FeedCard> createState() => _FeedCardState();
+}
+
+class _FeedCardState extends State<FeedCard> {
+  final RxBool expanded = false.obs;
+
+  @override
+  void dispose() {
+    expanded.close();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final c = Get.find<NotificationsController>();
+    final f = widget.item;
+
+    final bool isAd = f.type == FeedType.advertisement;
+    final AdvertisementItem? ad = f.ad;
+
+    final NotificationItem? notif = isAd ? null : f.notif;
+
+    return Obx(() {
+      final isExpanded = expanded.value;
+
+      final AppointmentDetails? det = notif?.details;
+
+      return Container(
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(16.r),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.06),
+              blurRadius: 18.r,
+              offset: Offset(0, 10.h),
+            ),
+          ],
+        ),
+        child: Column(
+          children: [
+            InkWell(
+              borderRadius: BorderRadius.circular(16.r),
+              onTap: () {
+                // ✅ Always clickable (marks read etc.)
+                // c.onTapFeedItem(f);
+                c.markAsRead(f);
+
+                // ✅ Expand rules:
+                // - Notifications expand only if details exist
+                // - Ads always expand to show more info
+                if (isAd) {
+                  expanded.value = !expanded.value;
+                } else {
+                  if (det != null) expanded.value = !expanded.value;
+                }
+              },
+              child: Padding(
+                padding: EdgeInsets.fromLTRB(14.w, 14.h, 14.w, 12.h),
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    _leadingIcon(isAd: isAd, notifType: notif?.type),
+                    SizedBox(width: 12.w),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Row(
+                            children: [
+                              Expanded(
+                                child: Text(
+                                  f.title,
+                                  style: TextStyle(
+                                    fontSize: 14.5.sp,
+                                    fontWeight: f.isUnread ? FontWeight.w700 : FontWeight.w500,
+                                    color: const Color(0xFF141A2A),
+                                  ),
+                                ),
+                              ),
+
+                              // ✅ show arrow for both ad + expandable notification
+                              if (isAd || det != null)
+                                Icon(
+                                  isExpanded
+                                      ? Icons.keyboard_arrow_up_rounded
+                                      : Icons.keyboard_arrow_down_rounded,
+                                  size: 22.sp,
+                                  color: const Color(0xFF9AA2B4),
+                                ),
+                            ],
+                          ),
+
+                          SizedBox(height: 6.h),
+
+                          // short body line
+                          Text(
+                            f.body,
+                            maxLines: isExpanded ? 3 : 2,
+                            overflow: TextOverflow.ellipsis,
+                            style: TextStyle(
+                              fontSize: 12.5.sp,
+                              fontWeight: FontWeight.w400,
+                              color: const Color(0xFF7B8194),
+                              height: 1.25,
+                            ),
+                          ),
+
+                          SizedBox(height: 8.h),
+
+                          Row(
+                            children: [
+                              Expanded(
+                                child: Text(
+                                  isAd ? '' : (notif?.timeAgo ?? ''),
+                                  style: TextStyle(
+                                    fontSize: 11.5.sp,
+                                    fontWeight: FontWeight.w600,
+                                    color: const Color(0xFFB0B6C6),
+                                  ),
+                                ),
+                              ),
+                              if (isAd) _badge('Ad'),
+                              if (!isAd && f.isUnread) ...[
+                                SizedBox(width: 10.w),
+                                Container(
+                                  width: 8.w,
+                                  height: 8.w,
+                                  decoration: const BoxDecoration(
+                                    color: Color(0xFF3F6DE0),
+                                    shape: BoxShape.circle,
+                                  ),
+                                ),
+                              ],
+                            ],
+                          ),
+
+                          // small image preview always visible for ads
+                          if (isAd && (ad?.image ?? '').trim().isNotEmpty) ...[
+                            SizedBox(height: 12.h),
+                            ClipRRect(
+                              borderRadius: BorderRadius.circular(12.r),
+                              child: Image.network(
+                                (ad!.image).trim(),
+                                height: 120.h,
+                                width: double.infinity,
+                                fit: BoxFit.cover,
+                                errorBuilder: (_, __, ___) => const SizedBox.shrink(),
+                              ),
+                            ),
+                          ],
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+
+            // ✅ Expand section for Notification details
+            if (!isAd && isExpanded && det != null) ...[
+              const Divider(height: 1, color: Color(0xFFEEF0F6)),
+              Padding(
+                padding: EdgeInsets.fromLTRB(14.w, 12.h, 14.w, 14.h),
+                child: DetailsCard(details: det),
+              ),
+            ],
+
+            // ✅ Expand section for Advertisement details
+            if (isAd && isExpanded && ad != null) ...[
+              const Divider(height: 1, color: Color(0xFFEEF0F6)),
+              Padding(
+                padding: EdgeInsets.fromLTRB(14.w, 12.h, 14.w, 14.h),
+                child: _adDetails(ad, c),
+              ),
+            ],
+          ],
+        ),
+      );
+    });
+  }
+
+  Widget _adDetails(AdvertisementItem ad, NotificationsController c) {
+    String clean(String s) => s.trim();
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+
+
+        Text(
+          clean(ad.description).isEmpty ? 'No description' : ad.description,
+          style: TextStyle(
+            fontSize: 12.8.sp,
+            color: const Color(0xFF475569),
+            height: 1.3,
+            fontWeight: FontWeight.w500,
+          ),
+        ),
+
+        SizedBox(height: 14.h),
+
+        // ✅ button to open link (better UX than auto-navigate)
+        if (ad.clickable && clean(ad.linkUrl).isNotEmpty)
+          SizedBox(
+            width: double.infinity,
+            child: ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                backgroundColor: const Color(0xFF3F6DE0),
+                foregroundColor: Colors.white,
+                elevation: 0,
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.r)),
+                padding: EdgeInsets.symmetric(vertical: 12.h),
+              ),
+              onPressed: () => Get.toNamed(clean(ad.linkUrl)),
+              child: Text(
+                'View Offer',
+                style: TextStyle(fontSize: 13.5.sp, fontWeight: FontWeight.w700),
+              ),
+            ),
+          ),
+      ],
+    );
+  }
+
+  Widget _infoRow(String k, String v) {
+    return Row(
+      children: [
+        Text(
+          '$k: ',
+          style: TextStyle(
+            fontSize: 12.sp,
+            color: const Color(0xFF94A3B8),
+            fontWeight: FontWeight.w700,
+          ),
+        ),
+        Expanded(
+          child: Text(
+            v,
+            style: TextStyle(
+              fontSize: 12.sp,
+              color: const Color(0xFF334155),
+              fontWeight: FontWeight.w700,
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _leadingIcon({required bool isAd, dynamic notifType}) {
+    if (isAd) {
+      return Container(
+        width: 42.w,
+        height: 42.w,
+        decoration: BoxDecoration(
+          color: const Color(0xFFF2F6FF),
+          borderRadius: BorderRadius.circular(12.r),
+        ),
+        child: Icon(Icons.campaign_outlined, size: 22.sp, color: const Color(0xFF3F6DE0)),
+      );
+    }
+    return TypeIcon(type: notifType);
+  }
+
+  Widget _badge(String text) {
+    return Container(
+      padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 4.h),
+      decoration: BoxDecoration(
+        color: const Color(0xFFF2F6FF),
+        borderRadius: BorderRadius.circular(999.r),
+      ),
+      child: Text(
+        text,
+        style: TextStyle(
+          fontSize: 11.sp,
+          fontWeight: FontWeight.w700,
+          color: const Color(0xFF3F6DE0),
+        ),
+      ),
+    );
+  }
+}
+
