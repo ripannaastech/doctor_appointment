@@ -44,28 +44,36 @@ class _LabReportDetailsScreenState extends State<LabReportDetailsScreen> {
 
     return Scaffold(
       backgroundColor: const Color(0xFFF2F4F8), // Slightly more clinical grey-blue
-      appBar: AppBar(
-        backgroundColor: const Color(0xFF3F6DE0),
-        elevation: 0,
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back_ios, color: Colors.white),
-          onPressed: () => Navigator.pop(context),
-        ),
-        title: Text(
-          l10n.labReportDetails,
-          style: TextStyle(
-            fontSize: 18.sp,
-            color: Colors.white,
-            fontWeight: FontWeight.w600,
+      appBar: PreferredSize(
+        preferredSize: Size.fromHeight(80.h),
+        child: AppBar(
+          backgroundColor: const Color(0xFF3F6DE0),
+          elevation: 0,
+
+
+          leading: IconButton(
+            icon: const Icon(
+              Icons.arrow_back_ios,
+              color: Colors.white,
+            ),
+            onPressed: () => Navigator.pop(context),
           ),
-        ),
-        centerTitle: true,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.vertical(
-            bottom: Radius.circular(16.r),
+
+          title: Text(
+            l10n.labReportDetails,
+            style: TextStyle(
+              fontSize: 18.sp,
+              color: Colors.white,
+              fontWeight: FontWeight.w600,
+            ),
           ),
-        ),
-      ),
+          centerTitle: true,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.vertical(
+              bottom: Radius.circular(16.r),
+            ),
+          ),
+        ),      ),
 
       body: Obx(() {
         if (c.loadingDetails.value) {

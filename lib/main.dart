@@ -25,7 +25,8 @@ void main() async {
   );
   runApp(
     DevicePreview(
-      enabled: !bool.fromEnvironment('dart.vm.product'),
+      // enabled: !bool.fromEnvironment('dart.vm.product'),
+      enabled: false,
       builder: (context) =>  AlIshanSpecialistHospital(),
     ),
   );

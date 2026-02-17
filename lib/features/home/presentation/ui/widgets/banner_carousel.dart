@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
+import 'package:shimmer/shimmer.dart';
 
 import '../../../../../app/app_colors.dart';
 import '../controller/home_controller.dart';
@@ -95,16 +96,60 @@ class _BannerCarouselState extends State<BannerCarousel> {
       final isLoading = c.sliderLoading.value;
 
       // Loading skeleton
+// ✅ Shimmer loading
       if (isLoading && items.isEmpty) {
         return ClipRRect(
           borderRadius: BorderRadius.circular(16.r),
-          child: Container(
+          child: SizedBox(
             height: 148.h,
             width: double.infinity,
-            color: const Color(0xFFF0F2F7),
+            child: Shimmer.fromColors(
+              baseColor: const Color(0xFFE9ECF2),
+              highlightColor: const Color(0xFFF7F8FC),
+              child: Container(
+                color: Colors.white,
+                child: Stack(
+                  fit: StackFit.expand,
+                  children: [
+                    // background block
+                    Container(color: const Color(0xFFF0F2F7)),
+
+                    // fake title/subtitle blocks (looks more realistic)
+                    Positioned(
+                      left: 16.w,
+                      right: 16.w,
+                      bottom: 16.h,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Container(
+                            height: 14.h,
+                            width: double.infinity,
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: BorderRadius.circular(8.r),
+                            ),
+                          ),
+                          SizedBox(height: 8.h),
+                          Container(
+                            height: 12.h,
+                            width: MediaQuery.of(context).size.width * 0.55,
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: BorderRadius.circular(8.r),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
           ),
         );
       }
+
 
       // Empty state
       if (items.isEmpty) return const SizedBox.shrink();

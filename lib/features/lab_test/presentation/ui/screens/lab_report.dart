@@ -8,6 +8,7 @@ import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
+import 'package:shimmer/shimmer.dart';
 
 import '../../../../../l10n/app_localizations.dart';
 import '../controller/lab_report_controller.dart';
@@ -104,8 +105,9 @@ class _LabReportScreenState extends State<LabReportScreen> {
             Expanded(
               child: Obx(() {
                 if (c.loadingList.value) {
-                  return const Center(child: CircularProgressIndicator());
+                  return _LabReportListShimmer();
                 }
+
 
                 if (c.listError.value.isNotEmpty) {
                   return Center(
@@ -256,5 +258,113 @@ class _LabReportScreenState extends State<LabReportScreen> {
   }
 }
 
+class _LabReportListShimmer extends StatelessWidget {
+  const _LabReportListShimmer();
+
+  @override
+  Widget build(BuildContext context) {
+    return ListView.separated(
+      physics: const NeverScrollableScrollPhysics(),
+      itemCount: 7,
+      separatorBuilder: (_, __) => 12.verticalSpace,
+      itemBuilder: (_, __) => ClipRRect(
+        borderRadius: BorderRadius.circular(16.r),
+        child: Shimmer.fromColors(
+          baseColor: const Color(0xFFE9ECF2),
+          highlightColor: const Color(0xFFF7F8FC),
+          child: Container(
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(16.r),
+              border: Border.all(color: const Color(0xFFF1F2F4)),
+            ),
+            padding: EdgeInsets.all(16.w),
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // status indicator
+                Container(
+                  width: 4.w,
+                  height: 40.h,
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(2.r),
+                  ),
+                ),
+                12.horizontalSpace,
+
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      // title line
+                      Container(
+                        height: 14.h,
+                        width: double.infinity,
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(8.r),
+                        ),
+                      ),
+                      10.verticalSpace,
+
+                      // meta line (date + dot + status)
+                      Row(
+                        children: [
+                          Container(
+                            height: 10.h,
+                            width: 90.w,
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: BorderRadius.circular(8.r),
+                            ),
+                          ),
+                          10.horizontalSpace,
+                          Container(
+                            height: 10.h,
+                            width: 60.w,
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: BorderRadius.circular(8.r),
+                            ),
+                          ),
+                        ],
+                      ),
+
+                      12.verticalSpace,
+
+                      // department chip
+                      Container(
+                        height: 22.h,
+                        width: 110.w,
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(100),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+
+                // trailing icon placeholder
+                Padding(
+                  padding: EdgeInsets.only(top: 10.h),
+                  child: Container(
+                    height: 18.r,
+                    width: 18.r,
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(6.r),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
 
 
