@@ -480,7 +480,6 @@ class BookingController extends GetxController {
     required String appointmentId,
     required String paymentMethod, // "cash" or "online"
     String? phoneNumber,
-    String? pin,
   }) async {
     loading.value = true;
     errorText.value = '';
@@ -506,18 +505,16 @@ class BookingController extends GetxController {
 
       if (method == 'online') {
         final phone = (phoneNumber ?? '').trim();
-        final p = (pin ?? '').trim();
 
-        if (phone.isEmpty || p.isEmpty) {
+        if (phone.isEmpty) {
           errorText.value = 'Phone number and PIN are required for online payment';
           AppSnackbar.error('Error', errorText.value);
           return false;
         }
 
-        final path = '/api/v1/payments/mobile/evc/pay-appointment/$appointmentId';
+        final path = '/api/v1/payments/mobile/edahab/pay/$appointmentId';
         final query = {
           'phone_number': phone,
-          'pin': p,
         };
 
         // some servers accept GET, but safest is POST (your client uses postRequest)
